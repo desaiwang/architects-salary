@@ -1,0 +1,167 @@
+<html>
+
+<head>
+  <title>Architect's Salary</title>
+  <link rel="icon" type="image/svg+xml" href="/desai_icon.svg" />
+  <link href="https://fonts.googleapis.com/css?family=Lato:400,700|Raleway:400,700" rel="stylesheet">
+  <link href="./general-style.css" rel="stylesheet" type="text/css">
+  <link href="./style.css" rel="stylesheet" type="text/css">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://d3js.org/topojson.v2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3-tile@1"></script>
+
+</head>
+
+<body style="background-color: rgb(255, 255, 255);">
+  <div style="margin-top:30px">
+    <div id="header" style="margin-left:-100px">
+      <h2 style="text-align: center"> Visualizing Architect's Salary in the US</h2>
+      <h5 style="text-align: center; margin-top: -65px; margin-bottom: 50px"> Desai Wang</h5>
+    </div>
+
+    <div></div>
+
+    <div id="container" style="display: flex; justify-content: center;">
+      <svg id="vizIndividualsContainer" width="1200" height="1500"></svg>
+      <div id="tooltip" class="tooltip" style="
+        visibility:hidden;
+        position:absolute; 
+        background:white; 
+        padding:10px; 
+        border:1px solid black; 
+        pointer-events:none;">
+      </div>
+    </div>
+
+  </div>
+
+
+
+  </div>
+
+  <div style="margin-bottom:100"></div>
+  </div>
+
+
+
+
+
+  <script>
+
+    const vizIndividualsContainer = d3.select("svg#vizIndividualsContainer");
+    const width = vizIndividualsContainer.attr("width");
+    const height = vizIndividualsContainer.attr("height");
+
+    const margins = {
+      top: 20,
+      bottom: 20,
+      left: 20,
+      right: 20
+    }
+
+    const vizHeight = height - margins.top - margins.bottom;
+    const vizWidth = width - margins.left - margins.right;
+
+    const vizIndividuals = vizIndividualsContainer.append("g")
+      .attr("transform", `translate(${margins.left}, ${margins.top})`)
+
+    const loadIndividuals = async function () {
+      let dataAll = await d3.csv("data/241017_archinect_salaries_fulltime.csv", d3.autoType);
+      console.log(dataAll);
+
+      const satisfactionExtent = d3.extent(dataAll, d => d['Job Satisfaction'])
+      //starting color in UI colors: #043565 for blue, #ff8f06 for orange using https://uicolors.app/create
+      const satisfactionScale = d3.scaleQuantize(satisfactionExtent, ["#3c5491", "#4465b1", "#4e78c2", "#6290cf", "#a9c9e7", "#ffe3a8", "#ffce70", "#ff8f06", "#f07706", "#c75a07"])
+      //const satisfactionScale = d3.scaleSequential(d3.interpolateRdYlGn).domain(satisfactionExtent)
+
+      const salaryExtent = d3.extent(dataAll, d => d['Salary'])
+      console.log(salaryExtent)
+
+      const maxD = 10
+      const salaryScale = d3.scaleLinear().domain(salaryExtent).range([3, 20])
+
+
+      //create tooltip
+      const tooltipDiv = d3.select("div#tooltip")
+
+      //filter: this is used to for updates
+
+      var filters = {};
+
+      function pointPassesFilters(point) {
+
+        let stillPassed = true;
+
+        Object.values(filters).forEach(filterFunc => {
+
+          stillPassed = filterFunc(point) && stillPassed;
+
+        });
+
+        return stillPassed;
+
+      }
+
+      function updateData() {
+        let data = dataAll.filter(pointPassesFilters);
+
+        vizIndividuals.selectAll("circle")
+          .data(data)
+          .join("circle")
+          .attr("cx", (d, i) => {
+            return (i % (vizWidth / maxD) * maxD)
+          })
+          .attr("cy", (d, i) => {
+            //console.log("mod", i % 50)
+            return (Math.floor(i / vizWidth * maxD) * maxD)
+          })
+          .attr("r", d => salaryScale(d['Salary']))
+          .attr("opacity", 0.8)
+          .attr("fill", d => {
+            // console.log("job satisfaction", d['Job Satisfaction'])
+            // console.log("satisfaction scale", satisfactionScale(d['Job Satisfaction']))
+            return satisfactionScale(d['Job Satisfaction'])
+          })
+          .on("mouseover", function (event, d) {
+            let selectedElement = d3.select(this)
+
+            selectedElement.transition().duration(200)
+              .attr("stroke", "black")
+              .attr("stroke-width", 1)
+              .attr("r", d => salaryScale(d['Salary']) + 5);
+
+            tooltipDiv.html(`
+            <strong>Salary:</strong> ${d3.format("$,")(d['Salary'])}<br>
+            <strong>Job Satisfaction:</strong> ${d['Job Satisfaction']}/10<br>
+            <strong>Age:</strong> ${d['Age']}<br>
+            <strong>Years of Experience:</strong> ${d['Years of Experience']}<br>
+            <strong>Location:</strong> ${d['Location']}<br>
+            <strong>
+            <strong>Survey Date:</strong> ${new Date(d['Date']).toLocaleString('default', { month: 'long', year: 'numeric' })}<br>
+          `)
+              .style("left", (event.pageX + 10) + "px")
+              .style("top", (event.pageY + 10) + "px")
+              .style("visibility", "visible");
+          })
+          .on("mouseout", function (event, d) {
+            d3.select(this)
+              .lower()
+              .transition().duration(200)
+              .attr("stroke", "none")
+              .attr("r", d => salaryScale(d['Salary']));
+
+            tooltipDiv.style("visibility", "hidden")
+          })
+      }
+
+      //call update data to draw the initial data
+      updateData();
+
+    }
+
+    loadIndividuals();
+
+  </script>
+</body>
+
+</html>

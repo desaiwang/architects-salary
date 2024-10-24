@@ -1,0 +1,37 @@
+body {
+  background-color: rgb(60, 65, 67);
+  /* Set background color */
+}
+
+.countries {
+  stroke: white;
+  stroke-width: 1px;
+  fill: #e8e8e8;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.annotation {
+  font-size: 12px;
+  margin-top: -15px;
+  margin-left: 40px
+}
+
+.label {
+  margin-bottom: 1em;
+  margin-left: 1em;
+}
+
+.center {
+  display: block;
+  margin: 0 auto;
+}
