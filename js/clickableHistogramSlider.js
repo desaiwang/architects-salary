@@ -12,7 +12,7 @@
  * 
  * @returns {void}
  */
-export function clickableHistogramSlider(dataAll, container, label, attribute, sliderWidth, sliderHeight, updateData, filters, colorList = null) {
+export function clickableHistogramSlider(dataAll, container, label, attribute, sliderWidth, sliderHeight, updateData, filters, { scaleFormatter = d3.format(".0f"), colorList = null }) {
 
   let wrapper = container.append("div").attr("class", "controls").style("margin-top", "10px");
   wrapper.append("div").text(label);
@@ -27,7 +27,17 @@ export function clickableHistogramSlider(dataAll, container, label, attribute, s
     .attr("height", sliderHeight + 30)
     .attr("attribute", attribute);
 
-  const uniqueValues = [...new Set(dataAll.map(d => d[attribute]))].sort((a, b) => a - b);
+  const groupedData = d3.groups(dataAll, d => d[attribute]);
+  const groupCounts = groupedData.map(([key, values]) => ({ key, count: values.length }));
+
+  console.log("groupedData", groupedData);
+  console.log("groupCounts", groupCounts);
+  groupCounts.sort((a, b) => a.key - b.key);
+  console.log("groupCounts after sorting", groupCounts);
+  const uniqueValues = [...new Set(dataAll.map(d => d[attribute]))]
+  console.log("uniqueValues before sorting", uniqueValues);
+  uniqueValues.sort((a, b) => a - b);
+  console.log("uniqueValues after sorting", uniqueValues);
   const widthHist = sliderWidth;
   const heightHist = sliderHeight;
 
@@ -51,7 +61,7 @@ export function clickableHistogramSlider(dataAll, container, label, attribute, s
       .call(
         d3.axisBottom(xScale)
           .tickSizeOuter(0)
-          .tickFormat(d3.format(".0f"))
+          .tickFormat(scaleFormatter)
       )
   };
   svgHist.append("g").call(xAxis);
@@ -61,7 +71,7 @@ export function clickableHistogramSlider(dataAll, container, label, attribute, s
 
   //save colors for each bin, set clicked all to true
   bins.forEach((d, i) => {
-    d.color = colorList ? colorList[i] : white
+    d.color = colorList ? colorList[i] : "grey"
     d.clicked = true
   })
 

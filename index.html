@@ -34,7 +34,8 @@
       <div style="display: flex; flex-direction: column;">
         <div id="controlfilterSalary"></div>
         <div id="controlfilterSatisfaction"></div>
-        <svg id="clickableHistogram"></svg>
+        <div id="controlfilterFirmType"></div>
+
 
       </div>
 
@@ -210,12 +211,7 @@
             nonpassingAcc++;
           }
         }
-
         )
-
-        // Separate data into passing and non-passing points
-        // const passingData = dataAll.filter(pointPassesFilters);
-        // const nonPassingData = dataAll.filter(d => !pointPassesFilters(d));
 
         // Render non-passing data first (these will appear at the bottom layer)
         circles
@@ -225,13 +221,6 @@
           .attr("fill", d => d.passesFilter ? d.color : "#D3D3D3")  // Grey color
           .style("pointer-events", d => d.passesFilter ? "auto" : "none")  // Disable hover interactions if doesn't pass
           ;
-        // circles.filter(d => d.passesFilter)
-
-        //   .attr("cx", d => d.cx)
-        //   .attr("cy", d => d.cy)  // Use precomputed cx
-        //   .attr("fill", d => d.color)  // Grey color
-        //   .style("pointer-events", "auto")  // Disable hover interactions if doesn't pass
-        //   ;
 
       }
 
@@ -246,13 +235,12 @@
       }
       curveSlider(dataAll, controlSalary, "Salary", "Salary", 400, 100, updateData, filters, { maxLimit: 200000, scaleFormatter: d => d === 0 ? "$0" : d3.format("$.2s")(d), getButtonData: getButtonDataSalary });
 
-      //let controlSatisfaction = d3.select("#controlfilterSatisfaction");
-      //curveSlider(dataAll, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", 400, 100, updateData, filters, { maxLimit: 11, scaleFormatter: d3.format(""), numBins: 10 });
-
       let controlSatisfaction = d3.select("#controlfilterSatisfaction");
+      //curveSlider(dataAll, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", 400, 100, updateData, filters, { maxLimit: 11, scaleFormatter: d3.format(""), numBins: 10 });
+      clickableHistogramSlider(dataAll, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", 400, 100, updateData, filters, { colorList: satisfactionColors });
 
-      let svgClickableHistogram = d3.select("svg#clickableHistogram");
-      clickableHistogramSlider(dataAll, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", 400, 100, updateData, filters, satisfactionColors);
+      let controlFirmType = d3.select("#controlfilterFirmType");
+      clickableHistogramSlider(dataAll, controlFirmType, "Firm Type", "Firm Type", 400, 100, updateData, filters, { scaleFormatter: d3.format("") });
 
       //call update data to draw the initial data
       updateData();
