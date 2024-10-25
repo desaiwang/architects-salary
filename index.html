@@ -192,10 +192,9 @@
       //curveSlider(dataAll, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", 400, 100, updateData, filters, { maxLimit: 11, scaleFormatter: d3.format(""), numBins: 10 });
 
       let controlSatisfaction = d3.select("#controlfilterSatisfaction");
-      histogramSlider(dataAll, [0, 10], satisfactionScale, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", 400, 100, updateData, filters, { scaleFormatter: d3.format("") });
 
       let svgClickableHistogram = d3.select("svg#clickableHistogram");
-      clickableHistogramSlider(dataAll, svgClickableHistogram, "Job Satisfaction", 400, 100, updateData, filters, satisfactionColors);
+      clickableHistogramSlider(dataAll, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", 400, 100, updateData, filters, satisfactionColors);
 
       //call update data to draw the initial data
       updateData();

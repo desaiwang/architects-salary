@@ -12,23 +12,27 @@
  * 
  * @returns {void}
  */
-export function clickableHistogramSlider(dataAll, svg, attribute, sliderWidth, sliderHeight, updateData, filters, colorList = null) {
+export function clickableHistogramSlider(dataAll, container, label, attribute, sliderWidth, sliderHeight, updateData, filters, colorList = null) {
 
-  //TODO: change these placeholder colors
-  const greyedoutColor = "grey";
-  const selectedColor = "black";
+  let wrapper = container.append("div").attr("class", "controls").style("margin-top", "10px");
+  wrapper.append("div").text(label);
+
+  let rowwrapper = wrapper.append("div")
+    .style("display", "flex")
+    .style("flex-direction", "column")
+    .style("align-items", "center");
+
+  let svgHist = rowwrapper.append("svg").attr("id", "capacity selection")
+    .attr("width", sliderWidth)
+    .attr("height", sliderHeight + 30)
+    .attr("attribute", attribute);
 
   const uniqueValues = [...new Set(dataAll.map(d => d[attribute]))].sort((a, b) => a - b);
-  console.log("uniqueValues in dataAll", uniqueValues);
-
-  const svgHist = svg;
   const widthHist = sliderWidth;
   const heightHist = sliderHeight;
 
   let bins = d3.bin().thresholds(uniqueValues).value(d => d[attribute])(dataAll);
   console.log("bins", bins);
-  let barPadding = 8;
-  //let svgHist = d3.select("#histogram");
 
   let xScale = d3.scaleBand()
     .domain(uniqueValues)
@@ -61,6 +65,10 @@ export function clickableHistogramSlider(dataAll, svg, attribute, sliderWidth, s
     d.clicked = true
   })
 
+  //TODO: change these placeholder colors
+  const greyedoutColor = "grey";
+  const selectedColor = "black";
+
   svgHist
     .selectAll("rect")
     .data(bins)
@@ -72,7 +80,7 @@ export function clickableHistogramSlider(dataAll, svg, attribute, sliderWidth, s
     .style("border-radius", "1px")
     .style("outline", "solid")
     .style("outline-width", "thin")
-    .style("outline-color", greyedoutColor)
+    .style("outline-color", selectedColor)
     .attr("fill", d => d.color)
     .attr("cursor", "pointer")
     .on('mouseover', function (event, d) {
