@@ -160,30 +160,49 @@
         console.log("Median Salary:", medianSalary);
         const maxD = Math.ceil(salaryScale(medianSalary) * 2 + 2);
         console.log("calculated maxD", maxD)
-        vizIndividuals.selectAll("circle")
-          .data(data)
+
+        // Add cx and cy properties to each data point based on the index in dataAll
+        dataAll.forEach((d, i) => {
+          d.cx = Math.floor(i % (vizWidth / maxD)) * maxD;
+          d.cy = Math.floor(i / (vizWidth / maxD)) * maxD;
+        });
+
+        // Separate data into passing and non-passing points
+        const passingData = dataAll.filter(pointPassesFilters);
+        const nonPassingData = dataAll.filter(d => !pointPassesFilters(d));
+
+        // Render non-passing data first (these will appear at the bottom layer)
+        vizIndividuals.selectAll(".non-passing")
+          .data(nonPassingData)
           .join("circle")
-          .attr("cx", (d, i) => {
-            // console.log("cx", i % (vizWidth / maxD) * maxD)
-            return (Math.floor(i % (vizWidth / maxD)) * maxD)
-          })
-          .attr("cy", (d, i) => {
-            // console.log("cy", Math.floor(i / vizWidth * maxD) * maxD)
-            return (Math.floor(i / vizWidth * maxD) * maxD)
-          })
+          .attr("class", "non-passing")
+          .attr("cx", d => d.cx)  // Use precomputed cx
+          .attr("cy", d => d.cy)  // Use precomputed cy
           .attr("r", d => salaryScale(d['Salary']))
+          .transition().duration(500)
+          .attr("opacity", 0.5)  // Slightly reduced opacity
+          .attr("fill", "#D3D3D3")  // Grey color
+          .style("pointer-events", "none");  // Disable hover interactions
+
+        // Render passing data on top (these will be interactive)
+        vizIndividuals.selectAll(".passing")
+          .data(passingData)
+          .join("circle")
+          .attr("class", "passing")
+          .attr("cx", d => d.cx)  // Use precomputed cx
+          .attr("cy", d => d.cy)  // Use precomputed cy
+          .attr("r", d => salaryScale(d['Salary']))
+          .transition().duration(500)
           .attr("opacity", 0.8)
-          .attr("fill", d => {
-            return pointPassesFilters(d)
-              ? satisfactionScale(d['Job Satisfaction'])  // Color based on satisfaction scale
-              : "#D3D3D3";
-          })
+          .attr("fill", d => satisfactionScale(d['Job Satisfaction']))
+          .style("pointer-events", "auto")
           .on("mouseover", function (event, d) {
             onMouseOverIndividual(this, event, d);
           })
           .on("mouseout", function () {
             onMouseOutIndividual(this);
           })
+          ;
       }
 
 
