@@ -14,34 +14,39 @@
 
 <body style="background-color: rgb(255, 255, 255);">
   <div style="margin-top:30px">
-    <div id="header" style="margin-left:-100px">
+    <div id="header">
+      <!-- style="margin-left:-100px" -->
       <h2 style="text-align: center"> Visualizing Architect's Salary in the US</h2>
       <h5 style="text-align: center; margin-top: -65px; margin-bottom: 50px"> Desai Wang</h5>
     </div>
 
-    <div></div>
-
-    <div id="container" style="display: flex; justify-content: center;">
-      <svg id="vizIndividualsContainer" width="1200" height="1500"></svg>
-      <div id="tooltip" class="tooltip" style="
+    <div style="display: flex; justify-content: center;">
+      <h2 id="summaryText">Hello just a placeholder :/</h2>
+    </div>
+    <div>
+      <div id="container" style="display: flex; justify-content: center;">
+        <svg id="vizIndividualsContainer" width="1200" height="1500"></svg>
+        <div id="tooltip" class="tooltip" style="
         visibility:hidden;
         position:absolute; 
         background:white; 
         padding:10px; 
         border:1px solid black; 
         pointer-events:none;">
-      </div>
-      <div style="display: flex; flex-direction: column;">
-        <div id="controlfilterSalary"></div>
-        <div id="controlfilterSatisfaction"></div>
-        <div id="controlfilterFirmType"></div>
+        </div>
+        <div style="display: flex; flex-direction: column;">
+          <div id="controlfilterSalary"></div>
+          <div id="controlfilterSatisfaction"></div>
+          <div id="controlfilterFirmType"></div>
+          <div id="controlfilterFirmSize"></div>
+          <div id="controlfilterAge"></div>
 
+
+        </div>
 
       </div>
 
     </div>
-
-  </div>
 
   </div>
 
@@ -181,15 +186,22 @@
         tooltipDiv.style("visibility", "hidden");
       }
 
+      const medianSalaryOverall = d3.median(dataAll, d => d['Salary']);
+
       function updateData() {
         //filter for passing data
         const passingData = dataAll.filter(pointPassesFilters);
         const passingDataSize = passingData.length;
         console.log("passingDataSize", passingDataSize)
 
-        const medianSalary = d3.median(data, d => d['Salary']);
-        console.log("Median Salary:", medianSalary);
-        const maxD = Math.ceil(salaryScale(medianSalary) * 2 + 2);
+        const medianSalary = d3.median(passingData, d => d['Salary']);
+        const meanSatisfaction = d3.mean(passingData, d => d['Job Satisfaction']);
+
+        d3.select("h2#summaryText")
+          .text(passingDataSize > 0 ? `Showing ${d3.format(",")(passingDataSize)} out of ${d3.format(",")(dataAll.length)} individuals. Median Salary: ${d3.format("$,")(medianSalary)}, Mean Satisfaction: ${d3.format(".2f")(meanSatisfaction)}/10` : "No data selected")
+
+        //TODO: need more dynamic maxD calculation, right now doesn't change with selections
+        const maxD = Math.ceil(salaryScale(medianSalaryOverall) * 2 + 2);
         console.log("calculated maxD", maxD)
 
         // Add cx and cy properties to each data point based on the index in dataAll
@@ -240,7 +252,10 @@
       clickableHistogramSlider(dataAll, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", 400, 100, updateData, filters, { colorList: satisfactionColors });
 
       let controlFirmType = d3.select("#controlfilterFirmType");
-      clickableHistogramSlider(dataAll, controlFirmType, "Firm Type", "Firm Type", 400, 100, updateData, filters, { scaleFormatter: d3.format("") });
+      clickableHistogramSlider(dataAll, controlFirmType, "Firm Type", "Firm Type", 400, 100, updateData, filters, { sortOrder: ["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"] });
+
+      let controlFirmSize = d3.select("#controlfilterFirmSize");
+      clickableHistogramSlider(dataAll, controlFirmSize, "Firm Size", "Firm Size", 400, 100, updateData, filters, { sortOrder: [1, "2-5", "6-10", "11-15", "16-30", "31-50", "51-100", "101-200", "201-500", "501+"] });
 
       //call update data to draw the initial data
       updateData();
