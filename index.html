@@ -34,7 +34,7 @@
       <div style="display: flex; flex-direction: column;">
         <div id="controlfilterSalary"></div>
         <div id="controlfilterSatisfaction"></div>
-        <svg id="clickableHistogram" width="300" height="115"></svg>
+        <svg id="clickableHistogram"></svg>
 
       </div>
 
@@ -84,9 +84,12 @@
 
       const satisfactionExtent = d3.extent(dataAll, d => d['Job Satisfaction'])
       //starting color in UI colors: #043565 for blue, #ff8f06 for orange using https://uicolors.app/create
-      const satisfactionScale = d3.scaleQuantize(satisfactionExtent, ["#3c5491", "#4465b1", "#4e78c2", "#6290cf", "#a9c9e7", "#ffe3a8", "#ffce70", "#ff8f06", "#f07706", "#c75a07"])
-      //const satisfactionScale = d3.scaleLinear().domain([0, 5, 10]).range(["#3c5491", "#ffe3a8", "#f07706"])
-      //const satisfactionScale = d3.scaleSequential(d3.interpolateRdYlGn).domain(satisfactionExtent)
+
+      const satisfactionColors = ["#3c5491", "#4465b1", "#4e78c2", "#6290cf", "#a9c9e7", "#ffe3a8", "#ffce70", "#ff8f06", "#f07706", "#c75a07"]
+      //d3.schemeRdYlBu[10])
+      const satisfactionScale = d3.scaleQuantize(satisfactionExtent, satisfactionColors)
+      console.log(d3.schemeRdYlGn[10])
+      //more colors see: https://d3js.org/d3-scale-chromatic/diverging
 
       const salaryExtent = d3.extent(dataAll, d => d['Salary'])
       console.log(salaryExtent)
@@ -192,7 +195,7 @@
       histogramSlider(dataAll, [0, 10], satisfactionScale, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", 400, 100, updateData, filters, { scaleFormatter: d3.format("") });
 
       let svgClickableHistogram = d3.select("svg#clickableHistogram");
-      clickableHistogramSlider(dataAll, svgClickableHistogram, "Job Satisfaction");
+      clickableHistogramSlider(dataAll, svgClickableHistogram, "Job Satisfaction", 400, 100, updateData, filters, satisfactionColors);
 
       //call update data to draw the initial data
       updateData();
