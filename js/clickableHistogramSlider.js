@@ -12,7 +12,7 @@
  * 
  * @returns {void}
  */
-export function clickableHistogramSlider(dataAll, container, label, attribute, sliderWidth, sliderHeight, updateData, filters, { scaleFormatter = d3.format(".0f"), colorList = null }) {
+export function clickableHistogramSlider(dataAll, container, label, attribute, sliderWidth, sliderHeight, updateData, filters, { scaleFormatter = null, colorList = null, sortOrder = 'key', ascending = true }) {
 
   let wrapper = container.append("div").attr("class", "controls").style("margin-top", "10px");
   wrapper.append("div").text(label);
@@ -28,30 +28,38 @@ export function clickableHistogramSlider(dataAll, container, label, attribute, s
     .attr("attribute", attribute);
 
   const groupedData = d3.groups(dataAll, d => d[attribute]);
-  const groupCounts = groupedData.map(([key, values]) => ({ key, count: values.length }));
-
+  const groupCounts = groupedData.map(([key, values]) => ({ key: key === null ? "N/A" : key, count: values.length }));
   console.log("groupedData", groupedData);
   console.log("groupCounts", groupCounts);
-  groupCounts.sort((a, b) => a.key - b.key);
+  if (Array.isArray(sortOrder)) {
+    groupCounts.sort((a, b) => {
+      const indexA = sortOrder.indexOf(a.key);
+      const indexB = sortOrder.indexOf(b.key);
+      if (indexA === -1 && indexB === -1) return 0;
+      if (indexA === -1) return 1;
+      if (indexB === -1) return -1;
+      return indexA - indexB;
+    });
+  } else if (sortOrder === 'key') {
+    groupCounts.sort((a, b) => ascending ? a.key - b.key : b.key - a.key);
+  } else if (sortOrder === 'count') {
+    groupCounts.sort((a, b) => ascending ? a.count - b.count : b.count - a.count);
+  }
   console.log("groupCounts after sorting", groupCounts);
-  const uniqueValues = [...new Set(dataAll.map(d => d[attribute]))]
-  console.log("uniqueValues before sorting", uniqueValues);
-  uniqueValues.sort((a, b) => a - b);
-  console.log("uniqueValues after sorting", uniqueValues);
+  const uniqueKeys = groupCounts.map(d => d.key)
+  console.log("uniqueKeys", uniqueKeys);
+
   const widthHist = sliderWidth;
   const heightHist = sliderHeight;
 
-  let bins = d3.bin().thresholds(uniqueValues).value(d => d[attribute])(dataAll);
-  console.log("bins", bins);
-
   let xScale = d3.scaleBand()
-    .domain(uniqueValues)
+    .domain(uniqueKeys)
     .range([0, widthHist])
     .padding(0.2) //TODO: maybe set this instead of multiplying in Padding
 
   let yScale = d3
     .scaleLinear()
-    .domain([0, d3.max(bins, d => d.length)])
+    .domain([0, d3.max(groupCounts, d => d.count)])
     .nice()
     .range([heightHist, 0])
 
@@ -61,16 +69,17 @@ export function clickableHistogramSlider(dataAll, container, label, attribute, s
       .call(
         d3.axisBottom(xScale)
           .tickSizeOuter(0)
-          .tickFormat(scaleFormatter)
+          .tickFormat(scaleFormatter ? scaleFormatter : d => d)
       )
   };
   svgHist.append("g").call(xAxis);
 
   //initiate valueList with all unique values (all checked)
-  let valueList = uniqueValues; //used to update ratings
+  let valueList = uniqueKeys; //used to update ratings
+  console.log("valueList at the beginning", valueList)
 
   //save colors for each bin, set clicked all to true
-  bins.forEach((d, i) => {
+  groupCounts.forEach((d, i) => {
     d.color = colorList ? colorList[i] : "grey"
     d.clicked = true
   })
@@ -81,12 +90,12 @@ export function clickableHistogramSlider(dataAll, container, label, attribute, s
 
   svgHist
     .selectAll("rect")
-    .data(bins)
+    .data(groupCounts)
     .join("rect")
-    .attr("x", d => xScale(d.x0)) // position of each bar on xAxis, width adjustment (bar padding)
-    .attr("y", d => yScale(d.length))
+    .attr("x", d => xScale(d.key)) // position of each bar on xAxis, width adjustment (bar padding)
+    .attr("y", d => yScale(d.count))
     .attr("width", xScale.bandwidth())
-    .attr("height", d => yScale(0) - yScale(d.length))
+    .attr("height", d => yScale(0) - yScale(d.count))
     .style("border-radius", "1px")
     .style("outline", "solid")
     .style("outline-width", "thin")
@@ -116,21 +125,17 @@ export function clickableHistogramSlider(dataAll, container, label, attribute, s
           .attr("fill", d => d.color)
           .style('outline-color', selectedColor);
 
-        valueList.push(d.x0);
-        console.log("valueList", valueList)
-
-        filters[attribute] = d => valueList.includes(d[attribute]);
-        updateData()
+        valueList.push(d.key);
       } else {
         d3.select(this)
           .attr("fill", "white")
           .style('outline-color', greyedoutColor)
 
-        valueList = valueList.filter(rating => rating != d.x0)
-        console.log("valueList", valueList)
-        filters[attribute] = d => valueList.includes(d[attribute]);
-        updateData();
+        valueList = valueList.filter(rating => rating != d.key)
       }
+      console.log("valueList", valueList)
+      filters[attribute] = d => valueList.includes(d[attribute] === null ? "N/A" : d[attribute]);
+      updateData()
     });
 
 
