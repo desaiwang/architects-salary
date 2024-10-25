@@ -249,14 +249,17 @@
 
       let controlSatisfaction = d3.select("#controlfilterSatisfaction");
       //curveSlider(dataAll, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", 400, 100, updateData, filters, { maxLimit: 11, scaleFormatter: d3.format(""), numBins: 10 });
-      clickableHistogramSlider(dataAll, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", 400, 100, updateData, filters, { colorList: satisfactionColors });
+      clickableHistogramSlider(dataAll, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", 400, 100, updateData, filters, { colorList: satisfactionColors, yBetweenLabelAndHist: 0 });
 
       let controlFirmType = d3.select("#controlfilterFirmType");
-      clickableHistogramSlider(dataAll, controlFirmType, "Firm Type", "Firm Type", 400, 100, updateData, filters, { sortOrder: ["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"] });
+      clickableHistogramSlider(dataAll, controlFirmType, "Firm Type", "Firm Type", 400, 70, updateData, filters, { sortOrder: ["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"] });
 
       let controlFirmSize = d3.select("#controlfilterFirmSize");
-      clickableHistogramSlider(dataAll, controlFirmSize, "Firm Size", "Firm Size", 400, 100, updateData, filters, { sortOrder: [1, "2-5", "6-10", "11-15", "16-30", "31-50", "51-100", "101-200", "201-500", "501+"] });
+      clickableHistogramSlider(dataAll, controlFirmSize, "Firm Size", "Firm Size", 400, 70, updateData, filters, { sortOrder: [1, "2-5", "6-10", "11-15", "16-30", "31-50", "51-100", "101-200", "201-500", "501+"] });
 
+
+      let controlAge = d3.select("#controlfilterAge");
+      clickableHistogramSlider(dataAll, controlAge, "Age", "Age", 400, 100, updateData, filters, { sortOrder: ["18-20", "21-25", "26-30", "31-35", "36-40", "41-45", "46-50", "51-55", "56-60", "61-65", "66-70", "71-103"] });
       //call update data to draw the initial data
       updateData();
 

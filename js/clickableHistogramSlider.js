@@ -1,3 +1,5 @@
+import cancelableClick from "./cancelableClick.js";
+
 /**
  * Creates a clickable histogram slider using D3.js.
  * 
@@ -12,10 +14,14 @@
  * 
  * @returns {void}
  */
-export function clickableHistogramSlider(dataAll, container, label, attribute, sliderWidth, sliderHeight, updateData, filters, { scaleFormatter = null, colorList = null, sortOrder = 'key', ascending = true }) {
+export function clickableHistogramSlider(dataAll, container, label, attribute, sliderWidth, sliderHeight, updateData, filters, { scaleFormatter = null, colorList = null, sortOrder = 'key', ascending = true, yBetweenLabelAndHist = 10 }) {
 
   let wrapper = container.append("div").attr("class", "controls").style("margin-top", "10px");
-  wrapper.append("div").text(label);
+
+  wrapper
+    .append("div")
+    .style("margin-bottom", `${yBetweenLabelAndHist}px`)
+    .text(label);
 
   let rowwrapper = wrapper.append("div")
     .style("display", "flex")
@@ -63,9 +69,11 @@ export function clickableHistogramSlider(dataAll, container, label, attribute, s
     .nice()
     .range([heightHist, 0])
 
+
+
   let xAxis = (g) => {
     g
-      .attr("transform", `translate(${0},${heightHist})`)
+      .attr("transform", `translate(${0},${heightHist + 8})`)
       .call(
         d3.axisBottom(xScale)
           .tickSizeOuter(0)
@@ -88,14 +96,15 @@ export function clickableHistogramSlider(dataAll, container, label, attribute, s
   const greyedoutColor = "grey";
   const selectedColor = "black";
 
-  svgHist
+  var timeout = null;
+  let histRects = svgHist
     .selectAll("rect")
     .data(groupCounts)
     .join("rect")
-    .attr("x", d => xScale(d.key)) // position of each bar on xAxis, width adjustment (bar padding)
+    .attr("x", d => xScale(d.key))
     .attr("y", d => yScale(d.count))
     .attr("width", xScale.bandwidth())
-    .attr("height", d => yScale(0) - yScale(d.count))
+    .attr("height", d => yScale(0) - yScale(d.count) + 5)
     .style("border-radius", "1px")
     .style("outline", "solid")
     .style("outline-width", "thin")
@@ -118,24 +127,48 @@ export function clickableHistogramSlider(dataAll, container, label, attribute, s
       }
     })
     .on('click', function (event, d) {
-      d.clicked = !d.clicked
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        d.clicked = !d.clicked
 
-      if (d.clicked) {
-        d3.select(this)
-          .attr("fill", d => d.color)
-          .style('outline-color', selectedColor);
+        if (d.clicked) {
+          d3.select(this)
+            .attr("fill", d => {
+              console.log("d.color at line 140", d.color);
+              console.log("Current time:", new Date().toLocaleString());
 
-        valueList.push(d.key);
-      } else {
-        d3.select(this)
-          .attr("fill", "white")
-          .style('outline-color', greyedoutColor)
+              return d.color
+            })
+            .style('outline-color', selectedColor);
 
-        valueList = valueList.filter(rating => rating != d.key)
-      }
-      console.log("valueList", valueList)
-      filters[attribute] = d => valueList.includes(d[attribute] === null ? "N/A" : d[attribute]);
-      updateData()
+          valueList.push(d.key);
+        } else {
+          d3.select(this)
+            .attr("fill", "white")
+            .style('outline-color', greyedoutColor)
+
+          valueList = valueList.filter(rating => rating != d.key)
+        }
+        console.log("valueList", valueList)
+        filters[attribute] = d => valueList.includes(d[attribute] === null ? "N/A" : d[attribute]);
+        updateData()
+      }, 200);
+    }).on('dblclick', function (event, d) {
+      clearTimeout(timeout);
+      console.log("double clicked", event, d);
+      // Reset all bars to deselected
+      groupCounts.forEach(item => item.clicked = false);
+      // Set only the double-clicked bar to selected
+      d.clicked = true;
+
+      histRects
+        .attr("fill", d => d.clicked ? d.color : "white")
+        .style('outline-color', d => d.clicked ? selectedColor : greyedoutColor);
+
+      // Update valueList and filter to only include the double-clicked value
+      valueList = [d.key];
+      filters[attribute] = item => item[attribute] === d.key;
+      updateData();
     });
 
 
