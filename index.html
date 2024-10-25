@@ -120,6 +120,34 @@
 
       }
 
+      //for testing purposes using data slice
+      let data = dataAll
+      //.slice(0, 2000)
+
+      data.forEach((d, i) => {
+        d.cx = Math.floor(i % (vizWidth / maxD)) * maxD;
+        d.cy = Math.floor(i / (vizWidth / maxD)) * maxD;
+        d.color = satisfactionScale(d['Job Satisfaction'])
+        d.passesFilter = true;
+      });
+
+      //set up the circles upon page loading
+      let circles = vizIndividuals.selectAll("circle")
+        .data(data)
+        .join("circle")
+        .attr("cx", d => d.cx)  // Use precomputed cx
+        .attr("cy", d => d.cy)  // Use precomputed cy
+        .attr("r", d => salaryScale(d['Salary']))
+        .attr("opacity", 0.8)  // Slightly reduced opacity
+        .attr("fill", d => d.color)  // Grey color
+        .style("pointer-events", "auto")  // Disable hover interactions if doesn't pass
+        .on("mouseover", function (event, d) {
+          onMouseOverIndividual(this, event, d);
+        })
+        .on("mouseout", function () {
+          onMouseOutIndividual(this);
+        })
+
       function onMouseOverIndividual(element, event, d) {
         const selectedElement = d3.select(element);
 
@@ -153,8 +181,10 @@
       }
 
       function updateData() {
-        let data = dataAll
-        //.filter(pointPassesFilters);
+        //filter for passing data
+        const passingData = dataAll.filter(pointPassesFilters);
+        const passingDataSize = passingData.length;
+        console.log("passingDataSize", passingDataSize)
 
         const medianSalary = d3.median(data, d => d['Salary']);
         console.log("Median Salary:", medianSalary);
@@ -162,47 +192,47 @@
         console.log("calculated maxD", maxD)
 
         // Add cx and cy properties to each data point based on the index in dataAll
-        dataAll.forEach((d, i) => {
-          d.cx = Math.floor(i % (vizWidth / maxD)) * maxD;
-          d.cy = Math.floor(i / (vizWidth / maxD)) * maxD;
+        data.forEach((d, i) => {
+          d.prevPassesFilter = d.passesFilter
+          d.passesFilter = pointPassesFilters(d);
         });
 
+        let passingAcc = 0;
+        let nonpassingAcc = 0;
+        data.forEach(d => {
+          if (d.passesFilter) {
+            d.cx = Math.floor(passingAcc % (vizWidth / maxD)) * maxD;
+            d.cy = Math.floor(passingAcc / (vizWidth / maxD)) * maxD;
+            passingAcc++;
+          } else {
+            d.cx = Math.floor((nonpassingAcc + passingDataSize) % (vizWidth / maxD)) * maxD;
+            d.cy = Math.floor((nonpassingAcc + passingDataSize) / (vizWidth / maxD)) * maxD;
+            nonpassingAcc++;
+          }
+        }
+
+        )
+
         // Separate data into passing and non-passing points
-        const passingData = dataAll.filter(pointPassesFilters);
-        const nonPassingData = dataAll.filter(d => !pointPassesFilters(d));
+        // const passingData = dataAll.filter(pointPassesFilters);
+        // const nonPassingData = dataAll.filter(d => !pointPassesFilters(d));
 
         // Render non-passing data first (these will appear at the bottom layer)
-        vizIndividuals.selectAll(".non-passing")
-          .data(nonPassingData)
-          .join("circle")
-          .attr("class", "non-passing")
-          .attr("cx", d => d.cx)  // Use precomputed cx
-          .attr("cy", d => d.cy)  // Use precomputed cy
-          .attr("r", d => salaryScale(d['Salary']))
-          .transition().duration(500)
-          .attr("opacity", 0.5)  // Slightly reduced opacity
-          .attr("fill", "#D3D3D3")  // Grey color
-          .style("pointer-events", "none");  // Disable hover interactions
-
-        // Render passing data on top (these will be interactive)
-        vizIndividuals.selectAll(".passing")
-          .data(passingData)
-          .join("circle")
-          .attr("class", "passing")
-          .attr("cx", d => d.cx)  // Use precomputed cx
-          .attr("cy", d => d.cy)  // Use precomputed cy
-          .attr("r", d => salaryScale(d['Salary']))
-          .transition().duration(500)
-          .attr("opacity", 0.8)
-          .attr("fill", d => satisfactionScale(d['Job Satisfaction']))
-          .style("pointer-events", "auto")
-          .on("mouseover", function (event, d) {
-            onMouseOverIndividual(this, event, d);
-          })
-          .on("mouseout", function () {
-            onMouseOutIndividual(this);
-          })
+        circles
+          //.transition().duration(500)
+          .attr("cx", d => d.cx)
+          .attr("cy", d => d.cy)  // Use precomputed cx
+          .attr("fill", d => d.passesFilter ? d.color : "#D3D3D3")  // Grey color
+          .style("pointer-events", d => d.passesFilter ? "auto" : "none")  // Disable hover interactions if doesn't pass
           ;
+        // circles.filter(d => d.passesFilter)
+
+        //   .attr("cx", d => d.cx)
+        //   .attr("cy", d => d.cy)  // Use precomputed cx
+        //   .attr("fill", d => d.color)  // Grey color
+        //   .style("pointer-events", "auto")  // Disable hover interactions if doesn't pass
+        //   ;
+
       }
 
 
