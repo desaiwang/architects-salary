@@ -1,14 +1,20 @@
 
 export function curveSlider(dataAll, container, label, attribute, sliderWidth, sliderHeight, updateData, filters,
-  { maxLimit = 0, scaleFormatter = d3.format(",.0f"), numBins = 20, getButtonData = null }) {
+  { minLimit = null, maxLimit = 0, scaleFormatter = d3.format(",.0f"), numBins = 20, getButtonData = null }) {
 
   // Get a raw array of values for this property
   let values = dataAll.map(d => d[attribute]).sort(function (a, b) { return b - a }); //sorted for optimization
 
   // Find min and max for some scales
-  let minMax = maxLimit == 0 ? [0, d3.max(values)] : [0, maxLimit];
+  let extent = d3.extent(values);
+  if (minLimit != null) {
+    extent[0] = minLimit;
+  }
+  if (maxLimit != 0) {
+    extent[1] = maxLimit;
+  }
 
-  let xScale = d3.scaleLinear().domain(minMax)
+  let xScale = d3.scaleLinear().domain(extent)
     .range([10, sliderWidth - 20]); // padding here for ease
 
   let xAxis = d3.axisBottom(xScale)
@@ -44,7 +50,7 @@ export function curveSlider(dataAll, container, label, attribute, sliderWidth, s
   console.log("scaleFormatter", scaleFormatter)
   console.log("numBins", numBins)
   console.log("maxLimit", maxLimit)
-  console.log("minMax", minMax)
+  console.log("extent", extent)
 
   if (getButtonData) {
     let buttonData = getButtonData(attribute, values);
@@ -68,7 +74,7 @@ export function curveSlider(dataAll, container, label, attribute, sliderWidth, s
   let areaLayer = canvas.append("g");
 
   // generate histogram
-  let histoGen = d3.histogram().domain(minMax)
+  let histoGen = d3.histogram().domain(extent)
     .thresholds(numBins);
   let counts = histoGen(values);
 

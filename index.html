@@ -35,6 +35,7 @@
         pointer-events:none;">
         </div>
         <div style="display: flex; flex-direction: column;">
+          <div id="controlfilterTime"></div>
           <div id="controlfilterSalary"></div>
           <div id="controlfilterSatisfaction"></div>
           <div id="controlfilterFirmType"></div>
@@ -94,15 +95,21 @@
       const satisfactionColors = ["#3c5491", "#4465b1", "#4e78c2", "#6290cf", "#a9c9e7", "#ffe3a8", "#ffce70", "#ff8f06", "#f07706", "#c75a07"]
       //d3.schemeRdYlBu[10])
       const satisfactionScale = d3.scaleQuantize(satisfactionExtent, satisfactionColors)
-      console.log(d3.schemeRdYlGn[10])
+      //console.log(d3.schemeRdYlGn[10])
       //more colors see: https://d3js.org/d3-scale-chromatic/diverging
 
       const salaryExtent = d3.extent(dataAll, d => d['Salary'])
-      console.log(salaryExtent)
-
-      const maxD = 10
+      console.log("salaryExtent", salaryExtent)
       const salaryScale = d3.scaleLinear().domain(salaryExtent).range([2.5, 20])
-      //const salaryScale = d3.scaleLog().domain(salaryExtent).range([0.1, 10])
+
+      dataAll.forEach(d => {
+        d['Date'] = d3.isoParse(d['Date']);
+        d['Year'] = d['Date'].getFullYear();
+      });
+      // const timeExtent = d3.extent(dataAll, d => d['Date'])
+      // console.log(timeExtent)
+      // const timeScale = d3.scaleTime().domain(timeExtent).range([0, 1])
+
 
 
       //create tooltip
@@ -129,7 +136,7 @@
       //for testing purposes using data slice
       let data = dataAll
       //.slice(0, 2000)
-
+      const maxD = 10
       data.forEach((d, i) => {
         d.cx = Math.floor(i % (vizWidth / maxD)) * maxD;
         d.cy = Math.floor(i / (vizWidth / maxD)) * maxD;
@@ -159,8 +166,9 @@
 
         selectedElement.raise()
           .transition().duration(200)
+          .attr("opacity", 1)
           .attr("stroke", "black")
-          .attr("stroke-width", 1)
+          .attr("stroke-width", 2)
           .attr("r", salaryScale(d['Salary']) + 5);
 
         tooltipDiv.html(`
@@ -181,6 +189,7 @@
           .lower()
           .transition().duration(200)
           .attr("stroke", "none")
+          .attr("opacity", 0.8)
           .attr("r", d => salaryScale(d['Salary']));
 
         tooltipDiv.style("visibility", "hidden");
@@ -246,6 +255,11 @@
         ];
       }
       curveSlider(dataAll, controlSalary, "Salary", "Salary", 400, 100, updateData, filters, { maxLimit: 200000, scaleFormatter: d => d === 0 ? "$0" : d3.format("$.2s")(d), getButtonData: getButtonDataSalary });
+
+      let controlTime = d3.select("#controlfilterTime");
+      //dataAll.map(d => d['Year'] = d3.timeYear(d['Date']));
+      // curveSlider(dataAll, controlTime, "Time", "Date", 400, 100, updateData, filters, { scale: timeScale, scaleFormatter: d3.timeFormat("%b %Y") });
+      clickableHistogramSlider(dataAll, controlTime, "Survey Year", "Year", 400, 100, updateData, filters, { yBetweenLabelAndHist: 0 });
 
       let controlSatisfaction = d3.select("#controlfilterSatisfaction");
       //curveSlider(dataAll, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", 400, 100, updateData, filters, { maxLimit: 11, scaleFormatter: d3.format(""), numBins: 10 });

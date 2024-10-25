@@ -112,7 +112,9 @@ export function clickableHistogramSlider(dataAll, container, label, attribute, s
     .attr("fill", d => d.color)
     .attr("cursor", "pointer")
     .on('mouseover', function (event, d) {
-      d3.select(this).style("outline-width", "medium")
+      d3.select(this)
+        .style("outline-width", "medium")
+        .style('outline-color', selectedColor)
     })
     .on('mouseout', function (event, d) {
       if (!d.clicked) {
@@ -134,9 +136,6 @@ export function clickableHistogramSlider(dataAll, container, label, attribute, s
         if (d.clicked) {
           d3.select(this)
             .attr("fill", d => {
-              console.log("d.color at line 140", d.color);
-              console.log("Current time:", new Date().toLocaleString());
-
               return d.color
             })
             .style('outline-color', selectedColor);
