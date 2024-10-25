@@ -120,8 +120,41 @@
 
       }
 
+      function onMouseOverIndividual(element, event, d) {
+        const selectedElement = d3.select(element);
+
+        selectedElement.raise()
+          .transition().duration(200)
+          .attr("stroke", "black")
+          .attr("stroke-width", 1)
+          .attr("r", salaryScale(d['Salary']) + 5);
+
+        tooltipDiv.html(`
+        <strong>Salary:</strong> ${d3.format("$,")(d['Salary'])}<br>
+        <strong>Job Satisfaction:</strong> ${d['Job Satisfaction']}/10<br>
+        <strong>Age:</strong> ${d['Age']}<br>
+        <strong>Years of Experience:</strong> ${d['Years of Experience']}<br>
+        <strong>Location:</strong> ${d['Location']}<br>
+        <strong>Survey Date:</strong> ${new Date(d['Date']).toLocaleString('default', { month: 'long', year: 'numeric' })}<br>
+    `)
+          .style("left", (event.pageX + 10) + "px")
+          .style("top", (event.pageY + 10) + "px")
+          .style("visibility", "visible");
+      }
+
+      function onMouseOutIndividual(element) {
+        d3.select(element)
+          .lower()
+          .transition().duration(200)
+          .attr("stroke", "none")
+          .attr("r", d => salaryScale(d['Salary']));
+
+        tooltipDiv.style("visibility", "hidden");
+      }
+
       function updateData() {
-        let data = dataAll.filter(pointPassesFilters);
+        let data = dataAll
+        //.filter(pointPassesFilters);
 
         const medianSalary = d3.median(data, d => d['Salary']);
         console.log("Median Salary:", medianSalary);
@@ -141,39 +174,15 @@
           .attr("r", d => salaryScale(d['Salary']))
           .attr("opacity", 0.8)
           .attr("fill", d => {
-            // console.log("job satisfaction", d['Job Satisfaction'])
-            // console.log("satisfaction scale", satisfactionScale(d['Job Satisfaction']))
-            return satisfactionScale(d['Job Satisfaction'])
+            return pointPassesFilters(d)
+              ? satisfactionScale(d['Job Satisfaction'])  // Color based on satisfaction scale
+              : "#D3D3D3";
           })
           .on("mouseover", function (event, d) {
-            let selectedElement = d3.select(this)
-
-            selectedElement.raise()
-              .transition().duration(200)
-              .attr("stroke", "black")
-              .attr("stroke-width", 1)
-              .attr("r", d => salaryScale(d['Salary']) + 5);
-
-            tooltipDiv.html(`
-            <strong>Salary:</strong> ${d3.format("$,")(d['Salary'])}<br>
-            <strong>Job Satisfaction:</strong> ${d['Job Satisfaction']}/10<br>
-            <strong>Age:</strong> ${d['Age']}<br>
-            <strong>Years of Experience:</strong> ${d['Years of Experience']}<br>
-            <strong>Location:</strong> ${d['Location']}<br>
-            <strong>Survey Date:</strong> ${new Date(d['Date']).toLocaleString('default', { month: 'long', year: 'numeric' })}<br>
-          `)
-              .style("left", (event.pageX + 10) + "px")
-              .style("top", (event.pageY + 10) + "px")
-              .style("visibility", "visible");
+            onMouseOverIndividual(this, event, d);
           })
-          .on("mouseout", function (event, d) {
-            d3.select(this)
-              .lower()
-              .transition().duration(200)
-              .attr("stroke", "none")
-              .attr("r", d => salaryScale(d['Salary']));
-
-            tooltipDiv.style("visibility", "hidden")
+          .on("mouseout", function () {
+            onMouseOutIndividual(this);
           })
       }
 
