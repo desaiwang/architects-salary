@@ -1,3 +1,5 @@
+import cancelableClick from "./cancelableClick.js";
+
 /**
  * Creates a clickable histogram slider using D3.js.
  * 
@@ -12,10 +14,14 @@
  * 
  * @returns {void}
  */
-export function clickableHistogramSlider(dataAll, container, label, attribute, sliderWidth, sliderHeight, updateData, filters, colorList = null) {
+export function clickableHistogramSlider(dataAll, container, label, attribute, sliderWidth, sliderHeight, updateData, filters, { scaleFormatter = null, colorList = null, sortOrder = 'key', ascending = true, yBetweenLabelAndHist = 10 }) {
 
   let wrapper = container.append("div").attr("class", "controls").style("margin-top", "10px");
-  wrapper.append("div").text(label);
+
+  wrapper
+    .append("div")
+    .style("margin-bottom", `${yBetweenLabelAndHist}px`)
+    .text(label);
 
   let rowwrapper = wrapper.append("div")
     .style("display", "flex")
@@ -27,41 +33,62 @@ export function clickableHistogramSlider(dataAll, container, label, attribute, s
     .attr("height", sliderHeight + 30)
     .attr("attribute", attribute);
 
-  const uniqueValues = [...new Set(dataAll.map(d => d[attribute]))].sort((a, b) => a - b);
+  const groupedData = d3.groups(dataAll, d => d[attribute]);
+  const groupCounts = groupedData.map(([key, values]) => ({ key: key === null ? "N/A" : key, count: values.length }));
+  console.log("groupedData", groupedData);
+  console.log("groupCounts", groupCounts);
+  if (Array.isArray(sortOrder)) {
+    groupCounts.sort((a, b) => {
+      const indexA = sortOrder.indexOf(a.key);
+      const indexB = sortOrder.indexOf(b.key);
+      if (indexA === -1 && indexB === -1) return 0;
+      if (indexA === -1) return 1;
+      if (indexB === -1) return -1;
+      return indexA - indexB;
+    });
+  } else if (sortOrder === 'key') {
+    groupCounts.sort((a, b) => ascending ? a.key - b.key : b.key - a.key);
+  } else if (sortOrder === 'count') {
+    groupCounts.sort((a, b) => ascending ? a.count - b.count : b.count - a.count);
+  }
+  console.log("groupCounts after sorting", groupCounts);
+  const uniqueKeys = groupCounts.map(d => d.key)
+  console.log("uniqueKeys", uniqueKeys);
+
   const widthHist = sliderWidth;
   const heightHist = sliderHeight;
 
-  let bins = d3.bin().thresholds(uniqueValues).value(d => d[attribute])(dataAll);
-  console.log("bins", bins);
-
   let xScale = d3.scaleBand()
-    .domain(uniqueValues)
+    .domain(uniqueKeys)
     .range([0, widthHist])
     .padding(0.2) //TODO: maybe set this instead of multiplying in Padding
 
   let yScale = d3
     .scaleLinear()
-    .domain([0, d3.max(bins, d => d.length)])
+    .domain([0, d3.max(groupCounts, d => d.count)])
     .nice()
     .range([heightHist, 0])
 
+
+
   let xAxis = (g) => {
     g
-      .attr("transform", `translate(${0},${heightHist})`)
+      .attr("transform", `translate(${0},${heightHist + 8})`)
       .call(
         d3.axisBottom(xScale)
           .tickSizeOuter(0)
-          .tickFormat(d3.format(".0f"))
+          .tickFormat(scaleFormatter ? scaleFormatter : d => d)
       )
   };
   svgHist.append("g").call(xAxis);
 
   //initiate valueList with all unique values (all checked)
-  let valueList = uniqueValues; //used to update ratings
+  let valueList = uniqueKeys; //used to update ratings
+  console.log("valueList at the beginning", valueList)
 
   //save colors for each bin, set clicked all to true
-  bins.forEach((d, i) => {
-    d.color = colorList ? colorList[i] : white
+  groupCounts.forEach((d, i) => {
+    d.color = colorList ? colorList[i] : "grey"
     d.clicked = true
   })
 
@@ -69,14 +96,15 @@ export function clickableHistogramSlider(dataAll, container, label, attribute, s
   const greyedoutColor = "grey";
   const selectedColor = "black";
 
-  svgHist
+  var timeout = null;
+  let histRects = svgHist
     .selectAll("rect")
-    .data(bins)
+    .data(groupCounts)
     .join("rect")
-    .attr("x", d => xScale(d.x0)) // position of each bar on xAxis, width adjustment (bar padding)
-    .attr("y", d => yScale(d.length))
+    .attr("x", d => xScale(d.key))
+    .attr("y", d => yScale(d.count))
     .attr("width", xScale.bandwidth())
-    .attr("height", d => yScale(0) - yScale(d.length))
+    .attr("height", d => yScale(0) - yScale(d.count) + 5)
     .style("border-radius", "1px")
     .style("outline", "solid")
     .style("outline-width", "thin")
@@ -84,7 +112,9 @@ export function clickableHistogramSlider(dataAll, container, label, attribute, s
     .attr("fill", d => d.color)
     .attr("cursor", "pointer")
     .on('mouseover', function (event, d) {
-      d3.select(this).style("outline-width", "medium")
+      d3.select(this)
+        .style("outline-width", "medium")
+        .style('outline-color', selectedColor)
     })
     .on('mouseout', function (event, d) {
       if (!d.clicked) {
@@ -99,28 +129,45 @@ export function clickableHistogramSlider(dataAll, container, label, attribute, s
       }
     })
     .on('click', function (event, d) {
-      d.clicked = !d.clicked
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        d.clicked = !d.clicked
 
-      if (d.clicked) {
-        d3.select(this)
-          .attr("fill", d => d.color)
-          .style('outline-color', selectedColor);
+        if (d.clicked) {
+          d3.select(this)
+            .attr("fill", d => {
+              return d.color
+            })
+            .style('outline-color', selectedColor);
 
-        valueList.push(d.x0);
+          valueList.push(d.key);
+        } else {
+          d3.select(this)
+            .attr("fill", "white")
+            .style('outline-color', greyedoutColor)
+
+          valueList = valueList.filter(rating => rating != d.key)
+        }
         console.log("valueList", valueList)
-
-        filters[attribute] = d => valueList.includes(d[attribute]);
+        filters[attribute] = d => valueList.includes(d[attribute] === null ? "N/A" : d[attribute]);
         updateData()
-      } else {
-        d3.select(this)
-          .attr("fill", "white")
-          .style('outline-color', greyedoutColor)
+      }, 200);
+    }).on('dblclick', function (event, d) {
+      clearTimeout(timeout);
+      console.log("double clicked", event, d);
+      // Reset all bars to deselected
+      groupCounts.forEach(item => item.clicked = false);
+      // Set only the double-clicked bar to selected
+      d.clicked = true;
 
-        valueList = valueList.filter(rating => rating != d.x0)
-        console.log("valueList", valueList)
-        filters[attribute] = d => valueList.includes(d[attribute]);
-        updateData();
-      }
+      histRects
+        .attr("fill", d => d.clicked ? d.color : "white")
+        .style('outline-color', d => d.clicked ? selectedColor : greyedoutColor);
+
+      // Update valueList and filter to only include the double-clicked value
+      valueList = [d.key];
+      filters[attribute] = item => item[attribute] === d.key;
+      updateData();
     });
 
 
