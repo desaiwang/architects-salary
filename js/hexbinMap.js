@@ -1,4 +1,5 @@
 
+import { geoAlbersUsaPr } from "./geoAlbersUsaPr.js";
 export async function hexbinMap() {
 
   // Load the data.
@@ -17,20 +18,20 @@ export async function hexbinMap() {
 
 
   // Specify the map’s dimensions and projection.
-  const width = 928;
-  const height = 581;
-  const projection = d3.geoAlbersUsa().scale(4 / 3 * width).translate([width / 2, height / 2]);
+  const widthMap = 928;
+  const heightMap = 581;
+  const projection = geoAlbersUsaPr().scale(4 / 3 * widthMap).translate([widthMap / 2, heightMap / 2]);
 
   // Create the container SVG.
-  const svg = d3.create("svg")
-    .attr("viewBox", [0, 0, width, height])
-    .attr("width", width)
-    .attr("height", height)
+  const svgMap = d3.create("svg")
+    .attr("viewBox", [0, 0, widthMap, heightMap])
+    .attr("width", widthMap)
+    .attr("height", heightMap)
     .attr("style", "max-width: 100%; height: auto;");
 
   // Create the bins.
   const hexbin = d3.hexbin()
-    .extent([[0, 0], [width, height]])
+    .extent([[0, 0], [widthMap, heightMap]])
     .radius(10)
     .x(d => d.xy[0])
     .y(d => d.xy[1]);
@@ -43,7 +44,7 @@ export async function hexbinMap() {
   const radius = d3.scaleSqrt([0, d3.max(bins, d => d.length)], [0, hexbin.radius() * Math.SQRT2]);
 
   // Append the color legend.
-  // svg.append("g")
+  // svgMap.append("g")
   //   .attr("transform", "translate(580,20)")
   //   .append(() => legend({
   //     color,
@@ -54,7 +55,7 @@ export async function hexbinMap() {
   //   }));
 
   // Append the state mesh.
-  svg.append("path")
+  svgMap.append("path")
     .datum(stateMesh)
     .attr("fill", "none")
     .attr("stroke", "#777")
@@ -63,7 +64,7 @@ export async function hexbinMap() {
     .attr("d", d3.geoPath(projection));
 
   // Append the hexagons.
-  svg.append("g")
+  svgMap.append("g")
     .selectAll("path")
     .data(bins)
     .join("path")
@@ -74,5 +75,5 @@ export async function hexbinMap() {
     .append("title")
     .text(d => `${d.length.toLocaleString()} stores\n${d.date.getFullYear()} median opening`);
 
-  return svg.node();
+  return svgMap.node();
 }
