@@ -60,6 +60,7 @@
     import { clickableHistogramSlider } from './js/clickableHistogramSlider.js';
     import { hexbinMap } from './js/hexbinMap.js';
 
+    //set up for individuals visualization
     const vizIndividualsContainer = d3.select("div#canvasContainer");
     const width = Number(vizIndividualsContainer.style("width").replace("px", ""));
     const height = Number(vizIndividualsContainer.style("height").replace("px", ""));
@@ -114,6 +115,9 @@
       .style("pointer-events", "none");
 
 
+    //set up for map
+
+
     const loadIndividuals = async function () {
       let data = await d3.csv("data/241026_archinect_salaries_fulltime.csv", d3.autoType);
       //console.log(data);
@@ -134,10 +138,6 @@
       //console.log("salaryExtent", salaryExtent)
       const salaryScale = d3.scaleLinear().domain(salaryExtent).range([2.5, 20])
 
-      data.forEach(d => {
-        d['Date'] = d3.isoParse(d['Date']);
-        d['Year'] = d['Date'].getFullYear();
-      });
 
       //filter: this is used to for updates
 
