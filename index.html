@@ -30,15 +30,7 @@
     <div>
 
       <div id="container" style="display: flex; justify-content: center;">
-        <div id="canvasContainer" style="position:relative; width:900px; height:1500px"></div>
-        <!-- <svg id="vizIndividualsContainer" width="1200" height="1500"></svg> -->
-        <div id="tooltip" class="tooltip" style="
-        visibility:hidden;
-        position:absolute; 
-        background:white; 
-        padding:10px; 
-        border:1px solid black; 
-        pointer-events:none;">
+        <div id="canvasContainer" style="position:relative; width:900px; height:1500px">
         </div>
         <div style="display: flex; flex-direction: column;">
           <div id="controlfilterTime"></div>
@@ -47,25 +39,14 @@
           <div id="controlfilterFirmType"></div>
           <div id="controlfilterFirmSize"></div>
           <div id="controlfilterAge"></div>
-
-
         </div>
-
       </div>
-
     </div>
-
   </div>
 
-
-
   </div>
-
   <div style="margin-bottom:100"></div>
   </div>
-
-
-
 
 
   <script type="module">
@@ -114,11 +95,27 @@
       .attr("y", 0)
       .attr("opacity", 0);
 
-    const loadIndividuals = async function () {
-      let dataAll = await d3.csv("data/241017_archinect_salaries_fulltime.csv", d3.autoType);
-      //console.log(dataAll);
+    // Create tooltip div programmatically using d3
+    const tooltipDiv = vizIndividualsContainer
+      .append("div")
+      .attr("id", "tooltip")
+      .attr("class", "tooltip")
+      .style("justify-content", "end")
+      .style("visibility", "hidden")
+      .style("position", "absolute")
+      .style("background", "white")
+      .style("padding", "10px")
+      .style("border", "1px solid black")
+      .style("pointer-events", "none");
 
-      const satisfactionExtent = d3.extent(dataAll, d => d['Job Satisfaction'])
+    const loadIndividuals = async function () {
+      let data = await d3.csv("data/241017_archinect_salaries_fulltime.csv", d3.autoType);
+      //console.log(data);
+
+      //for testing purposes can change data to dataAll, and set this data as something else
+      //let data = dataAll
+
+      const satisfactionExtent = d3.extent(data, d => d['Job Satisfaction'])
       //starting color in UI colors: #043565 for blue, #ff8f06 for orange using https://uicolors.app/create
 
       const satisfactionColors = ["#3c5491", "#4465b1", "#4e78c2", "#6290cf", "#a9c9e7", "#ffe3a8", "#ffce70", "#ff8f06", "#f07706", "#c75a07"]
@@ -127,17 +124,14 @@
       //console.log(d3.schemeRdYlGn[10])
       //more colors see: https://d3js.org/d3-scale-chromatic/diverging
 
-      const salaryExtent = d3.extent(dataAll, d => d['Salary'])
+      const salaryExtent = d3.extent(data, d => d['Salary'])
       //console.log("salaryExtent", salaryExtent)
       const salaryScale = d3.scaleLinear().domain(salaryExtent).range([2.5, 20])
 
-      dataAll.forEach(d => {
+      data.forEach(d => {
         d['Date'] = d3.isoParse(d['Date']);
         d['Year'] = d['Date'].getFullYear();
       });
-
-      //create tooltip
-      const tooltipDiv = d3.select("div#tooltip")
 
       //filter: this is used to for updates
 
@@ -154,34 +148,22 @@
         return stillPassed;
       }
 
-      //for testing purposes using data slice
-      let data = dataAll
-      //.slice(0, 2000)
-      const maxD = 10
+      const cxCalc = (i, numPointsPerRow, maxD, xOffset) => Math.floor(i % (numPointsPerRow)) * maxD + xOffset;
+      const cyCalc = (i, numPointsPerRow, maxD, yOffset) => Math.floor(i / (numPointsPerRow)) * maxD + yOffset;
+
       data.forEach((d, i) => {
-        d.cx = Math.floor(i % (vizWidth / maxD)) * maxD + maxD / 2 + margins.left;
-        d.cy = Math.floor(i / (vizWidth / maxD)) * maxD + maxD / 2 + margins.top;
         d.color = satisfactionScale(d['Job Satisfaction'])
         d.passesFilter = true;
       });
 
       //canvas drawing
       const context = vizIndividualsCanvas.node().getContext("2d");
-      context.clearRect(0, 0, width, height);
-      context.globalAlpha = 0.8;
-      data.forEach(d => {
-        context.beginPath();
-        context.arc(d.cx, d.cy, salaryScale(d['Salary']), 0, 2 * Math.PI);
-        context.fillStyle = d.color;
-        context.fill();
-      });
 
-      // interaction code originally from Cornell INFO 3310 course notes, fall 2023
-      // First make a delaunay triangulation
-      const delaunay = d3.Delaunay.from(data, d => d.cx, d => d.cy);
-
-      // We can use a voronoi tesselation to see the structure of the triangulation
-      const voronoi = delaunay.voronoi([0, 0, width, height]);
+      //canvas interaction 
+      //code originally from Cornell INFO 3310 course notes, fall 2023
+      let delaunay;
+      let voronoi;
+      //TODO: uncomment to see voronoi
       // interactiveArea.append("path").attr("stroke", "black").attr("fill", "none")
       //   .attr("d", voronoi.render())
 
@@ -189,7 +171,6 @@
       // simulate mouseOver and mouseOut for each circle
       let currentTarget = -1;
       interactiveArea.on("mousemove", function (event) {
-
         let loc = d3.pointer(event);
         let index;
         if (currentTarget === -1) {
@@ -203,8 +184,6 @@
         // console.log(loc, index);
 
         if (index !== currentTarget) {
-          // Make our "mouseover" function
-          console.log("mouseover");
           currentTarget = index;
           mouseExitedIndividual();
           mouseEnteredIndividual(index);
@@ -248,8 +227,8 @@
         <strong>Location:</strong> ${d['Location']}<br>
         <strong>Survey Date:</strong> ${new Date(d['Date']).toLocaleString('default', { month: 'long', year: 'numeric' })}<br>
     `)
-          .style("left", (d.cx + 10) + "px")
-          .style("top", (d.cy + 10) + "px")
+          .style("left", `${d.cx + 15}px`)
+          .style("top", `${d.cy + 15}px`)
           .style("visibility", "visible");
 
       }
@@ -258,45 +237,11 @@
         tooltipDiv.style("visibility", "hidden");
       }
 
-      function onMouseOverIndividual(element, event, d) {
-        const selectedElement = d3.select(element);
-
-        selectedElement.raise()
-          .transition().duration(200)
-          .attr("opacity", 1)
-          .attr("stroke", "black")
-          .attr("stroke-width", 3)
-          .attr("r", salaryScale(d['Salary']) + 5);
-
-        tooltipDiv.html(`
-        <strong>Salary:</strong> ${d3.format("$,")(d['Salary'])}<br>
-        <strong>Job Satisfaction:</strong> ${d['Job Satisfaction']}/10<br>
-        <strong>Age:</strong> ${d['Age']}<br>
-        <strong>Years of Experience:</strong> ${d['Years of Experience']}<br>
-        <strong>Location:</strong> ${d['Location']}<br>
-        <strong>Survey Date:</strong> ${new Date(d['Date']).toLocaleString('default', { month: 'long', year: 'numeric' })}<br>
-    `)
-          .style("left", (event.pageX + 10) + "px")
-          .style("top", (event.pageY + 10) + "px")
-          .style("visibility", "visible");
-      }
-
-      function onMouseOutIndividual(element) {
-        d3.select(element)
-          .lower()
-          .transition().duration(200)
-          .attr("stroke", "none")
-          .attr("opacity", 0.8)
-          .attr("r", d => salaryScale(d['Salary']));
-
-        tooltipDiv.style("visibility", "hidden");
-      }
-
-      const medianSalaryOverall = d3.median(dataAll, d => d['Salary']);
+      const medianSalaryOverall = d3.median(data, d => d['Salary']);
 
       function updateData() {
         //filter for passing data
-        const passingData = dataAll.filter(pointPassesFilters);
+        const passingData = data.filter(pointPassesFilters);
         const passingDataSize = passingData.length;
         //console.log("passingDataSize", passingDataSize)
 
@@ -304,44 +249,55 @@
         const meanSatisfaction = d3.mean(passingData, d => d['Job Satisfaction']);
 
         d3.select("h2#summaryText")
-          .text(passingDataSize > 0 ? `Showing ${d3.format(",")(passingDataSize)} out of ${d3.format(",")(dataAll.length)} individuals. Median Salary: ${d3.format("$,")(medianSalary)}, Mean Satisfaction: ${d3.format(".2f")(meanSatisfaction)}/10` : "No data selected")
+          .text(passingDataSize > 0 ? `Showing ${d3.format(",")(passingDataSize)} out of ${d3.format(",")(data.length)} individuals. Median Salary: ${d3.format("$,")(medianSalary)}, Mean Satisfaction: ${d3.format(".2f")(meanSatisfaction)}/10` : "No data selected")
 
         //TODO: need more dynamic maxD calculation, right now doesn't change with selections
-        const maxD = Math.ceil(salaryScale(medianSalaryOverall) * 2 + 2);
-        //console.log("calculated maxD", maxD)
-
-        // Add cx and cy properties to each data point based on the index in dataAll
-        data.forEach((d, i) => {
-          d.prevPassesFilter = d.passesFilter
-          d.passesFilter = pointPassesFilters(d);
-        });
+        const maxD = 10
+        //const maxD = Math.ceil(salaryScale(medianSalaryOverall) * 2 + 2);
+        const numPointsPerRow = Math.floor(vizWidth / maxD);
+        const xOffset = maxD / 2 + margins.left;
+        const yOffset = maxD / 2 + margins.top;
 
         let passingAcc = 0;
         let nonpassingAcc = 0;
-        data.forEach(d => {
+        // Add cx and cy properties to each data point based on the index in data
+        data.forEach((d, i) => {
+          //TODO: delete this prev state if not doing animation!
+          d.prevPassesFilter = d.passesFilter
+          d.passesFilter = pointPassesFilters(d);
+
           if (d.passesFilter) {
-            d.cx = Math.floor(passingAcc % (vizWidth / maxD)) * maxD;
-            d.cy = Math.floor(passingAcc / (vizWidth / maxD)) * maxD;
+            d.cx = cxCalc(passingAcc, numPointsPerRow, maxD, xOffset);
+            d.cy = cyCalc(passingAcc, numPointsPerRow, maxD, yOffset);
             passingAcc++;
           } else {
-            d.cx = Math.floor((nonpassingAcc + passingDataSize) % (vizWidth / maxD)) * maxD;
-            d.cy = Math.floor((nonpassingAcc + passingDataSize) / (vizWidth / maxD)) * maxD;
+            d.cx = cxCalc(nonpassingAcc + passingDataSize, numPointsPerRow, maxD, xOffset);
+            d.cy = cyCalc(nonpassingAcc + passingDataSize, numPointsPerRow, maxD, yOffset);
             nonpassingAcc++;
           }
-        }
-        )
+        });
 
-        // Render non-passing data first (these will appear at the bottom layer)
-        circles
-          //.transition().duration(500)
-          .attr("cx", d => d.cx)
-          .attr("cy", d => d.cy)  // Use precomputed cx
-          .attr("fill", d => d.passesFilter ? d.color : "#D3D3D3")  // Grey color
-          .style("pointer-events", d => d.passesFilter ? "auto" : "none")  // Disable hover interactions if doesn't pass
-          ;
+
+        // Re-render the canvas
+        context.clearRect(0, 0, width, height);
+        context.globalAlpha = 0.8;
+        data.forEach(d => {
+          context.beginPath();
+          context.arc(d.cx, d.cy, salaryScale(d['Salary']), 0, 2 * Math.PI);
+          context.fillStyle = d.passesFilter ? d.color : "lightgray";
+          context.fill();
+        });
+
+        // update delaunay
+        delaunay = d3.Delaunay.from(data, d => d.cx, d => d.cy);
+        // update voronoi
+        voronoi = delaunay.voronoi([0, 0, width, height]);
 
       }
 
+      //sets up contols
+      let controlWidth = 300;
+      let controlHeight = 75;
 
       let controlSalary = d3.select("#controlfilterSalary");
       function getButtonDataSalary(attribute, values) {
@@ -351,28 +307,27 @@
           { label: "top 20 incomes", filterFunc: d => d[attribute] >= values[19] }
         ];
       }
-      curveSlider(dataAll, controlSalary, "Salary", "Salary", 400, 100, updateData, filters, { maxLimit: 200000, scaleFormatter: d => d === 0 ? "$0" : d3.format("$.2s")(d), getButtonData: getButtonDataSalary });
+
+      curveSlider(data, controlSalary, "Salary", "Salary", controlWidth, 100, updateData, filters, { maxLimit: 200000, scaleFormatter: d => d === 0 ? "$0" : d3.format("$.2s")(d), getButtonData: getButtonDataSalary });
 
       let controlTime = d3.select("#controlfilterTime");
-      //dataAll.map(d => d['Year'] = d3.timeYear(d['Date']));
-      // curveSlider(dataAll, controlTime, "Time", "Date", 400, 100, updateData, filters, { scale: timeScale, scaleFormatter: d3.timeFormat("%b %Y") });
-      clickableHistogramSlider(dataAll, controlTime, "Survey Year", "Year", 400, 100, updateData, filters, { yBetweenLabelAndHist: 0 });
+      clickableHistogramSlider(data, controlTime, "Survey Year", "Year", controlWidth, 100, updateData, filters, { yBetweenLabelAndHist: 0 });
 
       let controlSatisfaction = d3.select("#controlfilterSatisfaction");
-      //curveSlider(dataAll, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", 400, 100, updateData, filters, { maxLimit: 11, scaleFormatter: d3.format(""), numBins: 10 });
-      clickableHistogramSlider(dataAll, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", 400, 100, updateData, filters, { colorList: satisfactionColors, yBetweenLabelAndHist: 0 });
+      // curveSlider(data, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", controlWidth, controlHeight + 30, updateData, filters, { maxLimit: 11, scaleFormatter: d3.format(""), numBins: 10 });
+      clickableHistogramSlider(data, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", 300, 100, updateData, filters, { colorList: satisfactionColors, yBetweenLabelAndHist: 0 });
 
       let controlFirmType = d3.select("#controlfilterFirmType");
-      clickableHistogramSlider(dataAll, controlFirmType, "Firm Type", "Firm Type", 400, 70, updateData, filters, { sortOrder: ["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"] });
+      clickableHistogramSlider(data, controlFirmType, "Firm Type", "Firm Type", controlWidth, controlHeight, updateData, filters, { sortOrder: ["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"] });
 
       let controlFirmSize = d3.select("#controlfilterFirmSize");
-      clickableHistogramSlider(dataAll, controlFirmSize, "Firm Size", "Firm Size", 400, 70, updateData, filters, { sortOrder: [1, "2-5", "6-10", "11-15", "16-30", "31-50", "51-100", "101-200", "201-500", "501+"] });
+      clickableHistogramSlider(data, controlFirmSize, "Firm Size", "Firm Size", controlWidth, controlHeight, updateData, filters, { sortOrder: [1, "2-5", "6-10", "11-15", "16-30", "31-50", "51-100", "101-200", "201-500", "501+"] });
 
 
       let controlAge = d3.select("#controlfilterAge");
-      clickableHistogramSlider(dataAll, controlAge, "Age", "Age", 400, 100, updateData, filters, { sortOrder: ["18-20", "21-25", "26-30", "31-35", "36-40", "41-45", "46-50", "51-55", "56-60", "61-65", "66-70", "71-103"] });
+      clickableHistogramSlider(data, controlAge, "Age", "Age", controlWidth, controlHeight, updateData, filters, { sortOrder: ["18-20", "21-25", "26-30", "31-35", "36-40", "41-45", "46-50", "51-55", "56-60", "61-65", "66-70", "71-103"] });
       //call update data to draw the initial data
-      //updateData();
+      updateData();
 
     }
 
