@@ -1025,7 +1025,7 @@ Job Satisfaction,Salary,Location,Job Title,Firm Type,Firm Size,Health Insurance,
 9,135000,"San Francisco, CA, US",Senior Designer,,6-10,,,,,,8-10,31-35,Female,No,,,,2023,37.7792588,-122.4193286
 6,87000,"New York, NY, US",Intermediate Architect,,31-50,Yes,No Overtime,,"2,000",,6-7,31-35,Female,Licensed,,,,2023,40.7127281,-74.0060152
 9,100000,"New York, US",Project Architect,Boutique,11-15,Yes,Paid Overtime,20.0,"5,000",Full-time,8-10,31-35,Male,Licensed,,,,2023,40.7127281,-74.0060152
-7,70000,"Vermont, US",Designer,,6-10,,,,,,3-5,31-35,Male,No,,,,2023,,
+7,70000,"Vermont, US",Designer,,6-10,,,,,,3-5,31-35,Male,No,,,,2023,44.0,-72.699997
 6,63000,"New York, NY, US",Landscape Architect,,51-100,,,,,,3-5,26-30,Male,No,,,,2023,40.7127281,-74.0060152
 7,68000,"Miami, FL, US",Designer,,6-10,,,,,,3,26-30,Female,No,,,,2023,25.7741728,-80.19362
 8,78000,"Seattle, WA, US",Intermediate Designer,Boutique,11-15,Yes,No Overtime,15.0,"2,000",Full-time,6-7,26-30,Male,No,"California Polytechnic State University, San Luis Obispo",,,2023,47.6038321,-122.330062
@@ -2642,7 +2642,7 @@ Job Satisfaction,Salary,Location,Job Title,Firm Type,Firm Size,Health Insurance,
 7,85000,"Denver, CO, US",Project Architect,Boutique,6-10,Yes,Unpaid Overtime,20.0,,Full-time,11-15,36-40,Female,Licensed,Georgia Institute of Technology (Georgia Tech),Southern California Institute of Architecture (SCI-Arc),,2022,39.7392364,-104.984862
 9,100000,"Denver, CO, US",Senior Architect,Boutique,6-10,Yes,Unpaid Overtime,21.0,"15,000",Full-time,16-20,36-40,Female,Licensed,University of Colorado at Boulder,University of Colorado at Denver,,2022,39.7392364,-104.984862
 10,90000,"Nashville, TN, US",Junior Architect,Boutique,11-15,Yes,,37.0,,Full-time,11-15,36-40,Male,Licensed,,,,2022,36.1622767,-86.7742984
-9,75000,"Santa Rosa South, CA, US",Job Captain,Other,16-30,Yes,Unpaid Overtime,20.0,0,Full-time,6-7,26-30,Male,No,,,,2022,,
+9,75000,"Santa Rosa South, CA, US",Job Captain,Other,16-30,Yes,Unpaid Overtime,20.0,0,Full-time,6-7,26-30,Male,No,,,,2022,38.44466,-122.720306
 10,65000,"Chicago, IL, US",Associate,,1,,,608.0,,,1,21-25,Male,No,,,,2022,41.8755616,-87.6244212
 7,85000,"Omaha, NE, US",Project Architect,Corporate,101-200,Yes,Unpaid Overtime,15.0,,Full-time,11-15,31-35,Male,Licensed,Thomas Jefferson University,,,2022,41.2587459,-95.9383758
 7,55000,"New York, NY, US",Associate,,11-15,,,,,,2,21-25,Male,No,,,,2022,40.7127281,-74.0060152
@@ -2762,7 +2762,7 @@ Job Satisfaction,Salary,Location,Job Title,Firm Type,Firm Size,Health Insurance,
 10,60000,"Atlanta, GA, US",Intern,,16-30,,,,,,1,21-25,Male,No,,,,2022,33.7489924,-84.3902644
 8,47840,"Grand Forks, ND, US",Junior Designer,Corporate,101-200,Yes,Paid Overtime,15.0,"2,188",Full-time,3,26-30,Male,No,North Dakota State University,North Dakota State University,,2022,47.9252042,-97.0306741
 5,66800,"Portland, OR, US",Intermediate Designer,Other,31-50,Yes,No Overtime,16.0,"2,600",Full-time,6-7,31-35,Female,No,Boston Architectural College (BAC),,,2022,45.5202471,-122.674194
-8,84000,"Lexington, MA, US",Project Architect,Boutique,6-10,,Unpaid Overtime,10.0,"3,000",Full-time,8-10,31-35,Male,Licensed,University of Maryland,Washington University in St. Louis,,2022,,
+8,84000,"Lexington, MA, US",Project Architect,Boutique,6-10,,Unpaid Overtime,10.0,"3,000",Full-time,8-10,31-35,Male,Licensed,University of Maryland,Washington University in St. Louis,,2022,42.447357,-71.234619
 7,88000,"Cambridge, MA, US",Associate,Other,31-50,Yes,Unpaid Overtime,21.0,"9,200",Full-time,6-7,26-30,Female,Licensed,Roger Williams University,Roger Williams University,,2022,42.3656347,-71.1040018
 6,92000,"Great Barrington, MA, US",Project Architect,Other,2-5,Yes,No Overtime,20.0,"5,000",Full-time,6-7,31-35,Male,Licensed,Roger Williams University,Roger Williams University,,2022,42.1939364,-73.362773
 7,78000,"Tampa, FL, US",Project Architect,Corporate,501+,Yes,No Overtime,14.0,"3,000",Full-time,6-7,36-40,Male,Licensed,University of Miami,University of Miami,,2022,27.9477595,-82.458444
@@ -5931,7 +5931,7 @@ Job Satisfaction,Salary,Location,Job Title,Firm Type,Firm Size,Health Insurance,
 7,47840,"Austin, TX, US",Designer,Boutique,2-5,,No Overtime,10.0,,Full-time,3,21-25,Female,No,The University of Texas at Austin,,,2017,30.2711286,-97.7436995
 7,102000,"Boston, MA, US",Project Architect,Corporate,101-200,Yes,Paid Overtime,15.0,,Full-time,8-10,26-30,Male,Licensed,Boston Architectural College (BAC),,,2017,42.3554334,-71.060511
 7,150000,"New Orleans, LA, US",Principal,Corporate,31-50,Yes,Unpaid Overtime,20.0,"10,000",Full-time,> 40,66-70,Male,Licensed,Tulane University,Tulane University,,2017,29.9759983,-90.0782127
-4,20000,"Georgia, US",Business Manager,,201-500,,,,"7,000",,16-20,41-45,Male,No,,,,2017,,
+4,20000,"Georgia, US",Business Manager,,201-500,,,,"7,000",,16-20,41-45,Male,No,,,,2017,33.247875,-83.441162
 10,45000,"New York, NY, US",Project Architect,,101-200,Yes,,,,,2,21-25,Female,No,,,,2017,40.7127281,-74.0060152
 3,70000,"Oakland, CA, US",Technical Architect,Corporate,501+,Yes,Paid Overtime,20.0,"6,000",Full-time,6-7,31-35,Male,No,,,,2017,37.8044557,-122.271356
 10,67000,"New York, NY, US",Intermediate Architect,Boutique,11-15,Yes,,10.0,"1,500",Full-time,3-5,31-35,Female,No,,,,2017,40.7127281,-74.0060152
@@ -7062,7 +7062,7 @@ Job Satisfaction,Salary,Location,Job Title,Firm Type,Firm Size,Health Insurance,
 4,48000,"Boulder, CO, US",Designer,Boutique,16-30,Yes,Unpaid Overtime,10.0,"1,800",Full-time,3-5,31-35,Female,No,University of Colorado at Boulder,University of Colorado at Denver,,2016,40.0149856,-105.270545
 6,72000,"Baltimore, MD, US",Project Architect,,2-5,,Unpaid Overtime,15.0,"2,000",Full-time,11-15,36-40,Female,Licensed,,,,2016,39.2908816,-76.610759
 7,57000,"San Francisco, CA, US",Senior Designer,,2-5,Yes,No Overtime,21.0,"2,000",Full-time,3,26-30,Male,No,,,,2016,37.7792588,-122.4193286
-7,36000,"Pennsylvania, US",Project Architect,Other,31-50,,No Overtime,10.0,,Full-time,11-15,46-50,Male,Licensed,University of Washington,University of Washington,,2016,,
+7,36000,"Pennsylvania, US",Project Architect,Other,31-50,,No Overtime,10.0,,Full-time,11-15,46-50,Male,Licensed,University of Washington,University of Washington,,2016,41.203323,-77.194527
 7,75000,"New York, NY, US",Project Manager,Individual,6-10,,No Overtime,10.0,"5,000",Full-time,11-15,36-40,Male,Licensed,The Cooper Union,,,2016,40.7127281,-74.0060152
 9,55000,"Bentonville, AR, US",Intermediate Architect,Boutique,2-5,Yes,No Overtime,12.0,"5,000",Full-time,3-5,26-30,Male,No,University of Arkansas,,,2016,36.3728538,-94.2088172
 6,48000,"San Antonio, TX, US",Junior Designer,,201-500,,,,,,< 1,21-25,Male,No,,,,2016,29.4246002,-98.4951405
@@ -8021,7 +8021,7 @@ Job Satisfaction,Salary,Location,Job Title,Firm Type,Firm Size,Health Insurance,
 5,96000,"New York, NY, US",Project Manager,Boutique,6-10,Yes,Unpaid Overtime,15.0,"5,000",Full-time,11-15,36-40,Male,No,,,,2015,40.7127281,-74.0060152
 8,145000,"Sunnyvale, CA, US",Office Manager,Other,101-200,Yes,Unpaid Overtime,10.0,,Full-time,31-40,61-65,Female,Licensed,"California Polytechnic State University, San Luis Obispo",,,2015,37.3688301,-122.036349
 4,98000,"New York, NY, US",Project Architect,Corporate,501+,Yes,Unpaid Overtime,23.0,"2,500",Full-time,11-15,31-35,Male,No,Cornell University,,,2015,40.7127281,-74.0060152
-7,130000,"Georgia, US",Senior Architect,,16-30,,,,,,26-30,51-55,Male,No,,,,2015,,
+7,130000,"Georgia, US",Senior Architect,,16-30,,,,,,26-30,51-55,Male,No,,,,2015,33.247875,-83.441162
 5,62500,"Iowa City, IA, US",Junior Architect,,101-200,Yes,Unpaid Overtime,12.0,,Full-time,3-5,31-35,Male,Licensed,,,,2015,41.6612561,-91.5299106
 5,44928,"San Diego, CA, US",Junior Designer,Corporate,16-30,Yes,Unpaid Overtime,10.0,,Full-time,2,26-30,Male,No,NewSchool of Architecture + Design,,,2015,32.7174202,-117.162772
 8,65000,"Dallas, TX, US",Project Manager,Other,31-50,Yes,Unpaid Overtime,15.0,"2,000",Full-time,6-7,31-35,Male,No,University of Louisiana at Lafayette,,,2015,32.7762719,-96.7968559
@@ -8662,7 +8662,7 @@ Job Satisfaction,Salary,Location,Job Title,Firm Type,Firm Size,Health Insurance,
 8,80000,"Cleveland, OH, US",Project Architect,,11-15,Yes,Unpaid Overtime,21.0,"5,000",Full-time,11-15,36-40,Male,Licensed,Kent State University,Kent State University,,2015,41.4996574,-81.6936772
 5,40000,"New York, NY, US",Intern,,31-50,Yes,Unpaid Overtime,,,Full-time,< 1,21-25,Male,No,,,,2015,40.7127281,-74.0060152
 4,82000,"Philadelphia, PA, US",Project Manager,Other,31-50,Yes,,21.0,,Full-time,16-20,41-45,Male,Licensed,The Pennsylvania State University (Penn State),University of Pennsylvania,,2015,39.9527237,-75.1635262
-9,38000,"Georgia, US",Designer,,16-30,Yes,,,,,6-7,36-40,Female,No,,,,2015,,
+9,38000,"Georgia, US",Designer,,16-30,Yes,,,,,6-7,36-40,Female,No,,,,2015,33.247875,-83.441162
 7,45000,"New York, NY, US",Junior Designer,,2-5,,Paid Overtime,,,Full-time,2,21-25,Male,No,New York Institute of Technology (NYIT),,,2015,40.7127281,-74.0060152
 8,24960,"Boston, MA, US",Intern,Individual,1,,,,,Full-time,< 1,21-25,Male,No,University of Kentucky,,,2015,42.3554334,-71.060511
 6,47000,"Richmond, VA, US",Designer,Corporate,501+,Yes,No Overtime,15.0,"1,000",Full-time,3,26-30,Male,No,Hampton University,Hampton University,,2015,37.5385087,-77.43428
@@ -10835,7 +10835,7 @@ Job Satisfaction,Salary,Location,Job Title,Firm Type,Firm Size,Health Insurance,
 8,48000,"Dallas, TX, US",Intern,Corporate,51-100,Yes,Paid Overtime,14.0,"4,800",Full-time,3-5,26-30,Male,No,,,,2013,32.7762719,-96.7968559
 10,52000,"New York, NY, US",Designer,Starchitect,101-200,Yes,Unpaid Overtime,,,Full-time,3-5,26-30,Male,No,,Yale University,,2013,40.7127281,-74.0060152
 7,45000,"Washington, DC, US",Intern,Individual,6-10,Yes,Unpaid Overtime,22.0,,Full-time,1,26-30,Male,No,Cornell University,Harvard University,,2013,38.8950368,-77.0365427
-8,46800,"Georgia, US",Visualization Artist,Corporate,501+,Yes,Paid Overtime,21.0,,Full-time,1,31-35,Male,No,Southern Polytechnic State University,,,2013,,
+8,46800,"Georgia, US",Visualization Artist,Corporate,501+,Yes,Paid Overtime,21.0,,Full-time,1,31-35,Male,No,Southern Polytechnic State University,,,2013,33.247875,-83.441162
 4,47000,"Washington, DC, US",Junior Architect,,501+,Yes,,,,,3,26-30,Female,No,,,,2013,38.8950368,-77.0365427
 8,95000,"New York, NY, US",Associate,Individual,2-5,Yes,No Overtime,14.0,,Full-time,3-5,36-40,Male,No,Vassar College,City College of New York (CCNY),,2013,40.7127281,-74.0060152
 8,80000,"Los Angeles, CA, US",Project Architect,,501+,Yes,,,"3,000",,11-15,36-40,Female,Licensed,,,,2013,34.0536909,-118.242766
@@ -11416,7 +11416,7 @@ Job Satisfaction,Salary,Location,Job Title,Firm Type,Firm Size,Health Insurance,
 7,71000,"San Antonio, TX, US",Associate,Boutique,16-30,Yes,No Overtime,15.0,"10,000",Full-time,11-15,36-40,Female,Licensed,Texas Tech University,Texas Tech University,,2013,29.4246002,-98.4951405
 6,47000,"Boston, MA, US",Designer,Individual,31-50,Yes,No Overtime,14.0,,Full-time,8-10,36-40,Male,No,Boston Architectural College (BAC),,,2013,42.3554334,-71.060511
 8,70000,"Atlanta, GA, US",Associate,Corporate,51-100,Yes,Unpaid Overtime,15.0,,Full-time,8-10,31-35,Male,No,Auburn University,,,2013,33.7489924,-84.3902644
-10,100000,"USAR Center, NC, US",Senior Architect,Corporate,16-30,Yes,Paid Overtime,,50,Full-time,16-20,41-45,Female,Licensed,,,,2013,,
+10,100000,"USAR Center, NC, US",Senior Architect,Corporate,16-30,Yes,Paid Overtime,,50,Full-time,16-20,41-45,Female,Licensed,,,,2013,35.6318274,-77.3802433
 7,50000,"New York, NY, US",BIM Specialist,Corporate,501+,Yes,Unpaid Overtime,25.0,,,6-7,26-30,Male,No,Pratt Institute,Pratt Institute,,2013,40.7127281,-74.0060152
 10,45000,"Houston, TX, US",Intern,Boutique,2-5,Yes,No Overtime,10.0,,Full-time,3-5,26-30,Male,No,The University of Sydney,Georgia Institute of Technology,,2013,29.7589382,-95.3676974
 4,43000,"New York, NY, US",Designer,Starchitect,2-5,,No Overtime,,,Full-time,1,26-30,Male,No,Florida International University,Southern California Institute of Architecture (SCI-Arc),,2013,40.7127281,-74.0060152
@@ -11586,7 +11586,7 @@ Job Satisfaction,Salary,Location,Job Title,Firm Type,Firm Size,Health Insurance,
 8,53000,"New York, NY, US",Interior Architect,Corporate,31-50,Yes,No Overtime,15.0,"1,200",Full-time,6-7,26-30,Female,No,,,,2013,40.7127281,-74.0060152
 7,64000,"Chicago, IL, US",Project Architect,Corporate,201-500,Yes,Unpaid Overtime,15.0,"3,000",Full-time,11-15,31-35,Male,Licensed,,,,2013,41.8755616,-87.6244212
 8,45000,"New Jersey, US",Junior Designer,Corporate,31-50,Yes,Paid Overtime,14.0,"2,000",Full-time,6-7,26-30,Male,Licensed,,,,2013,40.0757384,-74.4041622
-8,58000,"Georgia, US",Project Manager,Other,6-10,Yes,No Overtime,23.0,700,Full-time,6-7,36-40,Male,No,Valdosta State University,Florida A&M University,,2013,,
+8,58000,"Georgia, US",Project Manager,Other,6-10,Yes,No Overtime,23.0,700,Full-time,6-7,36-40,Male,No,Valdosta State University,Florida A&M University,,2013,33.247875,-83.441162
 10,125000,"Los Angeles, CA, US",Interior Architect,Boutique,11-15,Yes,,,"16,000",Full-time,16-20,41-45,Male,No,,,,2013,34.0536909,-118.242766
 6,68000,"Detroit, MI, US",Technical Architect,Other,51-100,Yes,Unpaid Overtime,15.0,,Full-time,3,31-35,Male,No,,University of Michigan,,2013,42.3315509,-83.0466403
 7,75000,"San Francisco, CA, US",Project Architect,Corporate,31-50,,Paid Overtime,10.0,,Full-time,6-7,26-30,Male,Licensed,Southern California Institute of Architecture (SCI-Arc),University of Pennsylvania,,2013,37.7792588,-122.4193286
@@ -11787,7 +11787,7 @@ Job Satisfaction,Salary,Location,Job Title,Firm Type,Firm Size,Health Insurance,
 9,62400,"New York, NY, US",Technical Architect,Corporate,51-100,Yes,No Overtime,15.0,"5,000",Full-time,< 1,31-35,Female,No,Rensselaer Polytechnic Institute,Rensselaer Polytechnic Institute,,2013,40.7127281,-74.0060152
 7,55000,"Cambridge, MA, US",Interior Designer,,51-100,Yes,Unpaid Overtime,18.0,,Full-time,11-15,31-35,Female,No,,,,2013,42.3656347,-71.1040018
 3,40000,"Denver, CO, US",Principal,Individual,1,,No Overtime,10.0,,Full-time,> 40,61-65,Male,Licensed,University of Virginia,University of Virginia,,2013,39.7392364,-104.984862
-7,68000,"Concord, MA, US",Project Manager,Boutique,16-30,Yes,Unpaid Overtime,15.0,"2,500",Full-time,11-15,46-50,Male,No,Boston Architectural College (BAC),,,2013,,
+7,68000,"Concord, MA, US",Project Manager,Boutique,16-30,Yes,Unpaid Overtime,15.0,"2,500",Full-time,11-15,46-50,Male,No,Boston Architectural College (BAC),,,2013,42.461777,-71.364235
 7,25000,"Minneapolis, MN, US",CAD Manager,Boutique,2-5,,Unpaid Overtime,10.0,,Full-time,3,36-40,Male,No,,,,2013,44.9772995,-93.2654692
 5,50000,"New Haven, CT, US",Designer,Corporate,101-200,Yes,Paid Overtime,10.0,,Full-time,1,21-25,Female,No,University of Michigan,The Ohio State University,,2013,41.3082138,-72.9250518
 9,84000,"Baltimore, MD, US",Construction Administrator,Corporate,501+,Yes,Unpaid Overtime,10.0,"5,000",Full-time,11-15,36-40,Male,No,The University of Kansas,Northwestern University,,2013,39.2908816,-76.610759
@@ -12705,7 +12705,7 @@ Job Satisfaction,Salary,Location,Job Title,Firm Type,Firm Size,Health Insurance,
 8,36000,"New Jersey, US",Junior Designer,,6-10,Yes,,10.0,,Full-time,1,21-25,Female,No,,,,2013,40.0757384,-74.4041622
 7,42000,"Dallas, TX, US",Junior Designer,Corporate,501+,Yes,Paid Overtime,17.0,,Full-time,2,26-30,Female,No,Texas Tech University,Texas Tech University,,2013,32.7762719,-96.7968559
 9,30000,"Brooklyn, NY, US",Designer,Boutique,2-5,,,,,Full-time,6-7,26-30,Male,No,,,,2013,40.6526006,-73.9497211
-7,40000,"Concord, MA, US",Intern,,31-50,,,,,,3-5,26-30,Female,No,,,,2013,,
+7,40000,"Concord, MA, US",Intern,,31-50,,,,,,3-5,26-30,Female,No,,,,2013,42.461777,-71.364235
 8,68000,"Fresno, CA, US",Project Architect,Boutique,2-5,Yes,No Overtime,14.0,"2,000",Full-time,8-10,31-35,Male,Licensed,,,,2013,36.7394421,-119.78483
 5,94000,"Alaska, US",Project Manager,Other,101-200,Yes,No Overtime,30.0,,Full-time,11-15,31-35,Female,Licensed,,,,2013,64.4459613,-149.680909
 9,140000,"Tacoma, WA, US",Business Manager,Boutique,2-5,Yes,Unpaid Overtime,10.0,"18,000",Full-time,31-40,56-60,Male,Licensed,University of Illinois at Urbana-Champaign,University of Illinois at Urbana-Champaign,,2013,47.2455013,-122.438329
