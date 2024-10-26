@@ -87,7 +87,7 @@
 
     const loadIndividuals = async function () {
       let dataAll = await d3.csv("data/241017_archinect_salaries_fulltime.csv", d3.autoType);
-      console.log(dataAll);
+      //console.log(dataAll);
 
       const satisfactionExtent = d3.extent(dataAll, d => d['Job Satisfaction'])
       //starting color in UI colors: #043565 for blue, #ff8f06 for orange using https://uicolors.app/create
@@ -99,7 +99,7 @@
       //more colors see: https://d3js.org/d3-scale-chromatic/diverging
 
       const salaryExtent = d3.extent(dataAll, d => d['Salary'])
-      console.log("salaryExtent", salaryExtent)
+      //console.log("salaryExtent", salaryExtent)
       const salaryScale = d3.scaleLinear().domain(salaryExtent).range([2.5, 20])
 
       dataAll.forEach(d => {
@@ -201,7 +201,7 @@
         //filter for passing data
         const passingData = dataAll.filter(pointPassesFilters);
         const passingDataSize = passingData.length;
-        console.log("passingDataSize", passingDataSize)
+        //console.log("passingDataSize", passingDataSize)
 
         const medianSalary = d3.median(passingData, d => d['Salary']);
         const meanSatisfaction = d3.mean(passingData, d => d['Job Satisfaction']);
@@ -211,7 +211,7 @@
 
         //TODO: need more dynamic maxD calculation, right now doesn't change with selections
         const maxD = Math.ceil(salaryScale(medianSalaryOverall) * 2 + 2);
-        console.log("calculated maxD", maxD)
+        //console.log("calculated maxD", maxD)
 
         // Add cx and cy properties to each data point based on the index in dataAll
         data.forEach((d, i) => {
