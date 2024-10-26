@@ -122,7 +122,8 @@
     const projection = geoAlbersUsaPr().scale(4 / 3 * widthMap).translate([widthMap / 2, heightMap / 2]);
 
     // Create the container SVG for map
-    const svgMap = d3.create("svg")
+    const svgMap = d3.select("div#hexbinMap")
+      .append("svg")
       .attr("viewBox", [0, 0, widthMap, heightMap])
       .attr("width", widthMap)
       .attr("height", heightMap)
@@ -148,6 +149,9 @@
       const salaryScale = d3.scaleLinear().domain(salaryExtent).range([2.5, 20])
 
       //map related scales and set up
+      const us = await d3.json("../data/us-counties-10m.json");
+      const stateMesh = topojson.mesh(us, us.objects.states);
+
       const hexbin = d3.hexbin()
         .extent([[0, 0], [widthMap, heightMap]])
         .radius(10)
@@ -158,17 +162,29 @@
             console.log("error: d is", d)
           }
         })
+        //.x(d => d.xy[0])
         .y(d => d.xy[1]);
 
       console.log("data transformation line 156", data.map(d => ({ xy: projection([d.Longitude, d.Latitude]), Salary: d.Salary })))
-      const bins = hexbin(data.map(d => ({ long: d.Longitude, lat: d.Latitude, xy: projection([d.Longitude, d.Latitude]), Salary: d.Salary })))
+      const bins = hexbin(
+        data.filter(d => d.Location !== 'Barrigada, GU, US').map(d => ({ long: d.Longitude, lat: d.Latitude, xy: projection([d.Longitude, d.Latitude]), Salary: d.Salary }))
+      )
         .map(d => (d.salary = d3.median(d, d => d.Salary), d))
-        .sort((a, b) => b.length - a.length)
+
       console.log("bins", bins)
 
       // Create the color and radius scales.
       const color = d3.scaleSequential(d3.extent(bins, d => d.date), d3.interpolateSpectral);
       const radius = d3.scaleSqrt([0, d3.max(bins, d => d.length)], [0, hexbin.radius() * Math.SQRT2]);
+
+      // Append the state mesh.
+      svgMap.append("path")
+        .datum(stateMesh)
+        .attr("fill", "none")
+        .attr("stroke", "#777")
+        .attr("stroke-width", 0.5)
+        .attr("stroke-linejoin", "round")
+        .attr("d", d3.geoPath(projection));
 
 
       //filter used for updates
@@ -369,7 +385,9 @@
     }
 
     loadIndividuals();
-    d3.select("div#hexbinMap").node().appendChild(await hexbinMap());
+
+    //this is d3 stock example
+    // d3.select("div#hexbinMap").node().appendChild(await hexbinMap());
 
   </script>
 </body>
