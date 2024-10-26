@@ -8,12 +8,16 @@
   <link href="./style.css" rel="stylesheet" type="text/css">
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script src="https://d3js.org/topojson.v2.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/d3-tile@1"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/d3-tile@1"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/d3-hexbin@0.2"></script>
 
 </head>
 
 <body style="background-color: rgb(255, 255, 255);">
   <div style="margin-top:30px">
+    <div id="hexbinMap">
+
+    </div>
     <div id="header">
       <!-- style="margin-left:-100px" -->
       <h2 style="text-align: center"> Visualizing Architect's Salary in the US</h2>
@@ -54,6 +58,7 @@
     import { curveSlider } from './js/curveSlider.js';
     import { histogramSlider } from './js/histogramSlider.js';
     import { clickableHistogramSlider } from './js/clickableHistogramSlider.js';
+    import { hexbinMap } from './js/hexbinMap.js';
 
     const vizIndividualsContainer = d3.select("div#canvasContainer");
     const width = Number(vizIndividualsContainer.style("width").replace("px", ""));
@@ -108,8 +113,9 @@
       .style("border", "1px solid black")
       .style("pointer-events", "none");
 
+
     const loadIndividuals = async function () {
-      let data = await d3.csv("data/241017_archinect_salaries_fulltime.csv", d3.autoType);
+      let data = await d3.csv("data/241026_archinect_salaries_fulltime.csv", d3.autoType);
       //console.log(data);
 
       //for testing purposes can change data to dataAll, and set this data as something else
@@ -159,7 +165,7 @@
       //canvas drawing
       const context = vizIndividualsCanvas.node().getContext("2d");
 
-      //canvas interaction 
+      //canvas interaction
       //code originally from Cornell INFO 3310 course notes, fall 2023
       let delaunay;
       let voronoi;
@@ -332,6 +338,7 @@
     }
 
     loadIndividuals();
+    d3.select("div#hexbinMap").node().appendChild(await hexbinMap());
 
   </script>
 </body>
