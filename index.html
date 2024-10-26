@@ -23,9 +23,14 @@
     <div style="display: flex; justify-content: center;">
       <h2 id="summaryText">Hello just a placeholder :/</h2>
     </div>
+    <!-- <div style="display: flex; justify-content: center;">
+      <div id="canvasContainer" width="1200" height="1500"></div>
+    </div> -->
+
     <div>
       <div id="container" style="display: flex; justify-content: center;">
-        <svg id="vizIndividualsContainer" width="1200" height="1500"></svg>
+        <div id="canvasContainer" style="display:flex; position:relative; width:1200px; height:1250px"></div>
+        <!-- <svg id="vizIndividualsContainer" width="1200" height="1500"></svg> -->
         <div id="tooltip" class="tooltip" style="
         visibility:hidden;
         position:absolute; 
@@ -68,9 +73,9 @@
     import { histogramSlider } from './js/histogramSlider.js';
     import { clickableHistogramSlider } from './js/clickableHistogramSlider.js';
 
-    const vizIndividualsContainer = d3.select("svg#vizIndividualsContainer");
-    const width = vizIndividualsContainer.attr("width");
-    const height = vizIndividualsContainer.attr("height");
+    const vizIndividualsContainer = d3.select("div#canvasContainer");
+    const width = Number(vizIndividualsContainer.style("width").replace("px", ""));
+    const height = Number(vizIndividualsContainer.style("height").replace("px", ""));
 
     const margins = {
       top: 20,
@@ -82,8 +87,30 @@
     const vizHeight = height - margins.top - margins.bottom;
     const vizWidth = width - margins.left - margins.right;
 
-    const vizIndividuals = vizIndividualsContainer.append("g")
-      .attr("transform", `translate(${margins.left}, ${margins.top})`)
+    const vizIndividualsCanvas = vizIndividualsContainer.append("canvas")
+      .attr("width", width)
+      .attr("height", height)
+      .style("position", "absolute")
+      .style("top", 0)
+      .style("left", 0);
+
+    const svg = vizIndividualsContainer.append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .style("position", "absolute")
+      .style("top", 0)
+      .style("left", 0);
+
+    // Add our interactive area, which is just a transparent rect
+    // This will hold our mouseover highlights so we can do them without redrawing the whole canvas
+    const interactiveArea = svg.append("g")
+    //.attr("transform", "translate(" + margins.left + "," + margins.top + ")");
+    interactiveArea.append("rect")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("opacity", 0);
 
     const loadIndividuals = async function () {
       let dataAll = await d3.csv("data/241017_archinect_salaries_fulltime.csv", d3.autoType);
@@ -106,11 +133,6 @@
         d['Date'] = d3.isoParse(d['Date']);
         d['Year'] = d['Date'].getFullYear();
       });
-      // const timeExtent = d3.extent(dataAll, d => d['Date'])
-      // console.log(timeExtent)
-      // const timeScale = d3.scaleTime().domain(timeExtent).range([0, 1])
-
-
 
       //create tooltip
       const tooltipDiv = d3.select("div#tooltip")
@@ -138,28 +160,65 @@
       //.slice(0, 2000)
       const maxD = 10
       data.forEach((d, i) => {
-        d.cx = Math.floor(i % (vizWidth / maxD)) * maxD;
-        d.cy = Math.floor(i / (vizWidth / maxD)) * maxD;
+        d.cx = Math.floor(i % (vizWidth / maxD)) * maxD + maxD / 2 + margins.left;
+        d.cy = Math.floor(i / (vizWidth / maxD)) * maxD + maxD / 2 + margins.top;
         d.color = satisfactionScale(d['Job Satisfaction'])
         d.passesFilter = true;
       });
 
-      //set up the circles upon page loading
-      let circles = vizIndividuals.selectAll("circle")
-        .data(data)
-        .join("circle")
-        .attr("cx", d => d.cx)  // Use precomputed cx
-        .attr("cy", d => d.cy)  // Use precomputed cy
-        .attr("r", d => salaryScale(d['Salary']))
-        .attr("opacity", 0.8)  // Slightly reduced opacity
-        .attr("fill", d => d.color)  // Grey color
-        .style("pointer-events", "auto")  // Disable hover interactions if doesn't pass
-        .on("mouseover", function (event, d) {
-          onMouseOverIndividual(this, event, d);
-        })
-        .on("mouseout", function () {
-          onMouseOutIndividual(this);
-        })
+      //canvas drawing
+      const context = vizIndividualsCanvas.node().getContext("2d");
+      context.clearRect(0, 0, width, height);
+      context.globalAlpha = 0.8;
+      data.forEach(d => {
+        context.beginPath();
+        context.arc(d.cx, d.cy, salaryScale(d['Salary']), 0, 2 * Math.PI);
+        context.fillStyle = d.color;
+        context.fill();
+      });
+
+      // First make a delaunay triangulation
+      // The .from function works kind of like .x and .y, just give it accessor functions for x and y
+      const delaunay = d3.Delaunay.from(data, d => d.cx, d => d.cy);
+
+      // We can use a voronoi tesselation to see the structure of the triangulation
+      // You'll be able to see the cells that the triangulation "searches" when using .find()
+      // UNCOMMENT FOLLOWING 2 LINES TO SEE CELLS
+      const voronoi = delaunay.voronoi([0, 0, width, height]);
+      interactiveArea.append("path").attr("stroke", "black").attr("fill", "none")
+        .attr("d", voronoi.render())
+
+
+      // Since we don't have events for each circle, we need to simulate mouseOver and mouseOut
+      // We'll make a little state machine to do this
+      let currentTarget = -1;
+      interactiveArea.on("mousemove", function (event) {
+
+        let loc = d3.pointer(event);
+        let index;
+        if (currentTarget === -1) {
+          // Does a sweep of triangles, which should be O(sqrt(N)) in most cases
+          index = delaunay.find(loc[0], loc[1]);   // returns index of closest point
+        }
+        else {
+          // With a known point index that's nearby, you can speed up the lookups dramatically
+          index = delaunay.find(loc[0], loc[1], currentTarget)
+        }
+        // console.log(loc, index);
+
+        if (index !== currentTarget) {
+          // Make our "mouseover" function
+          console.log("mouseover");
+          currentTarget = index;
+          mouseExited();
+          mouseEntered(index);
+        }
+      });
+      // Also trigger "mouseout" when leaving interactive area
+      interactiveArea.on("mouseout", () => {
+        currentTarget = -1;
+        mouseExited();
+      })
 
       function onMouseOverIndividual(element, event, d) {
         const selectedElement = d3.select(element);
