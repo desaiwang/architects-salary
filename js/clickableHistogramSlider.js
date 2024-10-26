@@ -35,8 +35,8 @@ export function clickableHistogramSlider(dataAll, container, label, attribute, s
 
   const groupedData = d3.groups(dataAll, d => d[attribute]);
   const groupCounts = groupedData.map(([key, values]) => ({ key: key === null ? "N/A" : key, count: values.length }));
-  console.log("groupedData", groupedData);
-  console.log("groupCounts", groupCounts);
+  //console.log("groupedData", groupedData);
+  //console.log("groupCounts", groupCounts);
   if (Array.isArray(sortOrder)) {
     groupCounts.sort((a, b) => {
       const indexA = sortOrder.indexOf(a.key);
@@ -51,9 +51,9 @@ export function clickableHistogramSlider(dataAll, container, label, attribute, s
   } else if (sortOrder === 'count') {
     groupCounts.sort((a, b) => ascending ? a.count - b.count : b.count - a.count);
   }
-  console.log("groupCounts after sorting", groupCounts);
+  //console.log("groupCounts after sorting", groupCounts);
   const uniqueKeys = groupCounts.map(d => d.key)
-  console.log("uniqueKeys", uniqueKeys);
+  //console.log("uniqueKeys", uniqueKeys);
 
   const widthHist = sliderWidth;
   const heightHist = sliderHeight;
@@ -84,7 +84,7 @@ export function clickableHistogramSlider(dataAll, container, label, attribute, s
 
   //initiate valueList with all unique values (all checked)
   let valueList = uniqueKeys; //used to update ratings
-  console.log("valueList at the beginning", valueList)
+  //console.log("valueList at the beginning", valueList)
 
   //save colors for each bin, set clicked all to true
   groupCounts.forEach((d, i) => {
@@ -148,13 +148,13 @@ export function clickableHistogramSlider(dataAll, container, label, attribute, s
 
           valueList = valueList.filter(rating => rating != d.key)
         }
-        console.log("valueList", valueList)
+        //console.log("valueList", valueList)
         filters[attribute] = d => valueList.includes(d[attribute] === null ? "N/A" : d[attribute]);
         updateData()
       }, 200);
     }).on('dblclick', function (event, d) {
       clearTimeout(timeout);
-      console.log("double clicked", event, d);
+      //console.log("double clicked", event, d);
       // Reset all bars to deselected
       groupCounts.forEach(item => item.clicked = false);
       // Set only the double-clicked bar to selected
