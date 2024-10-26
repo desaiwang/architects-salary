@@ -59,6 +59,7 @@
     import { histogramSlider } from './js/histogramSlider.js';
     import { clickableHistogramSlider } from './js/clickableHistogramSlider.js';
     import { hexbinMap } from './js/hexbinMap.js';
+    import { geoAlbersUsaPr } from "./js/geoAlbersUsaPr.js";
 
     //set up for individuals visualization
     const vizIndividualsContainer = d3.select("div#canvasContainer");
@@ -116,12 +117,20 @@
 
 
     //set up for map
+    const widthMap = 928;
+    const heightMap = 581;
+    const projection = geoAlbersUsaPr().scale(4 / 3 * widthMap).translate([widthMap / 2, heightMap / 2]);
 
+    // Create the container SVG for map
+    const svgMap = d3.create("svg")
+      .attr("viewBox", [0, 0, widthMap, heightMap])
+      .attr("width", widthMap)
+      .attr("height", heightMap)
+      .attr("style", "max-width: 100%; height: auto;");
 
     const loadIndividuals = async function () {
       let data = await d3.csv("data/241026_archinect_salaries_fulltime.csv", d3.autoType);
-      //console.log(data);
-
+      console.log(data);
       //for testing purposes can change data to dataAll, and set this data as something else
       //let data = dataAll
 
@@ -138,9 +147,31 @@
       //console.log("salaryExtent", salaryExtent)
       const salaryScale = d3.scaleLinear().domain(salaryExtent).range([2.5, 20])
 
+      //map related scales and set up
+      const hexbin = d3.hexbin()
+        .extent([[0, 0], [widthMap, heightMap]])
+        .radius(10)
+        .x(d => {
+          if (d.xy) {
+            return d.xy[0]
+          } else {
+            console.log("error: d is", d)
+          }
+        })
+        .y(d => d.xy[1]);
 
-      //filter: this is used to for updates
+      console.log("data transformation line 156", data.map(d => ({ xy: projection([d.Longitude, d.Latitude]), Salary: d.Salary })))
+      const bins = hexbin(data.map(d => ({ long: d.Longitude, lat: d.Latitude, xy: projection([d.Longitude, d.Latitude]), Salary: d.Salary })))
+        .map(d => (d.salary = d3.median(d, d => d.Salary), d))
+        .sort((a, b) => b.length - a.length)
+      console.log("bins", bins)
 
+      // Create the color and radius scales.
+      const color = d3.scaleSequential(d3.extent(bins, d => d.date), d3.interpolateSpectral);
+      const radius = d3.scaleSqrt([0, d3.max(bins, d => d.length)], [0, hexbin.radius() * Math.SQRT2]);
+
+
+      //filter used for updates
       var filters = {};
 
       function pointPassesFilters(point) {
