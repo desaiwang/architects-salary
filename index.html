@@ -33,7 +33,7 @@
 
     <div>
 
-      <div id="container" style="display: flex; justify-content: center;">
+      <div id="container" style="display: flex; justify-content: center; position:relative;">
         <div id="canvasContainer" style="position:relative; width:900px; height:1500px">
         </div>
         <div style="display: flex; flex-direction: column;">
@@ -44,10 +44,12 @@
           <div id="controlfilterFirmSize"></div>
           <div id="controlfilterAge"></div>
         </div>
+        <div id="tooltip"
+          style="justify-content:flex-end; visibility: hidden; position:absolute; background-color: white; padding:10px; border: 1px solid black; pointer-events: none;">
+        </div>
       </div>
     </div>
   </div>
-
   </div>
   <div style="margin-bottom:100"></div>
   </div>
@@ -103,17 +105,8 @@
       .attr("opacity", 0);
 
     // Create tooltip div programmatically using d3
-    const tooltipDiv = vizIndividualsContainer
-      .append("div")
-      .attr("id", "tooltip")
-      .attr("class", "tooltip")
-      .style("justify-content", "end")
-      .style("visibility", "hidden")
-      .style("position", "absolute")
-      .style("background", "white")
-      .style("padding", "10px")
-      .style("border", "1px solid black")
-      .style("pointer-events", "none");
+    const tooltipDiv = d3.select("div#tooltip")
+      .attr("class", "tooltip");
 
 
     //set up for map
@@ -251,38 +244,43 @@
       function mouseEnteredIndividual(i) {
         let d = data[i];
 
-        interactiveArea.append("circle")
-          .attr("class", "highlight")
-          .attr("cx", d.cx)
-          .attr("cy", d.cy)
-          .attr("opacity", 1)
-          .attr("fill", d.color)
-          .attr("r", salaryScale(d['Salary']))
-          .attr("pointer-events", "none")
-          ;
+        if (d.passesFilter) {
+          interactiveArea.append("circle")
+            .attr("cx", d.cx)
+            .attr("cy", d.cy)
+            .attr("class", "highlight")
+            .attr("opacity", 1)
+            .attr("fill", d.color)
+            .attr("r", salaryScale(d['Salary']))
+            .transition().duration(200)
+            .attr("r", salaryScale(d['Salary']) + 2)
+            .attr("pointer-events", "none")
+            ;
 
-        interactiveArea.append("circle")
-          .attr("class", "highlight")
-          .attr("cx", d.cx)
-          .attr("cy", d.cy)
-          .attr("stroke", "black")
-          .attr("stroke-width", 3)
-          .attr("fill", "none")
-          .attr("r", salaryScale(d['Salary']) + 5)
-          .attr("pointer-events", "none")
-          ;
+          interactiveArea.append("circle")
+            .attr("class", "highlight")
+            .attr("cx", d.cx)
+            .attr("cy", d.cy)
+            .attr("stroke", "black")
+            .attr("stroke-width", 2)
+            .attr("fill", "none")
+            .attr("r", salaryScale(d['Salary']))
+            .transition().duration(200)
+            .attr("r", salaryScale(d['Salary']) + 2)
+            .attr("pointer-events", "none")
+            ;
 
-        tooltipDiv.html(`
+          tooltipDiv.html(`
         <strong>Salary:</strong> ${d3.format("$,")(d['Salary'])}<br>
         <strong>Job Satisfaction:</strong> ${d['Job Satisfaction']}/10<br>
         <strong>Age:</strong> ${d['Age']}<br>
         <strong>Years of Experience:</strong> ${d['Years of Experience']}<br>
         <strong>Location:</strong> ${d['Location']}<br>
-        <strong>Survey Date:</strong> ${new Date(d['Date']).toLocaleString('default', { month: 'long', year: 'numeric' })}<br>
-    `)
-          .style("left", `${d.cx + 15}px`)
-          .style("top", `${d.cy + 15}px`)
-          .style("visibility", "visible");
+        <strong>Survey Date:</strong> ${new Date(d['Date']).toLocaleString('default', { month: 'long', year: 'numeric' })}<br>`)
+            .style("left", `${d.cx + 15}px`)
+            .style("top", `${d.cy + 15}px`)
+            .style("visibility", "visible");
+        }
 
       }
       function mouseExitedIndividual() {
@@ -316,29 +314,42 @@
         // Add cx and cy properties to each data point based on the index in data
         data.forEach((d, i) => {
           //TODO: delete this prev state if not doing animation!
-          d.prevPassesFilter = d.passesFilter
+          // d.prevPassesFilter = d.passesFilter
           d.passesFilter = pointPassesFilters(d);
 
-          if (d.passesFilter) {
-            d.cx = cxCalc(passingAcc, numPointsPerRow, maxD, xOffset);
-            d.cy = cyCalc(passingAcc, numPointsPerRow, maxD, yOffset);
-            passingAcc++;
-          } else {
-            d.cx = cxCalc(nonpassingAcc + passingDataSize, numPointsPerRow, maxD, xOffset);
-            d.cy = cyCalc(nonpassingAcc + passingDataSize, numPointsPerRow, maxD, yOffset);
-            nonpassingAcc++;
-          }
+          // if (d.passesFilter) {
+          d.cx = cxCalc(passingAcc, numPointsPerRow, maxD, xOffset);
+          d.cy = cyCalc(passingAcc, numPointsPerRow, maxD, yOffset);
+          passingAcc++;
+          // } else {
+          //   d.cx = cxCalc(nonpassingAcc + passingDataSize, numPointsPerRow, maxD, xOffset);
+          //   d.cy = cyCalc(nonpassingAcc + passingDataSize, numPointsPerRow, maxD, yOffset);
+          //   nonpassingAcc++;
+          // }
         });
 
 
         // Re-render the canvas
         context.clearRect(0, 0, width, height);
         context.globalAlpha = 0.8;
+        // Draw points that don't pass the filter first
         data.forEach(d => {
-          context.beginPath();
-          context.arc(d.cx, d.cy, salaryScale(d['Salary']), 0, 2 * Math.PI);
-          context.fillStyle = d.passesFilter ? d.color : "lightgray";
-          context.fill();
+          if (!d.passesFilter) {
+            context.beginPath();
+            context.arc(d.cx, d.cy, salaryScale(d['Salary']), 0, 2 * Math.PI);
+            context.fillStyle = "lightgray";
+            context.fill();
+          }
+        });
+
+        // Draw points that pass the filter on top
+        data.forEach(d => {
+          if (d.passesFilter) {
+            context.beginPath();
+            context.arc(d.cx, d.cy, salaryScale(d['Salary']), 0, 2 * Math.PI);
+            context.fillStyle = d.color;
+            context.fill();
+          }
         });
 
         // update delaunay
