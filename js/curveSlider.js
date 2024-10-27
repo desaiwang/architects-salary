@@ -18,9 +18,11 @@ export function curveSlider(dataAll, container, label, attribute, sliderWidth, s
     .range([10, sliderWidth - 20]); // padding here for ease
 
   let xAxis = d3.axisBottom(xScale)
+    //TODO: maybe set number of ticks as a parameter
+    .ticks(6)
     .tickFormat(function (d) {
       // console.log("interval", d);
-      return (maxLimit != 0 & d == maxLimit) ? `> ${scaleFormatter(maxLimit)}` : scaleFormatter(d);
+      return (maxLimit != 0 & d == maxLimit) ? `${scaleFormatter(maxLimit)}+` : scaleFormatter(d);
     })
     ;
 
