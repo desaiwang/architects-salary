@@ -148,7 +148,7 @@
       const salaryScale = d3.scaleLinear().domain(salaryExtent).range([2.5, 20])
 
       //map related scales and set up
-      const us = await d3.json("../data/us-counties-10m.json");
+      const us = await d3.json("data/us-counties-10m.json");
       const stateMesh = topojson.mesh(us, us.objects.states);
 
       const hexbin = d3.hexbin()
