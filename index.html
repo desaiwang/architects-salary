@@ -269,8 +269,8 @@
             .attr("fill", d.color)
             .attr("pointer-events", "none")
             .attr("r", salaryScale(d['Salary']))
-            .transition().duration(200)
-            .attr("r", salaryScale(d['Salary']) + 2)
+            // .transition().duration(200)
+            // .attr("r", salaryScale(d['Salary']) + 5)
             ;
 
           interactiveArea.append("circle")
@@ -280,18 +280,20 @@
             .attr("stroke", "black")
             .attr("stroke-width", 2)
             .attr("fill", "none")
-            .attr("r", salaryScale(d['Salary']))
             .attr("pointer-events", "none")
-            .transition().duration(200)
-            .attr("r", salaryScale(d['Salary']) + 2)
+            // .attr("r", salaryScale(d['Salary']))
+            // .transition().duration(200)
+            .attr("r", salaryScale(d['Salary']) + 4)
 
             ;
 
-          console.log("tooltipDiv width", tooltipDiv.style("width"))
-          console.log("tooltipDiv left location", d.cx + 15)
-          console.log("canvas width", width)
-          const tooltipWidth = Number(tooltipDiv.style("width").replace("px", ""))
-          let tooltipLeft = d.cx + 15 + tooltipWidth > width - margins.right ? d.cx - tooltipWidth - 15 : d.cx + 15
+          //TODO: absolute positions are not working, need to fix
+          // console.log("tooltipDiv width", tooltipDiv.style("width"))
+          // console.log("tooltipDiv left location", d.cx + 15)
+          // console.log("canvas width", width)
+          // const tooltipWidth = Number(tooltipDiv.style("width").replace("px", ""))
+          // let tooltipLeft = d.cx + 15 + tooltipWidth > width - margins.right ? d.cx - tooltipWidth - 15 : d.cx + 15
+
           tooltipDiv.html(`
         <strong>Salary:</strong> ${d3.format("$,")(d['Salary'])}<br>
         <strong>Job Satisfaction:</strong> ${d['Job Satisfaction']}/10<br>
