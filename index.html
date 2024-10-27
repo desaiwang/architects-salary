@@ -33,7 +33,7 @@
 
     <div>
 
-      <div id="container" style="display: flex; justify-content: center; position:relative;">
+      <div id="container" style="display: flex; justify-content: center;">
         <div id="canvasContainer" style="position:relative; width:900px; height:1500px">
         </div>
         <div style="display: flex; flex-direction: column;">
@@ -44,12 +44,10 @@
           <div id="controlfilterFirmSize"></div>
           <div id="controlfilterAge"></div>
         </div>
-        <div id="tooltip"
-          style="justify-content:flex-end; visibility: hidden; position:absolute; background-color: white; padding:10px; border: 1px solid black; pointer-events: none;">
-        </div>
       </div>
     </div>
   </div>
+
   </div>
   <div style="margin-bottom:100"></div>
   </div>
@@ -105,8 +103,16 @@
       .attr("opacity", 0);
 
     // Create tooltip div programmatically using d3
-    const tooltipDiv = d3.select("div#tooltip")
-      .attr("class", "tooltip");
+    const tooltipDiv = vizIndividualsContainer
+      .append("div")
+      .attr("id", "tooltip")
+      .attr("class", "tooltip")
+      .style("visibility", "hidden")
+      .style("position", "absolute")
+      .style("background", "white")
+      .style("padding", "10px")
+      .style("border", "1px solid black")
+      .style("pointer-events", "none");
 
 
     //set up for map
@@ -123,7 +129,7 @@
       .attr("style", "max-width: 100%; height: auto;");
 
     const loadIndividuals = async function () {
-      let data = await d3.csv("data/241026_archinect_salaries_fulltime.csv", d3.autoType);
+      let data = await d3.csv("data/241027_archinect_salaries_fulltime.csv", d3.autoType);
       console.log(data);
       //for testing purposes can change data to dataAll, and set this data as something else
       //let data = dataAll
@@ -194,10 +200,21 @@
         return stillPassed;
       }
 
+
+      //setting up spacing for individuals
       const cxCalc = (i, numPointsPerRow, maxD, xOffset) => Math.floor(i % (numPointsPerRow)) * maxD + xOffset;
       const cyCalc = (i, numPointsPerRow, maxD, yOffset) => Math.floor(i / (numPointsPerRow)) * maxD + yOffset;
 
+      //TODO: need more dynamic maxD calculation, right now doesn't change with selections
+      const maxD = 10
+      //const maxD = Math.ceil(salaryScale(medianSalaryOverall) * 2 + 2);
+      const numPointsPerRow = Math.floor(vizWidth / maxD);
+      const xOffset = maxD / 2 + margins.left;
+      const yOffset = maxD / 2 + margins.top;
+
       data.forEach((d, i) => {
+        d.cx = cxCalc(i, numPointsPerRow, maxD, xOffset);
+        d.cy = cyCalc(i, numPointsPerRow, maxD, yOffset);
         d.color = satisfactionScale(d['Job Satisfaction'])
         d.passesFilter = true;
       });
@@ -207,11 +224,10 @@
 
       //canvas interaction
       //code originally from Cornell INFO 3310 course notes, fall 2023
-      let delaunay;
-      let voronoi;
+      let delaunay = d3.Delaunay.from(data, d => d.cx, d => d.cy);;
+      let voronoi = delaunay.voronoi([0, 0, width, height]);;
       //TODO: uncomment to see voronoi
-      // interactiveArea.append("path").attr("stroke", "black").attr("fill", "none")
-      //   .attr("d", voronoi.render())
+      // interactiveArea.append("path").attr("stroke", "black").attr("fill", "none").attr("d", voronoi.render());
 
 
       // simulate mouseOver and mouseOut for each circle
@@ -251,10 +267,10 @@
             .attr("class", "highlight")
             .attr("opacity", 1)
             .attr("fill", d.color)
+            .attr("pointer-events", "none")
             .attr("r", salaryScale(d['Salary']))
             .transition().duration(200)
             .attr("r", salaryScale(d['Salary']) + 2)
-            .attr("pointer-events", "none")
             ;
 
           interactiveArea.append("circle")
@@ -265,11 +281,17 @@
             .attr("stroke-width", 2)
             .attr("fill", "none")
             .attr("r", salaryScale(d['Salary']))
+            .attr("pointer-events", "none")
             .transition().duration(200)
             .attr("r", salaryScale(d['Salary']) + 2)
-            .attr("pointer-events", "none")
+
             ;
 
+          console.log("tooltipDiv width", tooltipDiv.style("width"))
+          console.log("tooltipDiv left location", d.cx + 15)
+          console.log("canvas width", width)
+          const tooltipWidth = Number(tooltipDiv.style("width").replace("px", ""))
+          let tooltipLeft = d.cx + 15 + tooltipWidth > width - margins.right ? d.cx - tooltipWidth - 15 : d.cx + 15
           tooltipDiv.html(`
         <strong>Salary:</strong> ${d3.format("$,")(d['Salary'])}<br>
         <strong>Job Satisfaction:</strong> ${d['Job Satisfaction']}/10<br>
@@ -302,12 +324,7 @@
         d3.select("h2#summaryText")
           .text(passingDataSize > 0 ? `Showing ${d3.format(",")(passingDataSize)} out of ${d3.format(",")(data.length)} individuals. Median Salary: ${d3.format("$,")(medianSalary)}, Mean Satisfaction: ${d3.format(".2f")(meanSatisfaction)}/10` : "No data selected")
 
-        //TODO: need more dynamic maxD calculation, right now doesn't change with selections
-        const maxD = 10
-        //const maxD = Math.ceil(salaryScale(medianSalaryOverall) * 2 + 2);
-        const numPointsPerRow = Math.floor(vizWidth / maxD);
-        const xOffset = maxD / 2 + margins.left;
-        const yOffset = maxD / 2 + margins.top;
+
 
         let passingAcc = 0;
         let nonpassingAcc = 0;
@@ -318,9 +335,9 @@
           d.passesFilter = pointPassesFilters(d);
 
           // if (d.passesFilter) {
-          d.cx = cxCalc(passingAcc, numPointsPerRow, maxD, xOffset);
-          d.cy = cyCalc(passingAcc, numPointsPerRow, maxD, yOffset);
-          passingAcc++;
+          // d.cx = cxCalc(passingAcc, numPointsPerRow, maxD, xOffset);
+          // d.cy = cyCalc(passingAcc, numPointsPerRow, maxD, yOffset);
+          // passingAcc++;
           // } else {
           //   d.cx = cxCalc(nonpassingAcc + passingDataSize, numPointsPerRow, maxD, xOffset);
           //   d.cy = cyCalc(nonpassingAcc + passingDataSize, numPointsPerRow, maxD, yOffset);
@@ -353,15 +370,18 @@
         });
 
         // update delaunay
-        delaunay = d3.Delaunay.from(data, d => d.cx, d => d.cy);
-        // update voronoi
-        voronoi = delaunay.voronoi([0, 0, width, height]);
+        // delaunay = d3.Delaunay.from(data, d => d.cx, d => d.cy);
+        // // update voronoi
+        // voronoi = delaunay.voronoi([0, 0, width, height]);
+        // interactiveArea.selectAll("path").remove();
+        // interactiveArea.append("path").attr("stroke", "black").attr("fill", "none")
+        //   .attr("d", voronoi.render())
 
       }
 
       //sets up contols
       let controlWidth = 300;
-      let controlHeight = 75;
+      let controlHeight = 70;
 
       let controlSalary = d3.select("#controlfilterSalary");
       function getButtonDataSalary(attribute, values) {
@@ -372,14 +392,14 @@
         ];
       }
 
-      curveSlider(data, controlSalary, "Salary", "Salary", controlWidth, 100, updateData, filters, { maxLimit: 200000, scaleFormatter: d => d === 0 ? "$0" : d3.format("$.2s")(d), getButtonData: getButtonDataSalary });
+      curveSlider(data, controlSalary, "Salary", "Salary", controlWidth, controlHeight, updateData, filters, { maxLimit: 200000, scaleFormatter: d => d === 0 ? "$0" : d3.format("$.2s")(d), getButtonData: getButtonDataSalary });
 
       let controlTime = d3.select("#controlfilterTime");
-      clickableHistogramSlider(data, controlTime, "Survey Year", "Year", controlWidth, 100, updateData, filters, { yBetweenLabelAndHist: 0 });
+      clickableHistogramSlider(data, controlTime, "Survey Year", "Year", controlWidth, controlHeight, updateData, filters, { yBetweenLabelAndHist: 0 });
 
       let controlSatisfaction = d3.select("#controlfilterSatisfaction");
       // curveSlider(data, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", controlWidth, controlHeight + 30, updateData, filters, { maxLimit: 11, scaleFormatter: d3.format(""), numBins: 10 });
-      clickableHistogramSlider(data, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", 300, 100, updateData, filters, { colorList: satisfactionColors, yBetweenLabelAndHist: 0 });
+      clickableHistogramSlider(data, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", controlWidth, controlHeight, updateData, filters, { colorList: satisfactionColors, yBetweenLabelAndHist: 0 });
 
       let controlFirmType = d3.select("#controlfilterFirmType");
       clickableHistogramSlider(data, controlFirmType, "Firm Type", "Firm Type", controlWidth, controlHeight, updateData, filters, { sortOrder: ["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"] });
