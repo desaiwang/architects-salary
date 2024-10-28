@@ -115,8 +115,6 @@
     //set up for map
     const widthMap = 928;
     const heightMap = 581;
-    const projection = geoAlbersUsaPr().scale(4 / 3 * widthMap).translate([widthMap / 2, heightMap / 2]);
-
     // Create the container SVG for map
     const svgMap = d3.select("div#hexbinMap")
       .append("svg")
@@ -161,25 +159,7 @@
       console.log("states", states);
       const stateMesh = topojson.mesh(states, states.objects.cb_2023_us_state_5m);
 
-      const dataGroupedByLocation = Array.from(d3.group(data, d => d.Location))
-        .map(([key, values]) => ({
-          location: key,
-          xy: projection([values[0].Longitude, values[0].Latitude]),
-          length: values.length,
-          meanSatisfaction: d3.mean(values, d => d['Job Satisfaction']),
-          medianSalary: d3.median(values, d => d['Salary'])
-        }));
-      console.log("Grouped Data by Location:", dataGroupedByLocation);
-
-      // Create the color and radius scales.
-      const satisfactionExtentGrouped = d3.extent(dataGroupedByLocation, d => d.meanSatisfaction)
-      const salaryExtentGrouped = d3.extent(dataGroupedByLocation, d => d.medianSalary)
-      console.log("satisfactionExtentGrouped", satisfactionExtentGrouped)
-      const color = (x) => BuOrColorInterpolator(d3.scaleLinear().domain(satisfactionExtentGrouped).range([0, 1])(x))
-      //d3.scaleSequential(satisfactionExtent, d3.interpolateSpectral);
-      const groupLengthExtent = d3.extent(dataGroupedByLocation.map(d => d.length))
-      console.log("groupLengthExtent", groupLengthExtent)
-      const radius = d3.scaleSqrt(groupLengthExtent, [1, 25]);
+      const projection = geoAlbersUsaPr().scale(4 / 3 * widthMap).translate([widthMap / 2, heightMap / 2]);
 
       // Append the state mesh.
       mapArea.append("path")
@@ -189,93 +169,9 @@
         .attr("stroke-width", 0.5)
         .attr("stroke-linejoin", "round")
         .attr("d", d3.geoPath(projection));
+      //set up the layer used for hexBin rendering
+      let hexBinLayer = mapArea.append("g");
 
-      //append a legend
-      const legend = mapArea.append("g")
-        .attr("fill", "#777")
-        .attr("transform", "translate(850,550)")
-        .attr("text-anchor", "middle")
-        .style("font", "10px sans-serif")
-        .selectAll()
-        .data(radius.ticks(4).slice(1))
-        .join("g");
-
-      legend.append("circle")
-        .attr("fill", "none")
-        .attr("stroke", "#ccc")
-        .attr("cy", d => -radius(d))
-        .attr("r", radius);
-
-      legend.append("text")
-        .attr("y", d => -2 * radius(d))
-        .attr("dy", "1.3em")
-        .text(radius.tickFormat(4, "s"));
-
-      mapArea.append("g")
-        .selectAll()
-        .data(dataGroupedByLocation)
-        .join("circle")
-        .attr("transform", d => {
-          if (d.xy) {
-            return `translate(${d.xy[0]},${d.xy[1]})`
-          } else {
-            console.log("error: d is", d)
-          }
-        })
-        .attr("r", d => radius(d.length)) //make sure to change function in zoomed too!
-        .attr("fill", d => color(d.meanSatisfaction))
-        .attr("opacity", 0.8)
-        .append("title")
-        .text(d => `${d.location}\n${d.length.toLocaleString()} survey responses\n${d3.format(".2f")(d.meanSatisfaction)} mean satisfaction\n${d3.format("$.2s")(d.medianSalary)} median salary`);
-
-      //zooming functions
-
-      var zoom = d3.zoom()
-        .scaleExtent([1, 15])
-        .translateExtent([
-          [-50, -50],
-          [widthMap + 50, heightMap + 50]
-        ]) // to lock to edges
-        .on("zoom", mapZoomed);
-
-      svgMap.call(zoom);
-      //manually call zoom interaction to activate any code that's in zoomed()
-      svgMap.call(zoom.transform, d3.zoomIdentity);
-
-      function mapZoomed({
-        transform
-      }) {
-        // Transform the group object to reflect the zoom action
-        mapArea.attr("transform", transform.toString());
-        // NOTE: we could also instead adjust projection and path to account for the zoom
-        //  However, projections can be time-consuming to calculate, leading to laggy interactions
-        //  For some projections like orthographic, you need to recompute the projection to deliver a
-        //   consistent user experience (e.g. adjust lambda for the projection to rotate the globe)
-
-        // Divide by scale to make sure strokes remain a consistent width during zooming
-        mapArea.select(".state-outline")
-          .style("stroke-width", 2 / transform.k);
-        mapArea.select(".county-outline")
-          .style("stroke-width", 1 / transform.k);
-
-        mapArea.selectAll("circle")
-          .style("r", d => radius(d.length) / Math.sqrt(transform.k));
-
-
-        // // Expose county layer when sufficiently zoomed
-        // chartArea.select(".county-outline")
-        //   .attr("visibility", (transform.k > 3) ? "visible" : "hidden");
-        // chartArea.selectAll(".county")
-        //   .attr("visibility", (transform.k > 3) ? "visible" : "hidden");
-        // We can't animate the Visibility attribute -- also probably not a good thing to animate anyways
-        //  You could chain an animation on opacity with an .end() promise of setting the visibility attribute
-        //  There would likely be some lag or skipping due to repeated events during the animation trigger
-
-        // See below for why I use visibility rather than opacity
-
-        // OK, Zoomer
-
-      }
 
       //filter used for updates
       var filters = {};
@@ -409,6 +305,8 @@
         const passingData = data.filter(pointPassesFilters);
         const passingDataSize = passingData.length;
         //console.log("passingDataSize", passingDataSize)
+
+        hexbinMap(projection, passingData, "salary", "length", hexBinLayer, widthMap, heightMap);
 
         const medianSalary = d3.median(passingData, d => d['Salary']);
         const meanSatisfaction = d3.mean(passingData, d => d['Job Satisfaction']);
