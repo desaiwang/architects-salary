@@ -145,7 +145,7 @@
 
       const salaryExtent = d3.extent(data, d => d['Salary'])
       //console.log("salaryExtent", salaryExtent)
-      const salaryScale = d3.scaleLinear().domain(salaryExtent).range([2.5, 20])
+      const salaryScale = d3.scaleSqrt().domain(salaryExtent).range([0.5, 15])
 
       //map related scales and set up
       const us = await d3.json("data/us-counties-10m.json");
@@ -153,7 +153,7 @@
 
       const hexbin = d3.hexbin()
         .extent([[0, 0], [widthMap, heightMap]])
-        .radius(10)
+        .radius(20)
         .x(d => {
           if (d.xy) {
             return d.xy[0]
@@ -166,14 +166,16 @@
 
       console.log("data transformation line 156", data.map(d => ({ xy: projection([d.Longitude, d.Latitude]), Salary: d.Salary })))
       const bins = hexbin(
-        data.filter(d => d.Location !== 'Barrigada, GU, US').map(d => ({ long: d.Longitude, lat: d.Latitude, xy: projection([d.Longitude, d.Latitude]), Salary: d.Salary }))
+        data.filter(d => d.Location !== 'Barrigada, GU, US').map(d => ({ long: d.Longitude, lat: d.Latitude, xy: projection([d.Longitude, d.Latitude]), Salary: d.Salary, Satisfaction: d['Job Satisfaction'] }))
       )
         .map(d => (d.salary = d3.median(d, d => d.Salary), d))
+        .map(d => (d.satisfaction = d3.mean(d, d => d.Satisfaction), d));
 
       console.log("bins", bins)
 
       // Create the color and radius scales.
-      const color = d3.scaleSequential(d3.extent(bins, d => d.date), d3.interpolateSpectral);
+      //const color = satisfactionScale;
+      const color = d3.scaleSequential(satisfactionExtent, d3.interpolateSpectral);
       const radius = d3.scaleSqrt([0, d3.max(bins, d => d.length)], [0, hexbin.radius() * Math.SQRT2]);
 
       // Append the state mesh.
@@ -184,6 +186,20 @@
         .attr("stroke-width", 0.5)
         .attr("stroke-linejoin", "round")
         .attr("d", d3.geoPath(projection));
+
+      //console.log("trying interpolateBuOr", d3.interpolateBuOr(0.2))
+
+      // Append the hexagons.
+      svgMap.append("g")
+        .selectAll("path")
+        .data(bins)
+        .join("path")
+        .attr("transform", d => `translate(${d.x},${d.y})`)
+        .attr("d", d => hexbin.hexagon(radius(d.length)))
+        .attr("fill", d => color(d.satisfaction))
+        .attr("stroke", d => d3.lab(color(d.satisfaction)).darker())
+        .append("title")
+        .text(d => `${d.length.toLocaleString()} survey responses\n${d3.format(".2f")(d.satisfaction)} mean satisfaction\n${d3.format("$.2s")(d.salary)} median salary`);
 
 
       //filter used for updates
@@ -206,8 +222,9 @@
       const cyCalc = (i, numPointsPerRow, maxD, yOffset) => Math.floor(i / (numPointsPerRow)) * maxD + yOffset;
 
       //TODO: need more dynamic maxD calculation, right now doesn't change with selections
-      const maxD = 10
-      //const maxD = Math.ceil(salaryScale(medianSalaryOverall) * 2 + 2);
+      const medianSalaryOverall = d3.median(data, d => d['Salary']);
+      //const maxD = 10
+      const maxD = Math.ceil(salaryScale(medianSalaryOverall) * 2 + 2);
       const numPointsPerRow = Math.floor(vizWidth / maxD);
       const xOffset = maxD / 2 + margins.left;
       const yOffset = maxD / 2 + margins.top;
@@ -312,8 +329,6 @@
         tooltipDiv.style("visibility", "hidden");
       }
 
-      const medianSalaryOverall = d3.median(data, d => d['Salary']);
-
       function updateData() {
         //filter for passing data
         const passingData = data.filter(pointPassesFilters);
@@ -328,23 +343,9 @@
 
 
 
-        let passingAcc = 0;
-        let nonpassingAcc = 0;
         // Add cx and cy properties to each data point based on the index in data
         data.forEach((d, i) => {
-          //TODO: delete this prev state if not doing animation!
-          // d.prevPassesFilter = d.passesFilter
           d.passesFilter = pointPassesFilters(d);
-
-          // if (d.passesFilter) {
-          // d.cx = cxCalc(passingAcc, numPointsPerRow, maxD, xOffset);
-          // d.cy = cyCalc(passingAcc, numPointsPerRow, maxD, yOffset);
-          // passingAcc++;
-          // } else {
-          //   d.cx = cxCalc(nonpassingAcc + passingDataSize, numPointsPerRow, maxD, xOffset);
-          //   d.cy = cyCalc(nonpassingAcc + passingDataSize, numPointsPerRow, maxD, yOffset);
-          //   nonpassingAcc++;
-          // }
         });
 
 
@@ -370,14 +371,6 @@
             context.fill();
           }
         });
-
-        // update delaunay
-        // delaunay = d3.Delaunay.from(data, d => d.cx, d => d.cy);
-        // // update voronoi
-        // voronoi = delaunay.voronoi([0, 0, width, height]);
-        // interactiveArea.selectAll("path").remove();
-        // interactiveArea.append("path").attr("stroke", "black").attr("fill", "none")
-        //   .attr("d", voronoi.render())
 
       }
 
