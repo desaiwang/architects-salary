@@ -15,37 +15,34 @@
 
 <body style="background-color: rgb(255, 255, 255);">
   <div style="margin-top:30px">
+  </div>
+  <div id="header">
+    <!-- style="margin-left:-100px" -->
+    <h2 style="text-align: center"> Visualizing Architect's Salary in the US</h2>
+    <h5 style="text-align: center; margin-top: -65px; margin-bottom: 50px"> Desai Wang</h5>
+  </div>
+
+  <div style="display: flex; justify-content: center;">
+    <h2 id="summaryText"></h2>
+  </div>
+
+  <div>
     <div id="hexbinMap">
 
     </div>
-    <div id="header">
-      <!-- style="margin-left:-100px" -->
-      <h2 style="text-align: center"> Visualizing Architect's Salary in the US</h2>
-      <h5 style="text-align: center; margin-top: -65px; margin-bottom: 50px"> Desai Wang</h5>
-    </div>
-
-    <div style="display: flex; justify-content: center;">
-      <h2 id="summaryText">Hello just a placeholder :/</h2>
-    </div>
-    <!-- <div style="display: flex; justify-content: center;">
-      <div id="canvasContainer" width="1200" height="1500"></div>
-    </div> -->
-
-    <div>
-
-      <div id="container" style="display: flex; justify-content: center;">
-        <div id="canvasContainer" style="position:relative; width:900px; height:1500px">
-        </div>
-        <div style="display: flex; flex-direction: column;">
-          <div id="controlfilterTime"></div>
-          <div id="controlfilterSalary"></div>
-          <div id="controlfilterSatisfaction"></div>
-          <div id="controlfilterFirmType"></div>
-          <div id="controlfilterFirmSize"></div>
-          <div id="controlfilterAge"></div>
-        </div>
+    <div id="container" style="display: flex; justify-content: center;">
+      <div id="canvasContainer" style="position:relative; width:900px; height:1500px">
+      </div>
+      <div style="display: flex; flex-direction: column;">
+        <div id="controlfilterTime"></div>
+        <div id="controlfilterSalary"></div>
+        <div id="controlfilterSatisfaction"></div>
+        <div id="controlfilterFirmType"></div>
+        <div id="controlfilterFirmSize"></div>
+        <div id="controlfilterAge"></div>
       </div>
     </div>
+  </div>
   </div>
 
   </div>
@@ -148,7 +145,6 @@
 
       //d3.schemeRdYlBu[10])
       const satisfactionScale = d3.scaleQuantize(satisfactionExtent, satisfactionColors)
-      //console.log(d3.schemeRdYlGn[10])
       //more colors see: https://d3js.org/d3-scale-chromatic/diverging
 
       const salaryExtent = d3.extent(data, d => d['Salary'])
