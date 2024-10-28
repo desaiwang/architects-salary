@@ -127,6 +127,7 @@
       .attr("width", widthMap)
       .attr("height", heightMap)
       .attr("style", "max-width: 100%; height: auto;");
+    const mapArea = svgMap.append("g");
 
     const loadIndividuals = async function () {
       let data = await d3.csv("data/241027_archinect_salaries_fulltime.csv", d3.autoType);
@@ -137,7 +138,14 @@
       const satisfactionExtent = d3.extent(data, d => d['Job Satisfaction'])
       //starting color in UI colors: #043565 for blue, #ff8f06 for orange using https://uicolors.app/create
 
-      const satisfactionColors = ["#3c5491", "#4465b1", "#4e78c2", "#6290cf", "#a9c9e7", "#ffe3a8", "#ffce70", "#ff8f06", "#f07706", "#c75a07"]
+      // const satisfactionColors = ["#3c5491", "#4465b1", "#4e78c2", "#6290cf", "#a9c9e7", "#ffe3a8", "#ffce70", "#ff8f06", "#f07706", "#c75a07"]
+
+      const uniqueSatisfactionValues = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+      const BuOrColorInterpolator = d3.piecewise(d3.interpolateRgb, ['#0a1869', '#a9c9e7', "#ffe3a8", '#fc6f03']);
+      const colorInterpolator = (x) => BuOrColorInterpolator(d3.scaleLinear().domain(satisfactionExtent).range([0, 1])(x));
+      const satisfactionColors = uniqueSatisfactionValues.map(d => colorInterpolator(d));
+
       //d3.schemeRdYlBu[10])
       const satisfactionScale = d3.scaleQuantize(satisfactionExtent, satisfactionColors)
       //console.log(d3.schemeRdYlGn[10])
@@ -148,38 +156,37 @@
       const salaryScale = d3.scaleSqrt().domain(salaryExtent).range([0.5, 15])
 
       //map related scales and set up
-      const us = await d3.json("data/us-counties-10m.json");
-      const stateMesh = topojson.mesh(us, us.objects.states);
+      // const us = await d3.json("data/us-counties-10m.json");
+      // const stateMesh = topojson.mesh(us, us.objects.states);
 
-      const hexbin = d3.hexbin()
-        .extent([[0, 0], [widthMap, heightMap]])
-        .radius(20)
-        .x(d => {
-          if (d.xy) {
-            return d.xy[0]
-          } else {
-            console.log("error: d is", d)
-          }
-        })
-        //.x(d => d.xy[0])
-        .y(d => d.xy[1]);
+      const us = await d3.json("data/cb_2023_us_20m.json");
+      console.log("us", us);
+      const states = await d3.json("data/cb_2023_us_state_5m.json");
+      console.log("states", states);
+      const stateMesh = topojson.mesh(states, states.objects.cb_2023_us_state_5m);
 
-      console.log("data transformation line 156", data.map(d => ({ xy: projection([d.Longitude, d.Latitude]), Salary: d.Salary })))
-      const bins = hexbin(
-        data.filter(d => d.Location !== 'Barrigada, GU, US').map(d => ({ long: d.Longitude, lat: d.Latitude, xy: projection([d.Longitude, d.Latitude]), Salary: d.Salary, Satisfaction: d['Job Satisfaction'] }))
-      )
-        .map(d => (d.salary = d3.median(d, d => d.Salary), d))
-        .map(d => (d.satisfaction = d3.mean(d, d => d.Satisfaction), d));
-
-      console.log("bins", bins)
+      const dataGroupedByLocation = Array.from(d3.group(data, d => d.Location))
+        .map(([key, values]) => ({
+          location: key,
+          xy: projection([values[0].Longitude, values[0].Latitude]),
+          length: values.length,
+          meanSatisfaction: d3.mean(values, d => d['Job Satisfaction']),
+          medianSalary: d3.median(values, d => d['Salary'])
+        }));
+      console.log("Grouped Data by Location:", dataGroupedByLocation);
 
       // Create the color and radius scales.
-      //const color = satisfactionScale;
-      const color = d3.scaleSequential(satisfactionExtent, d3.interpolateSpectral);
-      const radius = d3.scaleSqrt([0, d3.max(bins, d => d.length)], [0, hexbin.radius() * Math.SQRT2]);
+      const satisfactionExtentGrouped = d3.extent(dataGroupedByLocation, d => d.meanSatisfaction)
+      const salaryExtentGrouped = d3.extent(dataGroupedByLocation, d => d.medianSalary)
+      console.log("satisfactionExtentGrouped", satisfactionExtentGrouped)
+      const color = (x) => BuOrColorInterpolator(d3.scaleLinear().domain(satisfactionExtentGrouped).range([0, 1])(x))
+      //d3.scaleSequential(satisfactionExtent, d3.interpolateSpectral);
+      const groupLengthExtent = d3.extent(dataGroupedByLocation.map(d => d.length))
+      console.log("groupLengthExtent", groupLengthExtent)
+      const radius = d3.scaleSqrt(groupLengthExtent, [1, 25]);
 
       // Append the state mesh.
-      svgMap.append("path")
+      mapArea.append("path")
         .datum(stateMesh)
         .attr("fill", "none")
         .attr("stroke", "#777")
@@ -187,20 +194,92 @@
         .attr("stroke-linejoin", "round")
         .attr("d", d3.geoPath(projection));
 
-      //console.log("trying interpolateBuOr", d3.interpolateBuOr(0.2))
+      //append a legend
+      const legend = mapArea.append("g")
+        .attr("fill", "#777")
+        .attr("transform", "translate(850,550)")
+        .attr("text-anchor", "middle")
+        .style("font", "10px sans-serif")
+        .selectAll()
+        .data(radius.ticks(4).slice(1))
+        .join("g");
 
-      // Append the hexagons.
-      svgMap.append("g")
-        .selectAll("path")
-        .data(bins)
-        .join("path")
-        .attr("transform", d => `translate(${d.x},${d.y})`)
-        .attr("d", d => hexbin.hexagon(radius(d.length)))
-        .attr("fill", d => color(d.satisfaction))
-        .attr("stroke", d => d3.lab(color(d.satisfaction)).darker())
+      legend.append("circle")
+        .attr("fill", "none")
+        .attr("stroke", "#ccc")
+        .attr("cy", d => -radius(d))
+        .attr("r", radius);
+
+      legend.append("text")
+        .attr("y", d => -2 * radius(d))
+        .attr("dy", "1.3em")
+        .text(radius.tickFormat(4, "s"));
+
+      mapArea.append("g")
+        .selectAll()
+        .data(dataGroupedByLocation)
+        .join("circle")
+        .attr("transform", d => {
+          if (d.xy) {
+            return `translate(${d.xy[0]},${d.xy[1]})`
+          } else {
+            console.log("error: d is", d)
+          }
+        })
+        .attr("r", d => radius(d.length)) //make sure to change function in zoomed too!
+        .attr("fill", d => color(d.meanSatisfaction))
+        .attr("opacity", 0.8)
         .append("title")
-        .text(d => `${d.length.toLocaleString()} survey responses\n${d3.format(".2f")(d.satisfaction)} mean satisfaction\n${d3.format("$.2s")(d.salary)} median salary`);
+        .text(d => `${d.location}\n${d.length.toLocaleString()} survey responses\n${d3.format(".2f")(d.meanSatisfaction)} mean satisfaction\n${d3.format("$.2s")(d.medianSalary)} median salary`);
 
+      //zooming functions
+
+      var zoom = d3.zoom()
+        .scaleExtent([1, 15])
+        .translateExtent([
+          [-50, -50],
+          [widthMap + 50, heightMap + 50]
+        ]) // to lock to edges
+        .on("zoom", mapZoomed);
+
+      svgMap.call(zoom);
+      //manually call zoom interaction to activate any code that's in zoomed()
+      svgMap.call(zoom.transform, d3.zoomIdentity);
+
+      function mapZoomed({
+        transform
+      }) {
+        // Transform the group object to reflect the zoom action
+        mapArea.attr("transform", transform.toString());
+        // NOTE: we could also instead adjust projection and path to account for the zoom
+        //  However, projections can be time-consuming to calculate, leading to laggy interactions
+        //  For some projections like orthographic, you need to recompute the projection to deliver a
+        //   consistent user experience (e.g. adjust lambda for the projection to rotate the globe)
+
+        // Divide by scale to make sure strokes remain a consistent width during zooming
+        mapArea.select(".state-outline")
+          .style("stroke-width", 2 / transform.k);
+        mapArea.select(".county-outline")
+          .style("stroke-width", 1 / transform.k);
+
+        mapArea.selectAll("circle")
+          .style("r", d => radius(d.length) / Math.sqrt(transform.k));
+
+
+        // // Expose county layer when sufficiently zoomed
+        // chartArea.select(".county-outline")
+        //   .attr("visibility", (transform.k > 3) ? "visible" : "hidden");
+        // chartArea.selectAll(".county")
+        //   .attr("visibility", (transform.k > 3) ? "visible" : "hidden");
+        // We can't animate the Visibility attribute -- also probably not a good thing to animate anyways
+        //  You could chain an animation on opacity with an .end() promise of setting the visibility attribute
+        //  There would likely be some lag or skipping due to repeated events during the animation trigger
+
+        // See below for why I use visibility rather than opacity
+
+        // OK, Zoomer
+
+      }
 
       //filter used for updates
       var filters = {};
