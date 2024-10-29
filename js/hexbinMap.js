@@ -17,30 +17,48 @@ export async function hexbinMap(projection, data, categoryColor, categoryRadius,
     .y(d => d.xy[1]);
 
   const bins = hexbin(
-    data.filter(d => d.Location !== 'Barrigada, GU, US').map(d => ({ long: d.Longitude, lat: d.Latitude, xy: projection([d.Longitude, d.Latitude]), Salary: d.Salary, Satisfaction: d['Job Satisfaction'] }))
+    data.filter(d => d.Location !== 'Barrigada, GU, US')
+      .map(d => ({
+        xy: projection([d.Longitude, d.Latitude]),
+        Salary: d.Salary, Satisfaction: d['Job Satisfaction']
+      }))
   )
     .map(d => (d.salary = d3.median(d, d => d.Salary), d))
     .map(d => (d.satisfaction = d3.mean(d, d => d.Satisfaction), d));
 
-  // console.log("bins", bins)
+  console.log("bins", bins)
 
   // Create the color and radius scales.
   const color = d3.scaleSequential(d3.extent(bins, d => d[categoryColor]), d3.interpolateSpectral);
-  const radius = d3.scaleSqrt(d3.extent(bins, d => d[categoryRadius]), [hexbin.radius() * 0.5, hexbin.radius() * Math.SQRT2]);
+  const radius = d3.scaleSqrt(d3.extent(bins, d => d[categoryRadius]), [hexbin.radius() * 0.3, hexbin.radius() * 3]);
+  //d3.extent(bins, d => d[categoryRadius])
 
   // Append the hexagons.
+  hexBinLayer.selectAll("path").remove();
   hexBinLayer
-    .selectAll("path.hexBin")
+    .selectAll("path")
     .data(bins)
     .join("path")
     .attr("class", "hexBin")
     .attr("transform", d => `translate(${d.x},${d.y})`)
-    .attr("d", d => hexbin.hexagon(radius(d[categoryRadius])))
+    .attr("d", (d, i) => {
+      if (d.x == 857.3651497465942 & d.y == 165) {
+        console.log("d is", d, "d[categoryRadius]: ", d[categoryRadius], "radius: ", radius(d[categoryRadius]))
+      }
+      return hexbin.hexagon(radius(d[categoryRadius]))
+    })
     .attr("fill", d => color(d[categoryColor]))
     .attr("stroke", d => d3.lab(color(d[categoryColor])).darker())
+    .attr("opacity", 0.8)
     .append("title")
     .text(d => `${d.length.toLocaleString()} survey responses\n${d3.format(".2f")(d.satisfaction)} mean satisfaction\n${d3.format("$.2s")(d.salary)} median salary`);
 
+  hexBinLayer.selectAll("circle").remove();
+  hexBinLayer.append("circle")
+    .attr("cx", 857.3651)
+    .attr("cy", 165)
+    .attr("r", 2)
+    .attr("fill", "black")
   //zooming functions, uncommented out for now
 
   // var zoom = d3.zoom()
