@@ -1,4 +1,4 @@
-class ClickableHistogramSliderClass {
+class ClickableHistogramSlider {
   constructor(dataAll, container, label, attribute, sliderWidth, sliderHeight, updateData, filters, options = {}) {
     this.dataAll = dataAll;
     this.container = container;
@@ -10,21 +10,35 @@ class ClickableHistogramSliderClass {
     this.updateData = updateData;
     this.options = options;
 
+    // Default options
+    const defaultOptions = {
+      scaleFormatter: null,
+      colorList: null,
+      sortOrder: 'key',
+      ascending: true,
+      yBetweenLabelAndHist: 10,
+      rotateAxisLabels: false
+    };
+
+    // Merge user-provided options with defaults
+    this.options = Object.assign({}, defaultOptions, options);
+
     this.initialize();
   }
 
   initialize() {
     // Define scales and grouped data
+    //console.log("options", this.options)
     this.groupedData = d3.groups(this.dataAll, d => d[this.attribute]);
     this.groupCounts = this.groupedData.map(([key, values]) => ({
       key: key === null ? "N/A" : key,
       count: values.length,
-      color: this.options.colorList ? this.options.colorList[this.groupedData.indexOf(key)] : "grey",
       clicked: true,
     }));
 
     //sort groupCounts into desired order
     if (Array.isArray(this.options.sortOrder)) {
+      console.log("trying to sort groupCounts by sortOrder", this.attribute, this.options.sortOrder);
       this.groupCounts.sort((a, b) => {
         const indexA = this.options.sortOrder.indexOf(a.key);
         const indexB = this.options.sortOrder.indexOf(b.key);
@@ -34,16 +48,31 @@ class ClickableHistogramSliderClass {
         return indexA - indexB;
       });
     } else if (this.options.sortOrder === 'key') {
-      this.groupCounts.sort((a, b) => ascending ? a.key - b.key : b.key - a.key);
+      this.groupCounts.sort((a, b) => this.options.ascending ? a.key - b.key : b.key - a.key);
     } else if (this.options.sortOrder === 'count') {
-      this.groupCounts.sort((a, b) => ascending ? a.count - b.count : b.count - a.count);
+      this.groupCounts.sort((a, b) => this.options.ascending ? a.count - b.count : b.count - a.count);
     }
+    console.log("groupCounts after sorting", this.groupCounts);
 
     //set timeout to be null
     this.timeout = null;
     this.uniqueKeys = this.groupCounts.map(d => d.key);
     this.valueList = this.uniqueKeys;
-    console.log("valueList at line 46", this.valueList)
+
+    this.groupCounts.forEach(d =>
+      d.color = this.options.colorList ? this.options.colorList[this.uniqueKeys.indexOf(d.key)] : "grey"
+    );
+
+    if (this.options.colorList) {
+      console.log("colorList", this.options.colorList);
+      console.log("groupedData", this.groupedData);
+      this.groupedData.map(([key, values]) => {
+        console.log("key", key);
+        console.log("index of key in groupedData", this.groupedData.indexOf(key));
+        console.log("color", this.options.colorList[this.groupedData.indexOf(key)]);
+      })
+      console.log("groupCounts", this.groupCounts);
+    }
 
     this.setupScales();
     this.setupSvg();
@@ -159,4 +188,4 @@ class ClickableHistogramSliderClass {
 
 }
 
-export default ClickableHistogramSliderClass;
+export default ClickableHistogramSlider;
