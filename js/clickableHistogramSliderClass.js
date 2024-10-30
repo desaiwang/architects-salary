@@ -62,8 +62,9 @@ class ClickableHistogramSlider {
       .data(this.groupCounts, d => d.key) // Use the key as the identifier
       .transition() // Start a transition for animation
       .duration(500) // Adjust duration as needed
+      .attr("height", d => d.count == 0 ? 0 : this.yScale(0) - this.yScale(d.count) + 5)
       .attr("y", d => this.yScale(d.count))
-      .attr("height", d => this.yScale(0) - this.yScale(d.count) + 5)
+
       // .append("title")
       // .text(d => `n=${d.count}`)
       ;
@@ -153,7 +154,7 @@ class ClickableHistogramSlider {
       .attr("x", d => this.xScale(d.key))
       .attr("y", d => this.yScale(d.count))
       .attr("width", this.xScale.bandwidth())
-      .attr("height", d => this.yScale(0) - this.yScale(d.count) + 5)
+      .attr("height", d => d.count == 0 ? 0 : this.yScale(0) - this.yScale(d.count) + 5)
       .attr("fill", d => d.color)
       .style("border-radius", "1px")
       .attr("cursor", "pointer") //this makes the cursor change to a pointer when hovering over the bars to indicate that things are clickable
