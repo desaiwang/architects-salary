@@ -308,7 +308,14 @@
         const passingDataSize = passingData.length;
         //console.log("passingDataSize", passingDataSize)
 
+        //update sliders
+        firmtypeSlider.update();
+        satisfactionSlider.update();
+        firmsizeSlider.update();
+        ageSlider.update();
+
         hexbinMap(projection, passingData, "satisfaction", "length", hexBinLayer, widthMap, heightMap);
+
 
         const medianSalary = d3.median(passingData, d => d['Salary']);
         const meanSatisfaction = d3.mean(passingData, d => d['Job Satisfaction']);
@@ -365,21 +372,21 @@
       curveSlider(data, controlSalary, "Salary", "Salary", controlWidth, controlHeight, updateData, filters, { maxLimit: 200000, scaleFormatter: d => d === 0 ? "$0" : d3.format("$.2s")(d), getButtonData: getButtonDataSalary });
 
       let controlTime = d3.select("#controlfilterTime");
-      const timeSlider = new clickableHistogramSlider(data, controlTime, "Survey Year", "Year", controlWidth, controlHeight, updateData, filters, { yBetweenLabelAndHist: 0 });
+      const timeSlider = new clickableHistogramSlider(data, controlTime, "Survey Year", "Year", controlWidth, controlHeight, updateData, filters, { yBetweenLabelAndHist: 10 });
 
       let controlSatisfaction = d3.select("#controlfilterSatisfaction");
       // curveSlider(data, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", controlWidth, controlHeight + 30, updateData, filters, { maxLimit: 11, scaleFormatter: d3.format(""), numBins: 10 });
-      const satisfactionSlider = new clickableHistogramSlider(data, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", controlWidth, controlHeight, updateData, filters, { colorList: satisfactionColors, yBetweenLabelAndHist: 0 });
+      const satisfactionSlider = new clickableHistogramSlider(data, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", controlWidth, controlHeight, updateData, filters, { colorList: satisfactionColors });
 
       let controlFirmType = d3.select("#controlfilterFirmType");
       const firmtypeSlider = new clickableHistogramSlider(data, controlFirmType, "Firm Type", "Firm Type", controlWidth, controlHeight, updateData, filters, { sortOrder: ["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"] });
 
       let controlFirmSize = d3.select("#controlfilterFirmSize");
-      const firmsizeSlider = new clickableHistogramSlider(data, controlFirmSize, "Firm Size", "Firm Size", controlWidth, controlHeight, updateData, filters, { sortOrder: [1, "2-5", "6-10", "11-15", "16-30", "31-50", "51-100", "101-200", "201-500", "501+"], rotateAxisLabels: true });
+      const firmsizeSlider = new clickableHistogramSlider(data, controlFirmSize, "Firm Size", "Firm Size", controlWidth, controlHeight, updateData, filters, { sortOrder: [1, "2-5", "6-10", "11-15", "16-30", "31-50", "51-100", "101-200", "201-500", "501+"], rotateAxisLabels: true, yBetweenLabelAndHist: 15 });
 
 
       let controlAge = d3.select("#controlfilterAge");
-      const ageSlider = new clickableHistogramSlider(data, controlAge, "Age", "Age", controlWidth, controlHeight, updateData, filters, { sortOrder: ["18-20", "21-25", "26-30", "31-35", "36-40", "41-45", "46-50", "51-55", "56-60", "61-65", "66-70", "71-103"], rotateAxisLabels: true });
+      const ageSlider = new clickableHistogramSlider(data, controlAge, "Age", "Age", controlWidth, controlHeight, updateData, filters, { sortOrder: ["18-20", "21-25", "26-30", "31-35", "36-40", "41-45", "46-50", "51-55", "56-60", "61-65", "66-70", "71-103"], rotateAxisLabels: true, yBetweenLabelAndHist: 15 });
 
       //testing class creations
       // let controlAgeClass = d3.select("#controlfilterAgeClass");
