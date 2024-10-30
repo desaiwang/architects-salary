@@ -16,7 +16,7 @@ class ClickableHistogramSlider {
       colorList: null,
       sortOrder: 'key',
       ascending: true,
-      yBetweenLabelAndHist: 10,
+      yBetweenLabelAndHist: 15,
       rotateAxisLabels: false
     };
 
@@ -58,10 +58,13 @@ class ClickableHistogramSlider {
       count: countsMap.get(group.key === "N/A" ? null : group.key) || 0 // Set to 0 if no data in the group
     }));
 
+    //update y scale
+    this.yScale.domain([0, d3.max(this.groupCounts, d => d.count)])
+
     this.histRects
       .data(this.groupCounts, d => d.key) // Use the key as the identifier
-      .transition() // Start a transition for animation
-      .duration(500) // Adjust duration as needed
+      .transition()
+      .duration(200)
       .attr("height", d => d.count == 0 ? 0 : this.yScale(0) - this.yScale(d.count) + 5)
       .attr("y", d => this.yScale(d.count))
 
@@ -101,6 +104,7 @@ class ClickableHistogramSlider {
     this.timeout = null;
     this.uniqueKeys = this.groupCounts.map(d => d.key);
     this.valueList = this.uniqueKeys;
+    console.log("valueList upon initiation", this.valueList)
 
     this.groupCounts.forEach(d =>
       d.color = this.options.colorList ? this.options.colorList[this.uniqueKeys.indexOf(d.key)] : "grey"
@@ -209,7 +213,14 @@ class ClickableHistogramSlider {
 
             this.valueList = this.valueList.filter(rating => rating != d.key)
           }
-          this.filters[this.attribute] = d => this.valueList.includes(d[this.attribute] === null ? "N/A" : d[this.attribute]);
+          this.filters[this.attribute] = (d) => {
+            // if (d[this.attribute] === null) {
+            //   console.log(`d[${this.attribute}]`, d[this.attribute])
+            //   console.log("this.valueList", this.valueList)
+            //   console.log("this.valueList.includes(d[this.attribute])", this.valueList.includes(d[this.attribute] === null ? "N/A" : d[this.attribute]))
+            // }
+            return this.valueList.includes(d[this.attribute] === null ? "N/A" : d[this.attribute]);
+          }
           this.updateData()
         }, 200);
       }).on('dblclick', (event, d) => {
@@ -224,7 +235,10 @@ class ClickableHistogramSlider {
 
         // Update valueList and filter to only include the double-clicked value
         this.valueList = [d.key];
-        this.filters[this.attribute] = item => item[this.attribute] === d.key;
+        console.log(this.valueList)
+
+        this.filters[this.attribute] = (item) => item[this.attribute] === (d.key === "N/A" ? null : d.key);
+
         this.updateData();
       });
 
