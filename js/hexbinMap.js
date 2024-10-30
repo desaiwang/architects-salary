@@ -26,7 +26,7 @@ export async function hexbinMap(projection, data, categoryColor, categoryRadius,
     .map(d => (d.salary = d3.median(d, d => d.Salary), d))
     .map(d => (d.satisfaction = d3.mean(d, d => d.Satisfaction), d));
 
-  console.log("bins", bins)
+  //console.log("bins", bins)
 
   // Create the color and radius scales.
   const color = d3.scaleSequential(d3.extent(bins, d => d[categoryColor]), d3.interpolateSpectral);
@@ -42,9 +42,9 @@ export async function hexbinMap(projection, data, categoryColor, categoryRadius,
     .attr("class", "hexBin")
     .attr("transform", d => `translate(${d.x},${d.y})`)
     .attr("d", (d, i) => {
-      if (d.x == 857.3651497465942 & d.y == 165) {
-        console.log("d is", d, "d[categoryRadius]: ", d[categoryRadius], "radius: ", radius(d[categoryRadius]))
-      }
+      // if (d.x == 857.3651497465942 & d.y == 165) {
+      //   console.log("d is", d, "d[categoryRadius]: ", d[categoryRadius], "radius: ", radius(d[categoryRadius]))
+      // }
       return hexbin.hexagon(radius(d[categoryRadius]))
     })
     .attr("fill", d => color(d[categoryColor]))

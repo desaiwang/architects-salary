@@ -40,6 +40,7 @@
         <div id="controlfilterFirmType"></div>
         <div id="controlfilterFirmSize"></div>
         <div id="controlfilterAge"></div>
+        <div id="controlfilterAgeClass"></div>
       </div>
     </div>
   </div>
@@ -57,6 +58,7 @@
     import { clickableHistogramSlider } from './js/clickableHistogramSlider.js';
     import { hexbinMap } from './js/hexbinMap.js';
     import { geoAlbersUsaPr } from "./js/geoAlbersUsaPr.js";
+    import clickableHistogramSliderClass from './js/clickableHistogramSliderClass.js';
 
     //set up for individuals visualization
     const vizIndividualsContainer = d3.select("div#canvasContainer");
@@ -348,7 +350,7 @@
       }
 
       //sets up contols
-      let controlWidth = 350;
+      let controlWidth = 320;
       let controlHeight = 70;
 
       let controlSalary = d3.select("#controlfilterSalary");
@@ -378,6 +380,13 @@
 
       let controlAge = d3.select("#controlfilterAge");
       clickableHistogramSlider(data, controlAge, "Age", "Age", controlWidth, controlHeight, updateData, filters, { sortOrder: ["18-20", "21-25", "26-30", "31-35", "36-40", "41-45", "46-50", "51-55", "56-60", "61-65", "66-70", "71-103"], rotateAxisLabels: true });
+
+      //testing class creations
+      let controlAgeClass = d3.select("#controlfilterAgeClass");
+      const histogramClassTest = new clickableHistogramSliderClass(data,
+        controlAgeClass, "Age", "Age", controlWidth, controlHeight, updateData, filters, { sortOrder: ["18-20", "21-25", "26-30", "31-35", "36-40", "41-45", "46-50", "51-55", "56-60", "61-65", "66-70", "71-103"], rotateAxisLabels: true }
+      );
+      console.log("histogramClassTest", histogramClassTest);
       //call update data to draw the initial data
       updateData();
 
