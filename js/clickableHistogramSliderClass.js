@@ -26,54 +26,6 @@ class ClickableHistogramSlider {
     this.initialize();
   }
 
-  //this one only tests filters that are not this.attribute
-  static pointPassesFilters(filters, attribute, point) {
-    let stillPassed = true;
-
-    //console.log("filters", filters)
-    Object.entries(filters).forEach(([key, filterFunc]) => {
-      if (key !== attribute) {
-        stillPassed = filterFunc(point) && stillPassed;
-      }
-    });
-
-    return stillPassed;
-  }
-
-  update() {
-
-    // Filter dataAll based on some condition
-    const filteredData = this.dataAll.filter(d => ClickableHistogramSlider.pointPassesFilters(this.filters, this.attribute, d));
-
-    // console.log("update called on: ", this.attribute, "with filteredData: ", filteredData)
-    // Group the filtered data by the same attribute
-    const filteredGroupedData = d3.groups(filteredData, d => d[this.attribute]);
-    // console.log("filteredGroupedData", filteredGroupedData)
-    // Create a map of key to count from the filtered grouped data
-    const countsMap = new Map(filteredGroupedData.map(([key, values]) => [key, values.length]));
-
-    // Update the count in groupCounts based on the filtered data
-    this.groupCounts = this.groupCounts.map(group => ({
-      ...group,
-      count: countsMap.get(group.key === "N/A" ? null : group.key) || 0 // Set to 0 if no data in the group
-    }));
-
-    //update y scale
-    this.yScale.domain([0, d3.max(this.groupCounts, d => d.count)])
-
-    this.histRects
-      .data(this.groupCounts, d => d.key) // Use the key as the identifier
-      .transition()
-      .duration(200)
-      .attr("height", d => d.count == 0 ? 0 : this.yScale(0) - this.yScale(d.count) + 5)
-      .attr("y", d => this.yScale(d.count))
-
-      // .append("title")
-      // .text(d => `n=${d.count}`)
-      ;
-
-  }
-
   initialize() {
     // Define scales and grouped data
     //console.log("options", this.options)
@@ -112,7 +64,8 @@ class ClickableHistogramSlider {
 
     this.setupScales();
     this.setupSvg();
-    this.render();
+    this.setupBrush();
+    this.setupHistogram();
   }
 
   setupScales() {
@@ -133,6 +86,56 @@ class ClickableHistogramSlider {
       .attr("height", this.sliderHeight + (this.options.rotateAxisLabels ? 60 : 30))
       .attr("attribute", this.attribute);
 
+  }
+
+  setupBrush() {
+    //set up brush
+    var brush = d3.brushX().extent([[0, 0],
+    [this.sliderWidth, this.sliderHeight]])
+      .on("start", (event) => {
+        //temporarily disable pointer events on the bars
+        this.histRects.style("pointer-events", "none");
+      })
+      .on("end", (event) => brushMoved.call(this, event));
+
+    let step = this.xScale.step();
+    const brushMoved = (event) => {
+
+      if (event.selection !== null) {
+        let [x0, x1] = event.selection;
+        let start = Math.floor((x0 + this.xScale.padding()) / step);
+        let end = Math.ceil(x1 / step);
+
+        // Add uniqueKeys within the brush selection to a new list
+        this.valueList = this.uniqueKeys.slice(start, end);
+        console.log(this.valueList)
+
+        console.log((x0 + this.xScale.padding()) / step, start, x1 / step, end)
+
+        //select only the bars in brush selection
+        this.groupCounts.forEach(item => item.clicked = (this.valueList.includes(item.key)));
+        this.histRects
+          .attr("fill", d => d.clicked ? d.color : "white")
+          .style('outline-color', d => d.clicked ? ClickableHistogramSlider.selectedColor : ClickableHistogramSlider.greyedoutColor);
+
+
+        this.filters[this.attribute] = (d) => this.valueList.includes(d[this.attribute] === null ? "N/A" : d[this.attribute]);
+
+        this.updateData();
+
+        // Clear brush selection
+        this.brushRegion.call(brush.move, null);
+        //re-enable disable pointer events on the bars
+      }
+      this.histRects.style("pointer-events", "all");
+    }
+
+    //append brush region
+    this.brushRegion = this.svg.append("g").attr("class", "brush")
+    this.brushRegion.call(brush);
+  }
+
+  setupHistogram() {
     let gXAxis = this.svg.append("g").attr("transform", `translate(0,${this.sliderHeight + 8})`).call(
       d3.axisBottom(this.xScale).tickSizeOuter(0).tickFormat(this.options.scaleFormatter || (d => d))
     );
@@ -213,14 +216,7 @@ class ClickableHistogramSlider {
 
             this.valueList = this.valueList.filter(rating => rating != d.key)
           }
-          this.filters[this.attribute] = (d) => {
-            // if (d[this.attribute] === null) {
-            //   console.log(`d[${this.attribute}]`, d[this.attribute])
-            //   console.log("this.valueList", this.valueList)
-            //   console.log("this.valueList.includes(d[this.attribute])", this.valueList.includes(d[this.attribute] === null ? "N/A" : d[this.attribute]))
-            // }
-            return this.valueList.includes(d[this.attribute] === null ? "N/A" : d[this.attribute]);
-          }
+          this.filters[this.attribute] = (d) => this.valueList.includes(d[this.attribute] === null ? "N/A" : d[this.attribute]);
           this.updateData()
         }, 200);
       }).on('dblclick', (event, d) => {
@@ -241,8 +237,52 @@ class ClickableHistogramSlider {
 
         this.updateData();
       });
+  }
+
+  //this one only tests filters that are not this.attribute
+  static pointPassesFilters(filters, attribute, point) {
+    let stillPassed = true;
+
+    //console.log("filters", filters)
+    Object.entries(filters).forEach(([key, filterFunc]) => {
+      if (key !== attribute) {
+        stillPassed = filterFunc(point) && stillPassed;
+      }
+    });
+
+    return stillPassed;
+  }
+
+  update() {
+
+    // Filter dataAll based on some condition
+    const filteredData = this.dataAll.filter(d => ClickableHistogramSlider.pointPassesFilters(this.filters, this.attribute, d));
+
+    // console.log("update called on: ", this.attribute, "with filteredData: ", filteredData)
+    // Group the filtered data by the same attribute
+    const filteredGroupedData = d3.groups(filteredData, d => d[this.attribute]);
+    // console.log("filteredGroupedData", filteredGroupedData)
+    // Create a map of key to count from the filtered grouped data
+    const countsMap = new Map(filteredGroupedData.map(([key, values]) => [key, values.length]));
+
+    // Update the count in groupCounts based on the filtered data
+    this.groupCounts = this.groupCounts.map(group => ({
+      ...group,
+      count: countsMap.get(group.key === "N/A" ? null : group.key) || 0 // Set to 0 if no data in the group
+    }));
+
+    //update y scale
+    this.yScale.domain([0, d3.max(this.groupCounts, d => d.count)])
+
+    this.histRects
+      .data(this.groupCounts, d => d.key) // Use the key as the identifier
+      .transition()
+      .duration(200)
+      .attr("height", d => d.count == 0 ? 0 : this.yScale(0) - this.yScale(d.count) + 5)
+      .attr("y", d => this.yScale(d.count));
 
   }
+
 
   render() {
 
