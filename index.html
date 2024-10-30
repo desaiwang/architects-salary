@@ -53,12 +53,13 @@
 
   <script type="module">
 
-    import { curveSlider } from './js/curveSlider.js';
+    //import { curveSlider } from './js/curveSlider.js';
     import { histogramSlider } from './js/histogramSlider.js';
     //import { clickableHistogramSlider } from './js/clickableHistogramSlider.js';
     import { hexbinMap } from './js/hexbinMap.js';
     import { geoAlbersUsaPr } from "./js/geoAlbersUsaPr.js";
-    import clickableHistogramSlider from './js/clickableHistogramSliderClass.js';
+    import ClickableHistogramSlider from './js/clickableHistogramSliderClass.js';
+    import CurveSlider from './js/curveSliderClass.js';
 
     //set up for individuals visualization
     const vizIndividualsContainer = d3.select("div#canvasContainer");
@@ -146,19 +147,13 @@
       //d3.schemeRdYlBu[10])
       const satisfactionScale = d3.scaleQuantize(satisfactionExtent, satisfactionColors)
       //more colors see: https://d3js.org/d3-scale-chromatic/diverging
-
+      console.log(d3.schemeTableau10)
       const salaryExtent = d3.extent(data, d => d['Salary'])
       //console.log("salaryExtent", salaryExtent)
       const salaryScale = d3.scaleSqrt().domain(salaryExtent).range([0.5, 15])
 
       //map related scales and set up
-      // const us = await d3.json("data/us-counties-10m.json");
-      // const stateMesh = topojson.mesh(us, us.objects.states);
-
-      //const us = await d3.json("data/cb_2023_us_20m.json");
-      //console.log("us", us);
       const states = await d3.json("data/cb_2023_us_state_5m.json");
-      console.log("states", states);
       const stateMesh = topojson.mesh(states, states.objects.cb_2023_us_state_5m);
 
       const projection = geoAlbersUsaPr().scale(4 / 3 * widthMap).translate([widthMap / 2, heightMap / 2]);
@@ -310,10 +305,12 @@
 
         //update sliders
         timeSlider.update();
+        salarySlider.update();
         satisfactionSlider.update();
         firmtypeSlider.update();
         firmsizeSlider.update();
         ageSlider.update();
+
 
         //hexbinMap(projection, passingData, "satisfaction", "length", hexBinLayer, widthMap, heightMap);
 
@@ -370,32 +367,25 @@
         ];
       }
 
-      curveSlider(data, controlSalary, "Salary", "Salary", controlWidth, controlHeight, updateData, filters, { maxLimit: 200000, scaleFormatter: d => d === 0 ? "$0" : d3.format("$.2s")(d), getButtonData: getButtonDataSalary });
+      let salarySlider = new CurveSlider(data, controlSalary, "Salary", "Salary", controlWidth, controlHeight, updateData, filters, { maxLimit: 200000, scaleFormatter: d => d === 0 ? "$0" : d3.format("$.2s")(d), getButtonData: getButtonDataSalary });
 
       let controlTime = d3.select("#controlfilterTime");
-      const timeSlider = new clickableHistogramSlider(data, controlTime, "Survey Year", "Year", controlWidth, controlHeight, updateData, filters, { yBetweenLabelAndHist: 10 });
+      const timeSlider = new ClickableHistogramSlider(data, controlTime, "Survey Year", "Year", controlWidth, controlHeight, updateData, filters);
 
       let controlSatisfaction = d3.select("#controlfilterSatisfaction");
-      // curveSlider(data, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", controlWidth, controlHeight + 30, updateData, filters, { maxLimit: 11, scaleFormatter: d3.format(""), numBins: 10 });
-      const satisfactionSlider = new clickableHistogramSlider(data, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", controlWidth, controlHeight, updateData, filters, { colorList: satisfactionColors });
+      // CurveSlider(data, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", controlWidth, controlHeight + 30, updateData, filters, { maxLimit: 11, scaleFormatter: d3.format(""), numBins: 10 });
+      const satisfactionSlider = new ClickableHistogramSlider(data, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", controlWidth, controlHeight, updateData, filters, { colorList: satisfactionColors });
 
       let controlFirmType = d3.select("#controlfilterFirmType");
-      const firmtypeSlider = new clickableHistogramSlider(data, controlFirmType, "Firm Type", "Firm Type", controlWidth, controlHeight, updateData, filters, { sortOrder: ["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"] });
+      const firmtypeSlider = new ClickableHistogramSlider(data, controlFirmType, "Firm Type", "Firm Type", controlWidth, controlHeight, updateData, filters, { sortOrder: ["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"] });
 
       let controlFirmSize = d3.select("#controlfilterFirmSize");
-      const firmsizeSlider = new clickableHistogramSlider(data, controlFirmSize, "Firm Size", "Firm Size", controlWidth, controlHeight, updateData, filters, { sortOrder: [1, "2-5", "6-10", "11-15", "16-30", "31-50", "51-100", "101-200", "201-500", "501+"], rotateAxisLabels: true, yBetweenLabelAndHist: 15 });
+      const firmsizeSlider = new ClickableHistogramSlider(data, controlFirmSize, "Firm Size", "Firm Size", controlWidth, controlHeight, updateData, filters, { sortOrder: [1, "2-5", "6-10", "11-15", "16-30", "31-50", "51-100", "101-200", "201-500", "501+"], rotateAxisLabels: true });
 
 
       let controlAge = d3.select("#controlfilterAge");
-      const ageSlider = new clickableHistogramSlider(data, controlAge, "Age", "Age", controlWidth, controlHeight, updateData, filters, { sortOrder: ["18-20", "21-25", "26-30", "31-35", "36-40", "41-45", "46-50", "51-55", "56-60", "61-65", "66-70", "71-103"], rotateAxisLabels: true, yBetweenLabelAndHist: 15 });
+      const ageSlider = new ClickableHistogramSlider(data, controlAge, "Age", "Age", controlWidth, controlHeight, updateData, filters, { sortOrder: ["18-20", "21-25", "26-30", "31-35", "36-40", "41-45", "46-50", "51-55", "56-60", "61-65", "66-70", "71-103"], rotateAxisLabels: true });
 
-      //testing class creations
-      // let controlAgeClass = d3.select("#controlfilterAgeClass");
-      // const histogramClassTest = new clickableHistogramSliderClass(data,
-      //   controlAgeClass, "Age", "Age", controlWidth, controlHeight, updateData, filters, { sortOrder: ["18-20", "21-25", "26-30", "31-35", "36-40", "41-45", "46-50", "51-55", "56-60", "61-65", "66-70", "71-103"], rotateAxisLabels: true }
-      // );
-      // console.log("histogramClassTest", histogramClassTest);
-      //call update data to draw the initial data
       updateData();
 
     }
