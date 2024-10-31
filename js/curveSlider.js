@@ -47,12 +47,6 @@ export function curveSlider(dataAll, container, label, attribute, sliderWidth, s
     .style("flex-direction", "row")
     .style("justify-content", "center");
 
-  //checking what the default values are
-  console.log("getButtonData", getButtonData)
-  console.log("scaleFormatter", scaleFormatter)
-  console.log("numBins", numBins)
-  console.log("maxLimit", maxLimit)
-  console.log("extent", extent)
 
   if (getButtonData) {
     let buttonData = getButtonData(attribute, values);

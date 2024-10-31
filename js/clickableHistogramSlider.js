@@ -14,7 +14,7 @@ import cancelableClick from "./cancelableClick.js";
  * 
  * @returns {void}
  */
-export function clickableHistogramSlider(dataAll, container, label, attribute, sliderWidth, sliderHeight, updateData, filters, { scaleFormatter = null, colorList = null, sortOrder = 'key', ascending = true, yBetweenLabelAndHist = 10 }) {
+export function clickableHistogramSlider(dataAll, container, label, attribute, sliderWidth, sliderHeight, updateData, filters, { scaleFormatter = null, colorList = null, sortOrder = 'key', ascending = true, yBetweenLabelAndHist = 10, rotateAxisLabels = false }) {
 
   let wrapper = container.append("div").attr("class", "controls").style("margin-top", "10px");
 
@@ -30,7 +30,7 @@ export function clickableHistogramSlider(dataAll, container, label, attribute, s
 
   let svgHist = rowwrapper.append("svg").attr("id", "capacity selection")
     .attr("width", sliderWidth)
-    .attr("height", sliderHeight + 30)
+    .attr("height", rotateAxisLabels ? sliderHeight + 60 : sliderHeight + 30)
     .attr("attribute", attribute);
 
   const groupedData = d3.groups(dataAll, d => d[attribute]);
@@ -80,7 +80,22 @@ export function clickableHistogramSlider(dataAll, container, label, attribute, s
           .tickFormat(scaleFormatter ? scaleFormatter : d => d)
       )
   };
-  svgHist.append("g").call(xAxis);
+
+  let gXAxis = svgHist.append("g").call(xAxis)
+  if (rotateAxisLabels) {
+    gXAxis.selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em")
+      .attr("transform", "rotate(-65)")
+    //gXAxis.style("font-size", "9px");
+  }
+  //   .selectAll("text")
+  //   .style("text-anchor", "end")
+  //   .attr("dx", "-.8em")
+  //   .attr("dy", ".15em")
+  //   .attr("transform", "rotate(-65)")
+  // gXAxis.style("font-size", "9px");
 
   //initiate valueList with all unique values (all checked)
   let valueList = uniqueKeys; //used to update ratings

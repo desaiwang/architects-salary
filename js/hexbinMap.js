@@ -1,79 +1,93 @@
 
 import { geoAlbersUsaPr } from "./geoAlbersUsaPr.js";
-export async function hexbinMap() {
 
-  // Load the data.
-  const parseDate = d3.utcParse("%m/%d/%Y");
-  const walmartsRaw = await d3.tsv("../data/walmart.tsv", d3.autoType)
-  const walmarts = walmartsRaw.map((d) => ({
-    longitude: +d[0],
-    latitude: +d[1],
-    date: parseDate(d.date)
-  }));;
+export async function hexbinMap(projection, data, categoryColor, categoryRadius, hexBinLayer, widthMap, heightMap) {
 
-  //console.log("walmarts", walmarts)
-  const us = await d3.json("../data/us-counties-10m.json");
-  const stateMesh = topojson.mesh(us, us.objects.states);
-  //console.log("stateMesh", stateMesh)
-
-
-  // Specify the map’s dimensions and projection.
-  const widthMap = 928;
-  const heightMap = 581;
-  const projection = geoAlbersUsaPr().scale(4 / 3 * widthMap).translate([widthMap / 2, heightMap / 2]);
-
-  // Create the container SVG.
-  const svgMap = d3.create("svg")
-    .attr("viewBox", [0, 0, widthMap, heightMap])
-    .attr("width", widthMap)
-    .attr("height", heightMap)
-    .attr("style", "max-width: 100%; height: auto;");
-
-  // Create the bins.
+  //Hexbin map
   const hexbin = d3.hexbin()
     .extent([[0, 0], [widthMap, heightMap]])
     .radius(10)
-    .x(d => d.xy[0])
+    .x(d => {
+      if (d.xy) {
+        return d.xy[0]
+      } else {
+        console.log("error: d is", d)
+      }
+    })
     .y(d => d.xy[1]);
-  const bins = hexbin(walmarts.map(d => ({ xy: projection([d.longitude, d.latitude]), date: d.date })))
-    .map(d => (d.date = new Date(d3.median(d, d => d.date)), d))
-    .sort((a, b) => b.length - a.length)
+
+  const bins = hexbin(
+    data.filter(d => d.Location !== 'Barrigada, GU, US')
+      .map(d => ({
+        xy: projection([d.Longitude, d.Latitude]),
+        Salary: d.Salary, Satisfaction: d['Job Satisfaction']
+      }))
+  )
+    .map(d => (d.salary = d3.median(d, d => d.Salary), d))
+    .map(d => (d.satisfaction = d3.mean(d, d => d.Satisfaction), d));
+
+  //console.log("bins", bins)
 
   // Create the color and radius scales.
-  const color = d3.scaleSequential(d3.extent(bins, d => d.date), d3.interpolateSpectral);
-  const radius = d3.scaleSqrt([0, d3.max(bins, d => d.length)], [0, hexbin.radius() * Math.SQRT2]);
-
-  // Append the color legend.
-  // svgMap.append("g")
-  //   .attr("transform", "translate(580,20)")
-  //   .append(() => legend({
-  //     color,
-  //     title: "Median opening year",
-  //     width: 260,
-  //     tickValues: d3.utcYear.every(5).range(...color.domain()),
-  //     tickFormat: d3.utcFormat("%Y")
-  //   }));
-
-  // Append the state mesh.
-  svgMap.append("path")
-    .datum(stateMesh)
-    .attr("fill", "none")
-    .attr("stroke", "#777")
-    .attr("stroke-width", 0.5)
-    .attr("stroke-linejoin", "round")
-    .attr("d", d3.geoPath(projection));
+  const color = d3.scaleSequential(d3.extent(bins, d => d[categoryColor]), d3.interpolateSpectral);
+  const radius = d3.scaleSqrt(d3.extent(bins, d => d[categoryRadius]), [hexbin.radius() * 0.3, hexbin.radius() * 3]);
+  //d3.extent(bins, d => d[categoryRadius])
 
   // Append the hexagons.
-  svgMap.append("g")
+  hexBinLayer.selectAll("path").remove();
+  hexBinLayer
     .selectAll("path")
     .data(bins)
     .join("path")
+    .attr("class", "hexBin")
     .attr("transform", d => `translate(${d.x},${d.y})`)
-    .attr("d", d => hexbin.hexagon(radius(d.length)))
-    .attr("fill", d => color(d.date))
-    .attr("stroke", d => d3.lab(color(d.date)).darker())
+    .attr("d", (d, i) => {
+      // if (d.x == 857.3651497465942 & d.y == 165) {
+      //   console.log("d is", d, "d[categoryRadius]: ", d[categoryRadius], "radius: ", radius(d[categoryRadius]))
+      // }
+      return hexbin.hexagon(radius(d[categoryRadius]))
+    })
+    .attr("fill", d => color(d[categoryColor]))
+    .attr("stroke", d => d3.lab(color(d[categoryColor])).darker())
+    .attr("opacity", 0.8)
     .append("title")
-    .text(d => `${d.length.toLocaleString()} stores\n${d.date.getFullYear()} median opening`);
+    .text(d => `${d.length.toLocaleString()} survey responses\n${d3.format(".2f")(d.satisfaction)} mean satisfaction\n${d3.format("$.2s")(d.salary)} median salary`);
 
-  return svgMap.node();
+  hexBinLayer.selectAll("circle").remove();
+  hexBinLayer.append("circle")
+    .attr("cx", 857.3651)
+    .attr("cy", 165)
+    .attr("r", 2)
+    .attr("fill", "black")
+  //zooming functions, uncommented out for now
+
+  // var zoom = d3.zoom()
+  //   .scaleExtent([1, 15])
+  //   .translateExtent([
+  //     [-50, -50],
+  //     [widthMap + 50, heightMap + 50]
+  //   ]) // to lock to edges
+  //   .on("zoom", mapZoomed);
+
+  // mapArea.call(zoom);
+  // //manually call zoom interaction to activate any code that's in zoomed()
+  // mapArea.call(zoom.transform, d3.zoomIdentity);
+
+  // function mapZoomed({
+  //   transform
+  // }) {
+  //   // Transform the group object to reflect the zoom action
+  //   mapArea.attr("transform", transform.toString());
+
+  //   // Divide by scale to make sure strokes remain a consistent width during zooming
+  //   // mapArea.select(".state-outline")
+  //   //   .style("stroke-width", 2 / transform.k);
+  //   // mapArea.select(".county-outline")
+  //   //   .style("stroke-width", 1 / transform.k);
+
+  //   // mapArea.selectAll("circle")
+  //   //   .style("r", d => radius(d.length) / Math.sqrt(transform.k))
+
+  // }
+
 }
