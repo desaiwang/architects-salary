@@ -60,8 +60,12 @@
     import { geoAlbersUsaPr } from "./js/geoAlbersUsaPr.js";
     import ClickableHistogramSlider from './js/clickableHistogramSliderClass.js';
     import CurveSlider from './js/curveSliderClass.js';
+    import IndividualMap from './js/individualMap.js';
 
     //set up for individuals visualization
+
+    const individualMap = new IndividualMap("canvasContainer");
+
     const vizIndividualsContainer = d3.select("div#canvasContainer");
     const width = Number(vizIndividualsContainer.style("width").replace("px", ""));
     const height = Number(vizIndividualsContainer.style("height").replace("px", ""));
@@ -76,43 +80,16 @@
     const vizHeight = height - margins.top - margins.bottom;
     const vizWidth = width - margins.left - margins.right;
 
-    const vizIndividualsCanvas = vizIndividualsContainer.append("canvas")
-      .attr("width", width)
-      .attr("height", height)
-      .style("position", "absolute")
-      .style("top", '0px')
-      .style("left", '0px');
+    const vizIndividualsCanvas = individualMap.vizIndividualsCanvas
 
-    const svg = vizIndividualsContainer.append("svg")
-      .attr("width", width)
-      .attr("height", height)
-      .style("position", "absolute")
-      .style("top", '0px')
-      .style("left", '0px');
+    const svg = individualMap.svg;
 
     // Add interactive area, which is just a transparent rect
-    const interactiveArea = svg
-      .append("g")
-      .attr("id", "interactiveArea")
+    const interactiveArea = individualMap.interactiveArea;
 
-    interactiveArea.append("rect")
-      .attr("width", width)
-      .attr("height", height)
-      .attr("x", 0)
-      .attr("y", 0)
-      .attr("opacity", 0);
 
     // Create tooltip div programmatically using d3
-    const tooltipDiv = vizIndividualsContainer
-      .append("div")
-      .attr("id", "tooltip")
-      .attr("class", "tooltip")
-      .style("visibility", "hidden")
-      .style("position", "absolute")
-      .style("background", "white")
-      .style("padding", "10px")
-      .style("border", "1px solid black")
-      .style("pointer-events", "none");
+    const tooltipDiv = individualMap.tooltipDiv;
 
 
     //set up for map
