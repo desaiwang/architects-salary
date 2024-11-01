@@ -9,6 +9,7 @@ class ClickableHistogramSlider {
     this.filters = filters;
     this.updateData = updateData;
     this.options = options;
+    this.showColors = false;
 
     // Default options
     const defaultOptions = {
@@ -74,7 +75,7 @@ class ClickableHistogramSlider {
     console.log("valueList upon initiation", this.valueList)
 
     this.groupCounts.forEach(d =>
-      d.color = this.colorScale ? this.colorScale(d.key) : "grey"
+      d.color = (this.colorScale && this.showColors) ? this.colorScale(d.key) : "grey"
     );
 
     this.setupScales();
@@ -266,6 +267,27 @@ class ClickableHistogramSlider {
     });
 
     return stillPassed;
+  }
+
+  updateColor(bool) {
+
+    this.showColors = bool;
+
+    if ((this.colorScale && this.showColors)) {
+      console.log("updatingColor to true, attribute: ", this.attribute)
+      this.histRects.attr("fill", d => d.color)
+    } else {
+      this.histRects.attr("fill", "grey")
+    }
+
+
+    if (bool) {
+      console.log("updatingColor to true, attribute: ", this.attribute)
+      console.log("this.colorScale", this.colorScale)
+      console.log("this.showColors", this.showColors)
+      console.log("this.colorScale && this.showColors", this.colorScale && this.showColors)
+
+    }
   }
 
   update() {

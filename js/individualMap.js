@@ -40,6 +40,11 @@ class IndividualMap {
     });
   }
 
+  updateColors(attribute) {
+    this.setColors(attribute);
+    this.render();
+  }
+
   render() {
 
     // Re-render the canvas

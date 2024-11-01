@@ -34,6 +34,7 @@
       <div id="canvasContainer" style="position:relative; width:900px; height:1500px">
       </div>
       <div style="display: flex; flex-direction: column;">
+        <div id="colorScaleDropdown"></div>
         <div id="controlfilterTime"></div>
         <div id="controlfilterSalary"></div>
         <div id="controlfilterSatisfaction"></div>
@@ -152,6 +153,32 @@
       }
 
       const individualMap = new IndividualMap("canvasContainer", data, salaryScale, colorScales, filters);
+
+      //colorScale dropdown:
+      const sliders = [timeSlider, satisfactionSlider, firmtypeSlider, firmsizeSlider, ageSlider];
+      const colorScaleDropdown = d3.select("#colorScaleDropdown")
+        .append("select")
+        .on("change", function () {
+          console.log("selected value", this.value)
+          individualMap.updateColors(this.value);
+          sliders.forEach(slider => {
+            console.log("slider.attribute", slider.attribute)
+            console.log("this.value", this.value)
+            console.log("slider.attribute == this.value", slider.attribute == this.value)
+            if (slider.attribute == this.value) slider.updateColor(true);
+            else slider.updateColor(false);
+          });
+        });
+
+
+      // Add options to the dropdown
+      const options = ["Year", "Job Satisfaction", "Firm Type", "Firm Size", "Age"];
+      colorScaleDropdown.selectAll("option")
+        .data(options)
+        .enter()
+        .append("option")
+        .text(d => d)
+        .attr("value", d => d);
 
 
       //map related scales and set up
