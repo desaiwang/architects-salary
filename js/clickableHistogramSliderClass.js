@@ -75,7 +75,7 @@ class ClickableHistogramSlider {
     console.log("valueList upon initiation", this.valueList)
 
     this.groupCounts.forEach(d =>
-      d.color = (this.colorScale && this.showColors) ? this.colorScale(d.key) : "grey"
+      d.color = this.colorScale ? this.colorScale(d.key) : "grey"
     );
 
     this.setupScales();
@@ -104,6 +104,9 @@ class ClickableHistogramSlider {
 
   }
 
+  //function for determining color of bars
+  colorRect = (d) => d.clicked ? (this.showColors ? d.color : "grey") : "white"
+
   setupBrush() {
     //set up brush
     var brush = d3.brushX().extent([[0, 0],
@@ -124,18 +127,18 @@ class ClickableHistogramSlider {
 
         // Add uniqueKeys within the brush selection to a new list
         this.valueList = this.uniqueKeys.slice(start, end);
-        console.log(this.valueList)
-
-        console.log((x0 + this.xScale.padding()) / step, start, x1 / step, end)
 
         //select only the bars in brush selection
         this.groupCounts.forEach(item => item.clicked = (this.valueList.includes(item.key)));
+
+
+
         this.histRects
-          .attr("fill", d => d.clicked ? d.color : "white")
+          .attr("fill", d => this.colorRect(d))
           .style('outline-color', d => d.clicked ? ClickableHistogramSlider.selectedColor : ClickableHistogramSlider.greyedoutColor);
 
 
-        this.filters[this.attribute] = (d) => this.valueList.includes(d[this.attribute] === null ? "N/A" : d[this.attribute]);
+        this.filters[this.attribute] = (d) => this.valueList.includes(d[this.attribute]);
 
         this.updateData();
 
@@ -178,7 +181,7 @@ class ClickableHistogramSlider {
       .attr("y", d => this.yScale(d.count))
       .attr("width", this.xScale.bandwidth())
       .attr("height", d => d.count == 0 ? 0 : this.yScale(0) - this.yScale(d.count) + 5)
-      .attr("fill", d => d.color)
+      .attr("fill", d => this.colorRect(d))
       .style("border-radius", "1px")
       .attr("cursor", "pointer") //this makes the cursor change to a pointer when hovering over the bars to indicate that things are clickable
       .style("outline", "solid thin")
@@ -202,16 +205,11 @@ class ClickableHistogramSlider {
         this.tooltip
           .style("visibility", "hidden");
 
-        if (!d.clicked) {
-          d3.select(event.target)
-            .style("outline-width", "thin")
-            .style('outline-color', ClickableHistogramSlider.greyedoutColor)
-        }
-        else {
-          d3.select(event.target)
-            .style("outline-width", "thin")
-            .style('outline-color', ClickableHistogramSlider.selectedColor);
-        }
+        d3.select(event.target)
+          .style("outline-width", "thin")
+          .style('outline-color', d.clicked ? ClickableHistogramSlider.selectedColor : ClickableHistogramSlider.greyedoutColor)
+
+
       })
       .on('click', (event, d) => {
         clearTimeout(this.timeout);
@@ -220,9 +218,7 @@ class ClickableHistogramSlider {
 
           if (d.clicked) {
             d3.select(event.target) //TODO: probably not going to work
-              .attr("fill", d => {
-                return d.color
-              })
+              .attr("fill", d => this.showColors ? d.color : "grey")
               .style('outline-color', ClickableHistogramSlider.selectedColor);
 
             this.valueList.push(d.key);
@@ -232,7 +228,7 @@ class ClickableHistogramSlider {
 
             this.valueList = this.valueList.filter(rating => rating != d.key)
           }
-          this.filters[this.attribute] = (d) => this.valueList.includes(d[this.attribute] === null ? "N/A" : d[this.attribute]);
+          this.filters[this.attribute] = (d) => this.valueList.includes(d[this.attribute]);
           this.updateData()
         }, 200);
       }).on('dblclick', (event, d) => {
@@ -242,14 +238,14 @@ class ClickableHistogramSlider {
         // Set only the double-clicked bar to selected
         d.clicked = true;
         this.histRects
-          .attr("fill", d => d.clicked ? d.color : "white")
+          .attr("fill", d => this.colorRect(d))
           .style('outline-color', d => d.clicked ? ClickableHistogramSlider.selectedColor : ClickableHistogramSlider.greyedoutColor);
 
         // Update valueList and filter to only include the double-clicked value
         this.valueList = [d.key];
         console.log(this.valueList)
 
-        this.filters[this.attribute] = (item) => item[this.attribute] === (d.key === "N/A" ? null : d.key);
+        this.filters[this.attribute] = (item) => item[this.attribute] === d.key;
 
         this.updateData();
       });
@@ -273,21 +269,7 @@ class ClickableHistogramSlider {
 
     this.showColors = bool;
 
-    if ((this.colorScale && this.showColors)) {
-      console.log("updatingColor to true, attribute: ", this.attribute)
-      this.histRects.attr("fill", d => d.color)
-    } else {
-      this.histRects.attr("fill", "grey")
-    }
-
-
-    if (bool) {
-      console.log("updatingColor to true, attribute: ", this.attribute)
-      console.log("this.colorScale", this.colorScale)
-      console.log("this.showColors", this.showColors)
-      console.log("this.colorScale && this.showColors", this.colorScale && this.showColors)
-
-    }
+    this.histRects.attr("fill", d => this.colorRect(d))
   }
 
   update() {
@@ -305,7 +287,7 @@ class ClickableHistogramSlider {
     // Update the count in groupCounts based on the filtered data
     this.groupCounts = this.groupCounts.map(group => ({
       ...group,
-      count: countsMap.get(group.key === "N/A" ? null : group.key) || 0 // Set to 0 if no data in the group
+      count: countsMap.get(group.key) || 0 // Set to 0 if no data in the group
     }));
 
     //update y scale

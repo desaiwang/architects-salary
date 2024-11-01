@@ -80,7 +80,7 @@
       let data = await d3.csv("data/241027_archinect_salaries_fulltime.csv", d3.autoType);
       console.log(data);
       data.forEach(d => {
-        if (d['Firm Type'] === null) {
+        if (d['Firm Type'] == null) {
           d['Firm Type'] = "N/A";
         }
       });
@@ -152,6 +152,8 @@
         "Age": ageSlider.colorScale
       }
 
+      //default coloring is by Job Satisfaction
+      satisfactionSlider.updateColor(true);
       const individualMap = new IndividualMap("canvasContainer", data, salaryScale, colorScales, filters);
 
       //colorScale dropdown:
@@ -229,7 +231,7 @@
 
 
 
-      //updateData();
+      updateData();
 
     }
 
