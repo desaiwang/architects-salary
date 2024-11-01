@@ -1,9 +1,9 @@
 class IndividualMap {
-  constructor(divId, data, salaryScale, satisfactionScale, filters) {
+  constructor(divId, data, salaryScale, colorScales, filters) {
     this.divId = divId;
     this.data = data;
     this.salaryScale = salaryScale;
-    this.satisfactionScale = satisfactionScale;
+    this.colorScales = colorScales;
     this.filters = filters;
     this.currentTarget = -1;
 
@@ -12,6 +12,7 @@ class IndividualMap {
     this.setupCanvas();
     this.createDelaunayVoronoi();
     this.addInteraction();
+    this.setColors("Age");
     this.render();
   };
 
@@ -32,6 +33,12 @@ class IndividualMap {
     this.vizWidth = this.width - this.margins.left - this.margins.right;
     this.vizHeight = this.height - this.margins.top - this.margins.bottom;
   };
+
+  setColors(attribute) {
+    this.data.forEach(d => {
+      d.color = (this.colorScales[attribute])(d[attribute]);
+    });
+  }
 
   render() {
 
@@ -99,7 +106,6 @@ class IndividualMap {
     this.data.forEach((d, i) => {
       d.cx = this.cxCalc(i, this.numPointsPerRow, this.maxD, this.xOffset);
       d.cy = this.cyCalc(i, this.numPointsPerRow, this.maxD, this.yOffset);
-      d.color = this.satisfactionScale(d['Job Satisfaction']);
       d.passesFilter = true;
     });
   }
@@ -202,7 +208,8 @@ class IndividualMap {
         <strong>Age:</strong> ${d['Age']}<br>
         <strong>Years of Experience:</strong> ${d['Years of Experience']}<br>
         <strong>Location:</strong> ${d['Location']}<br>
-        <strong>Survey Date:</strong> ${new Date(d['Date']).toLocaleString('default', { month: 'long', year: 'numeric' })}<br>`)
+        <strong>Survey Date:</strong> ${new Date(d['Date']).toLocaleString('default', { month: 'long', year: 'numeric' })}<br>
+        <strong>Firm Type:</strong> ${d['Firm Type']}<br>`)
         .style("left", `${d.cx + 15}px`)
         .style("top", `${d.cy + 15}px`)
         .style("visibility", "visible");

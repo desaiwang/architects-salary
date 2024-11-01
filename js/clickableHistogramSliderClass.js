@@ -13,7 +13,9 @@ class ClickableHistogramSlider {
     // Default options
     const defaultOptions = {
       scaleFormatter: null,
-      colorList: null,
+      colorInterpolator: null,
+      colorInterpolationType: null,
+      colorScheme: d3.schemeCategory10,
       sortOrder: 'key',
       ascending: true,
       yBetweenLabelAndHist: 15,
@@ -55,11 +57,24 @@ class ClickableHistogramSlider {
     //set timeout to be null
     this.timeout = null;
     this.uniqueKeys = this.groupCounts.map(d => d.key);
+    //set colorScale if colorInterpolator is provided
+
+    if (this.options.colorInterpolationType) {
+      if (this.options.colorInterpolationType === "sequential discrete") {
+        this.colorScale = (x) => this.options.colorInterpolator(d3.scalePoint().domain(this.uniqueKeys).range([0, 1])(x))
+      }
+      else if (this.options.colorInterpolationType === "sequential continuous") {
+        this.colorScale = (x) => this.options.colorInterpolator(d3.scaleLinear().domain(d3.extent(this.uniqueKeys)).range([0, 1])(x))
+      } else if (this.options.colorInterpolationType === "categorical") {
+        this.colorScale = (x) => d3.scaleOrdinal().domain(this.uniqueKeys).range(this.options.colorScheme)(x)
+      }
+    }
+
     this.valueList = this.uniqueKeys;
     console.log("valueList upon initiation", this.valueList)
 
     this.groupCounts.forEach(d =>
-      d.color = this.options.colorList ? this.options.colorList[this.uniqueKeys.indexOf(d.key)] : "grey"
+      d.color = this.colorScale ? this.colorScale(d.key) : "grey"
     );
 
     this.setupScales();
