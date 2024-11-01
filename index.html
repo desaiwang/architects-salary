@@ -62,35 +62,6 @@
     import CurveSlider from './js/curveSliderClass.js';
     import IndividualMap from './js/individualMap.js';
 
-    //set up for individuals visualization
-
-    const individualMap = new IndividualMap("canvasContainer");
-
-    const vizIndividualsContainer = d3.select("div#canvasContainer");
-    const width = Number(vizIndividualsContainer.style("width").replace("px", ""));
-    const height = Number(vizIndividualsContainer.style("height").replace("px", ""));
-
-    const margins = {
-      top: 20,
-      bottom: 20,
-      left: 20,
-      right: 20
-    }
-
-    const vizHeight = height - margins.top - margins.bottom;
-    const vizWidth = width - margins.left - margins.right;
-
-    const vizIndividualsCanvas = individualMap.vizIndividualsCanvas
-
-    const svg = individualMap.svg;
-
-    // Add interactive area, which is just a transparent rect
-    const interactiveArea = individualMap.interactiveArea;
-
-
-    // Create tooltip div programmatically using d3
-    const tooltipDiv = individualMap.tooltipDiv;
-
 
     //set up for map
     const widthMap = 928;
@@ -107,13 +78,31 @@
     const loadIndividuals = async function () {
       let data = await d3.csv("data/241027_archinect_salaries_fulltime.csv", d3.autoType);
       console.log(data);
-      //for testing purposes can change data to dataAll, and set this data as something else
-      //let data = dataAll
+
+      //set up for individuals visualization
+
+
+      // const vizIndividualsContainer = d3.select("div#canvasContainer");
+      // const width = Number(vizIndividualsContainer.style("width").replace("px", ""));
+      // const height = Number(vizIndividualsContainer.style("height").replace("px", ""));
+
+      // const margins = {
+      //   top: 20,
+      //   bottom: 20,
+      //   left: 20,
+      //   right: 20
+      // }
+
+      // const vizHeight = height - margins.top - margins.bottom;
+      // const vizWidth = width - margins.left - margins.right;
+
+      // const vizIndividualsCanvas = individualMap.vizIndividualsCanvas
+      // const svg = individualMap.svg;
+      // const interactiveArea = individualMap.interactiveArea;
+      // const tooltipDiv = individualMap.tooltipDiv;
+
 
       const satisfactionExtent = d3.extent(data, d => d['Job Satisfaction'])
-      //starting color in UI colors: #043565 for blue, #ff8f06 for orange using https://uicolors.app/create
-
-      // const satisfactionColors = ["#3c5491", "#4465b1", "#4e78c2", "#6290cf", "#a9c9e7", "#ffe3a8", "#ffce70", "#ff8f06", "#f07706", "#c75a07"]
 
       const uniqueSatisfactionValues = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
@@ -121,13 +110,29 @@
       const colorInterpolator = (x) => BuOrColorInterpolator(d3.scaleLinear().domain(satisfactionExtent).range([0, 1])(x));
       const satisfactionColors = uniqueSatisfactionValues.map(d => colorInterpolator(d));
 
-      //d3.schemeRdYlBu[10])
       const satisfactionScale = d3.scaleQuantize(satisfactionExtent, satisfactionColors)
       //more colors see: https://d3js.org/d3-scale-chromatic/diverging
       console.log(d3.schemeTableau10)
       const salaryExtent = d3.extent(data, d => d['Salary'])
       //console.log("salaryExtent", salaryExtent)
       const salaryScale = d3.scaleSqrt().domain(salaryExtent).range([0.5, 15])
+
+      //filter used for updates
+      var filters = {};
+
+      function pointPassesFilters(point) {
+
+        let stillPassed = true;
+
+        Object.values(filters).forEach(filterFunc => {
+          stillPassed = filterFunc(point) && stillPassed;
+        });
+
+        return stillPassed;
+      }
+
+      const individualMap = new IndividualMap("canvasContainer", data, salaryScale, satisfactionScale, filters);
+
 
       //map related scales and set up
       const states = await d3.json("data/cb_2023_us_state_5m.json");
@@ -147,132 +152,120 @@
       let hexBinLayer = mapArea.append("g");
 
 
-      //filter used for updates
-      var filters = {};
-
-      function pointPassesFilters(point) {
-
-        let stillPassed = true;
-
-        Object.values(filters).forEach(filterFunc => {
-          stillPassed = filterFunc(point) && stillPassed;
-        });
-
-        return stillPassed;
-      }
 
 
-      //setting up spacing for individuals
-      const cxCalc = (i, numPointsPerRow, maxD, xOffset) => Math.floor(i % (numPointsPerRow)) * maxD + xOffset;
-      const cyCalc = (i, numPointsPerRow, maxD, yOffset) => Math.floor(i / (numPointsPerRow)) * maxD + yOffset;
 
-      //TODO: need more dynamic maxD calculation, right now doesn't change with selections
-      const medianSalaryOverall = d3.median(data, d => d['Salary']);
-      //const maxD = 10
-      const maxD = Math.ceil(salaryScale(medianSalaryOverall) * 2 + 2);
-      const numPointsPerRow = Math.floor(vizWidth / maxD);
-      const xOffset = maxD / 2 + margins.left;
-      const yOffset = maxD / 2 + margins.top;
+      // //setting up spacing for individuals
+      // const cxCalc = (i, numPointsPerRow, maxD, xOffset) => Math.floor(i % (numPointsPerRow)) * maxD + xOffset;
+      // const cyCalc = (i, numPointsPerRow, maxD, yOffset) => Math.floor(i / (numPointsPerRow)) * maxD + yOffset;
 
-      data.forEach((d, i) => {
-        d.cx = cxCalc(i, numPointsPerRow, maxD, xOffset);
-        d.cy = cyCalc(i, numPointsPerRow, maxD, yOffset);
-        d.color = satisfactionScale(d['Job Satisfaction'])
-        d.passesFilter = true;
-      });
+      // //TODO: need more dynamic maxD calculation, right now doesn't change with selections
+      // const medianSalaryOverall = d3.median(data, d => d['Salary']);
+      // //const maxD = 10
+      // const maxD = Math.ceil(salaryScale(medianSalaryOverall) * 2 + 2);
+      // const numPointsPerRow = Math.floor(vizWidth / maxD);
+      // const xOffset = maxD / 2 + margins.left;
+      // const yOffset = maxD / 2 + margins.top;
 
-      //canvas drawing
-      const context = vizIndividualsCanvas.node().getContext("2d");
+      // data.forEach((d, i) => {
+      //   d.cx = cxCalc(i, numPointsPerRow, maxD, xOffset);
+      //   d.cy = cyCalc(i, numPointsPerRow, maxD, yOffset);
+      //   d.color = satisfactionScale(d['Job Satisfaction'])
+      //   d.passesFilter = true;
+      // });
 
-      //canvas interaction
-      //code originally from Cornell INFO 3310 course notes, fall 2023
-      let delaunay = d3.Delaunay.from(data, d => d.cx, d => d.cy);;
-      let voronoi = delaunay.voronoi([0, 0, width, height]);;
-      //TODO: uncomment to see voronoi
-      // interactiveArea.append("path").attr("stroke", "black").attr("fill", "none").attr("d", voronoi.render());
+      // //canvas drawing
+      // const context = vizIndividualsCanvas.node().getContext("2d");
+
+      // //canvas interaction
+      // //code originally from Cornell INFO 3310 course notes, fall 2023
+      // let delaunay = d3.Delaunay.from(data, d => d.cx, d => d.cy);;
+      // let voronoi = delaunay.voronoi([0, 0, width, height]);;
+      // //TODO: uncomment to see voronoi
+      // // interactiveArea.append("path").attr("stroke", "black").attr("fill", "none").attr("d", voronoi.render());
 
 
-      // simulate mouseOver and mouseOut for each circle
-      let currentTarget = -1;
-      interactiveArea.on("mousemove", function (event) {
-        let loc = d3.pointer(event);
-        let index;
-        if (currentTarget === -1) {
-          // Does a sweep of triangles, which should be O(sqrt(N)) in most cases
-          index = delaunay.find(loc[0], loc[1]); // returns index of closest point
-        }
-        else {
-          // With a known point index that's nearby, you can speed up the lookups dramatically
-          index = delaunay.find(loc[0], loc[1], currentTarget)
-        }
-        // console.log(loc, index);
+      // // simulate mouseOver and mouseOut for each circle
+      // let currentTarget = -1;
+      // interactiveArea.on("mousemove", function (event) {
+      //   let loc = d3.pointer(event);
+      //   let index;
+      //   if (currentTarget === -1) {
+      //     // Does a sweep of triangles, which should be O(sqrt(N)) in most cases
+      //     index = delaunay.find(loc[0], loc[1]); // returns index of closest point
+      //   }
+      //   else {
+      //     // With a known point index that's nearby, you can speed up the lookups dramatically
+      //     index = delaunay.find(loc[0], loc[1], currentTarget)
+      //   }
+      //   // console.log(loc, index);
 
-        if (index !== currentTarget) {
-          currentTarget = index;
-          mouseExitedIndividual();
-          mouseEnteredIndividual(index);
-        }
-      });
-      // Also trigger "mouseout" when leaving interactive area
-      interactiveArea.on("mouseout", () => {
-        currentTarget = -1;
-        mouseExitedIndividual();
-      })
+      //   if (index !== currentTarget) {
+      //     currentTarget = index;
+      //     mouseExitedIndividual();
+      //     mouseEnteredIndividual(index);
+      //   }
+      // });
+      // // Also trigger "mouseout" when leaving interactive area
+      // interactiveArea.on("mouseout", () => {
+      //   currentTarget = -1;
+      //   mouseExitedIndividual();
+      // })
 
-      function mouseEnteredIndividual(i) {
-        let d = data[i];
+      // function mouseEnteredIndividual(i) {
+      //   let d = data[i];
 
-        if (d.passesFilter) {
-          interactiveArea.append("circle")
-            .attr("cx", d.cx)
-            .attr("cy", d.cy)
-            .attr("class", "highlight")
-            .attr("opacity", 1)
-            .attr("fill", d.color)
-            .attr("pointer-events", "none")
-            .attr("r", salaryScale(d['Salary']))
-            // .transition().duration(200)
-            // .attr("r", salaryScale(d['Salary']) + 5)
-            ;
+      //   if (d.passesFilter) {
+      //     interactiveArea.append("circle")
+      //       .attr("cx", d.cx)
+      //       .attr("cy", d.cy)
+      //       .attr("class", "highlight")
+      //       .attr("opacity", 1)
+      //       .attr("fill", d.color)
+      //       .attr("pointer-events", "none")
+      //       .attr("r", salaryScale(d['Salary']))
+      //       // .transition().duration(200)
+      //       // .attr("r", salaryScale(d['Salary']) + 5)
+      //       ;
 
-          interactiveArea.append("circle")
-            .attr("class", "highlight")
-            .attr("cx", d.cx)
-            .attr("cy", d.cy)
-            .attr("stroke", "black")
-            .attr("stroke-width", 2)
-            .attr("fill", "none")
-            .attr("pointer-events", "none")
-            // .attr("r", salaryScale(d['Salary']))
-            // .transition().duration(200)
-            .attr("r", salaryScale(d['Salary']) + 4)
+      //     interactiveArea.append("circle")
+      //       .attr("class", "highlight")
+      //       .attr("cx", d.cx)
+      //       .attr("cy", d.cy)
+      //       .attr("stroke", "black")
+      //       .attr("stroke-width", 2)
+      //       .attr("fill", "none")
+      //       .attr("pointer-events", "none")
+      //       // .attr("r", salaryScale(d['Salary']))
+      //       // .transition().duration(200)
+      //       .attr("r", salaryScale(d['Salary']) + 4)
 
-            ;
+      //       ;
 
-          //TODO: absolute positions are not working, need to fix
-          // console.log("tooltipDiv width", tooltipDiv.style("width"))
-          // console.log("tooltipDiv left location", d.cx + 15)
-          // console.log("canvas width", width)
-          // const tooltipWidth = Number(tooltipDiv.style("width").replace("px", ""))
-          // let tooltipLeft = d.cx + 15 + tooltipWidth > width - margins.right ? d.cx - tooltipWidth - 15 : d.cx + 15
+      //     //TODO: absolute positions are not working, need to fix
+      //     // console.log("tooltipDiv width", tooltipDiv.style("width"))
+      //     // console.log("tooltipDiv left location", d.cx + 15)
+      //     // console.log("canvas width", width)
+      //     // const tooltipWidth = Number(tooltipDiv.style("width").replace("px", ""))
+      //     // let tooltipLeft = d.cx + 15 + tooltipWidth > width - margins.right ? d.cx - tooltipWidth - 15 : d.cx + 15
 
-          tooltipDiv.html(`
-        <strong>Salary:</strong> ${d3.format("$,")(d['Salary'])}<br>
-        <strong>Job Satisfaction:</strong> ${d['Job Satisfaction']}/10<br>
-        <strong>Age:</strong> ${d['Age']}<br>
-        <strong>Years of Experience:</strong> ${d['Years of Experience']}<br>
-        <strong>Location:</strong> ${d['Location']}<br>
-        <strong>Survey Date:</strong> ${new Date(d['Date']).toLocaleString('default', { month: 'long', year: 'numeric' })}<br>`)
-            .style("left", `${d.cx + 15}px`)
-            .style("top", `${d.cy + 15}px`)
-            .style("visibility", "visible");
-        }
+      //     tooltipDiv.html(`
+      //   <strong>Salary:</strong> ${d3.format("$,")(d['Salary'])}<br>
+      //   <strong>Job Satisfaction:</strong> ${d['Job Satisfaction']}/10<br>
+      //   <strong>Age:</strong> ${d['Age']}<br>
+      //   <strong>Years of Experience:</strong> ${d['Years of Experience']}<br>
+      //   <strong>Location:</strong> ${d['Location']}<br>
+      //   <strong>Survey Date:</strong> ${new Date(d['Date']).toLocaleString('default', { month: 'long', year: 'numeric' })}<br>`)
+      //       .style("left", `${d.cx + 15}px`)
+      //       .style("top", `${d.cy + 15}px`)
+      //       .style("visibility", "visible");
+      //   }
 
-      }
-      function mouseExitedIndividual() {
-        d3.selectAll("circle.highlight").remove();
-        tooltipDiv.style("visibility", "hidden");
-      }
+      // }
+      // function mouseExitedIndividual() {
+      //   d3.selectAll("circle.highlight").remove();
+      //   tooltipDiv.style("visibility", "hidden");
+      // }
 
       function updateData() {
         //filter for passing data
@@ -298,36 +291,36 @@
         d3.select("h2#summaryText")
           .text(passingDataSize > 0 ? `Showing ${d3.format(",")(passingDataSize)} out of ${d3.format(",")(data.length)} individuals. Median Salary: ${d3.format("$,")(medianSalary)}, Mean Satisfaction: ${d3.format(".2f")(meanSatisfaction)}/10` : "No data selected")
 
+        individualMap.update();
+
+        // // Add cx and cy properties to each data point based on the index in data
+        // data.forEach((d, i) => {
+        //   d.passesFilter = pointPassesFilters(d);
+        // });
 
 
-        // Add cx and cy properties to each data point based on the index in data
-        data.forEach((d, i) => {
-          d.passesFilter = pointPassesFilters(d);
-        });
+        // // Re-render the canvas
+        // context.clearRect(0, 0, width, height);
+        // context.globalAlpha = 0.8;
+        // // Draw points that don't pass the filter first
+        // data.forEach(d => {
+        //   if (!d.passesFilter) {
+        //     context.beginPath();
+        //     context.arc(d.cx, d.cy, salaryScale(d['Salary']), 0, 2 * Math.PI);
+        //     context.fillStyle = "lightgray";
+        //     context.fill();
+        //   }
+        // });
 
-
-        // Re-render the canvas
-        context.clearRect(0, 0, width, height);
-        context.globalAlpha = 0.8;
-        // Draw points that don't pass the filter first
-        data.forEach(d => {
-          if (!d.passesFilter) {
-            context.beginPath();
-            context.arc(d.cx, d.cy, salaryScale(d['Salary']), 0, 2 * Math.PI);
-            context.fillStyle = "lightgray";
-            context.fill();
-          }
-        });
-
-        // Draw points that pass the filter on top
-        data.forEach(d => {
-          if (d.passesFilter) {
-            context.beginPath();
-            context.arc(d.cx, d.cy, salaryScale(d['Salary']), 0, 2 * Math.PI);
-            context.fillStyle = d.color;
-            context.fill();
-          }
-        });
+        // // Draw points that pass the filter on top
+        // data.forEach(d => {
+        //   if (d.passesFilter) {
+        //     context.beginPath();
+        //     context.arc(d.cx, d.cy, salaryScale(d['Salary']), 0, 2 * Math.PI);
+        //     context.fillStyle = d.color;
+        //     context.fill();
+        //   }
+        // });
 
       }
 
@@ -363,7 +356,7 @@
       let controlAge = d3.select("#controlfilterAge");
       const ageSlider = new ClickableHistogramSlider(data, controlAge, "Age", "Age", controlWidth, controlHeight, updateData, filters, { sortOrder: ["18-20", "21-25", "26-30", "31-35", "36-40", "41-45", "46-50", "51-55", "56-60", "61-65", "66-70", "71-103"], rotateAxisLabels: true });
 
-      updateData();
+      //updateData();
 
     }
 
