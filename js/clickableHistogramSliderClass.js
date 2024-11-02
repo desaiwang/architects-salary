@@ -89,6 +89,8 @@ class ClickableHistogramSlider {
     this.yScale = d3.scaleLinear().domain([0, d3.max(this.groupCounts, d => d.count)]).nice().range([this.sliderHeight, this.options.yBetweenLabelAndHist]);
   }
 
+
+
   //default colors for bars
   static greyedoutColor = "grey";
   static selectedColor = "black";
@@ -110,7 +112,7 @@ class ClickableHistogramSlider {
   setupBrush() {
     //set up brush
     var brush = d3.brushX().extent([[0, 0],
-    [this.sliderWidth, this.sliderHeight]])
+    [this.sliderWidth, this.sliderHeight + 5]])
       .on("start", (event) => {
         //temporarily disable pointer events on the bars
         this.histRects.style("pointer-events", "none");
@@ -291,7 +293,7 @@ class ClickableHistogramSlider {
     }));
 
     //update y scale
-    this.yScale.domain([0, d3.max(this.groupCounts, d => d.count)])
+    this.yScale.domain([0, d3.max(this.groupCounts, d => d.count)]).nice();
 
     this.histRects
       .data(this.groupCounts, d => d.key) // Use the key as the identifier
