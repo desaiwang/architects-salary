@@ -34,7 +34,16 @@
       <div id="canvasContainer" style="position:relative; width:900px; height:1500px">
       </div>
       <div style="display: flex; flex-direction: column;">
-        <div id="colorScaleDropdown"></div>
+        <div id="colorScaleDropdown">
+          Color by:
+          <select id="colorScaleSelect">
+            <option value="Year">Year</option>
+            <option value="Job Satisfaction" selected>Job Satisfaction</option>
+            <option value="Firm Type">Firm Type</option>
+            <option value="Firm Size">Firm Size</option>
+            <option value="Age">Age</option>
+          </select>
+        </div>
         <div id="controlfilterTime"></div>
         <div id="controlfilterSalary"></div>
         <div id="controlfilterSatisfaction"></div>
@@ -132,9 +141,6 @@
       let controlAge = d3.select("#controlfilterAge");
       const ageSlider = new ClickableHistogramSlider(data, controlAge, "Age", "Age", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolatePuRd, colorInterpolationType: "sequential discrete", sortOrder: ["18-20", "21-25", "26-30", "31-35", "36-40", "41-45", "46-50", "51-55", "56-60", "61-65", "66-70", "71-103"], rotateAxisLabels: true });
 
-      console.log("ageSlider unique keys", ageSlider.uniqueKeys)
-
-
       const firmTypeScale = d3.scaleOrdinal().domain(["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"]).range(d3.schemeTableau10);
       console.log("firmTypeScale('Other')", firmTypeScale('Other'))
 
@@ -156,31 +162,16 @@
       satisfactionSlider.updateColor(true);
       const individualMap = new IndividualMap("canvasContainer", data, salaryScale, colorScales, filters);
 
-      //colorScale dropdown:
+      //listener for color scale change
       const sliders = [timeSlider, satisfactionSlider, firmtypeSlider, firmsizeSlider, ageSlider];
-      const colorScaleDropdown = d3.select("#colorScaleDropdown")
-        .append("select")
+      d3.select("select#colorScaleSelect")
         .on("change", function () {
-          console.log("selected value", this.value)
           individualMap.updateColors(this.value);
           sliders.forEach(slider => {
-            console.log("slider.attribute", slider.attribute)
-            console.log("this.value", this.value)
-            console.log("slider.attribute == this.value", slider.attribute == this.value)
             if (slider.attribute == this.value) slider.updateColor(true);
             else slider.updateColor(false);
           });
         });
-
-
-      // Add options to the dropdown
-      const options = ["Year", "Job Satisfaction", "Firm Type", "Firm Size", "Age"];
-      colorScaleDropdown.selectAll("option")
-        .data(options)
-        .enter()
-        .append("option")
-        .text(d => d)
-        .attr("value", d => d);
 
 
       //map related scales and set up

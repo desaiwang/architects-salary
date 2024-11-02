@@ -12,7 +12,8 @@ class IndividualMap {
     this.setupCanvas();
     this.createDelaunayVoronoi();
     this.addInteraction();
-    this.setColors("Age");
+    //default to job satisfaction
+    this.setColors("Job Satisfaction");
     this.render();
   };
 
