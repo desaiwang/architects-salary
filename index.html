@@ -42,6 +42,7 @@
             <option value="Firm Type">Firm Type</option>
             <option value="Firm Size">Firm Size</option>
             <option value="Age">Age</option>
+            <option value="Years of Experience">Years of Experience</option>
           </select>
         </div>
         <div id="controlfilterTime"></div>
@@ -50,7 +51,9 @@
         <div id="controlfilterFirmType"></div>
         <div id="controlfilterFirmSize"></div>
         <div id="controlfilterAge"></div>
-        <div id="controlfilterAgeClass"></div>
+        <div id="controlfilterYearsOfExperience"></div>
+        <div id="controlfilterAnnualBonus"></div>
+        <div id="controlfilterVacationDays"></div>
       </div>
     </div>
   </div>
@@ -86,7 +89,7 @@
     const mapArea = svgMap.append("g");
 
     const loadIndividuals = async function () {
-      let data = await d3.csv("data/241027_archinect_salaries_fulltime.csv", d3.autoType);
+      let data = await d3.csv("data/241102_archinect_salaries_fulltime.csv", d3.autoType);
       console.log(data);
       data.forEach(d => {
         if (d['Firm Type'] == null) {
@@ -124,6 +127,12 @@
 
       let salarySlider = new CurveSlider(data, controlSalary, "Salary", "Salary", controlWidth, controlHeight, updateData, filters, { maxLimit: 200000, scaleFormatter: d => d === 0 ? "$0" : d3.format("$.2s")(d), getButtonData: getButtonDataSalary });
 
+      let controlAnnualBonus = d3.select("#controlfilterAnnualBonus");
+      let annualBonusSlider = new CurveSlider(data, controlAnnualBonus, "Annual Bonus", "Annual Bonus", controlWidth, controlHeight, updateData, filters, { maxLimit: 50000, scaleFormatter: d => d === 0 ? "$0" : d3.format("$.2s")(d) });
+
+      let controlVacationDays = d3.select("#controlfilterVacationDays");
+      let vacationDaysSlider = new CurveSlider(data, controlVacationDays, "Vacation Days", "Vacation Days", controlWidth, controlHeight, updateData, filters, { maxLimit: 40 });
+
       let controlTime = d3.select("#controlfilterTime");
       const timeSlider = new ClickableHistogramSlider(data, controlTime, "Survey Year", "Year", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolateGreys, colorInterpolationType: "sequential discrete" });
 
@@ -141,6 +150,14 @@
       let controlAge = d3.select("#controlfilterAge");
       const ageSlider = new ClickableHistogramSlider(data, controlAge, "Age", "Age", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolatePuRd, colorInterpolationType: "sequential discrete", sortOrder: ["18-20", "21-25", "26-30", "31-35", "36-40", "41-45", "46-50", "51-55", "56-60", "61-65", "66-70", "71-103"], rotateAxisLabels: true });
 
+
+      let controlYearsOfExperience = d3.select("#controlfilterYearsOfExperience");
+      const yearsOfExperienceSlider = new ClickableHistogramSlider(data, controlYearsOfExperience, "Years of Experience", "Years of Experience", controlWidth, controlHeight, updateData, filters, {
+        colorInterpolator: d3.interpolatePuRd, colorInterpolationType: "sequential discrete", sortOrder: ["< 1", 1, 2, 3, "3-5", "6-7", "8-10", "11-15", "16-20", "21-25", "26-30", "31-40",
+          "> 40"
+        ], rotateAxisLabels: true
+      });
+
       const firmTypeScale = d3.scaleOrdinal().domain(["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"]).range(d3.schemeTableau10);
       console.log("firmTypeScale('Other')", firmTypeScale('Other'))
 
@@ -155,7 +172,8 @@
         "Job Satisfaction": satisfactionSlider.colorScale,
         "Firm Type": firmtypeSlider.colorScale,
         "Firm Size": firmsizeSlider.colorScale,
-        "Age": ageSlider.colorScale
+        "Age": ageSlider.colorScale,
+        "Years of Experience": yearsOfExperienceSlider.colorScale
       }
 
       //default coloring is by Job Satisfaction
@@ -163,7 +181,7 @@
       const individualMap = new IndividualMap("canvasContainer", data, salaryScale, colorScales, filters);
 
       //listener for color scale change
-      const sliders = [timeSlider, satisfactionSlider, firmtypeSlider, firmsizeSlider, ageSlider];
+      const sliders = [timeSlider, satisfactionSlider, firmtypeSlider, firmsizeSlider, ageSlider, yearsOfExperienceSlider];
       d3.select("select#colorScaleSelect")
         .on("change", function () {
           individualMap.updateColors(this.value);
@@ -200,11 +218,16 @@
 
         //update sliders
         timeSlider.update();
+        annualBonusSlider.update();
+        vacationDaysSlider.update();
+
         salarySlider.update();
         satisfactionSlider.update();
         firmtypeSlider.update();
         firmsizeSlider.update();
         ageSlider.update();
+        yearsOfExperienceSlider.update();
+
 
 
         //hexbinMap(projection, passingData, "satisfaction", "length", hexBinLayer, widthMap, heightMap);
