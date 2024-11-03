@@ -149,8 +149,9 @@ class IndividualMap {
       .style("visibility", "hidden")
       .style("position", "absolute")
       .style("background", "white")
-      .style("padding", "10px")
-      .style("border", "1px solid black")
+      .style("padding", "18px")
+      .style("border", "2px solid black")
+      .style("border-radius", "5px")
       .style("pointer-events", "none");
 
 
@@ -208,14 +209,51 @@ class IndividualMap {
         .attr("pointer-events", "none")
         .attr("r", this.salaryScale(d['Salary']) + 4);
 
+      const personOrPeople = (d['Firm Size'] === 1) ? 'person' : 'people';
+
+      const schoolDiv = (d, attribute, title) => {
+        return d[attribute] ? `<div style="line-height: 1.2;display: flex; align-items: baseline;"><p class="tooltip regular">${title}:</p><p class="tooltip light" style="margin-left: 5px;">${d[attribute]}</p></div>` : '';
+
+      }
+      const schoolsDiv = (d['Undergraduate School'] || d['Graduate School'] || d['Post-Graduate School']) ? (`<div style="margin-top: 15px; margin-bottom:0px">
+            ${schoolDiv(d, 'Undergraduate School', 'UG')}
+            ${schoolDiv(d, 'Graduate School', 'Grad')}
+            ${schoolDiv(d, 'Post-Graduate School', 'PhD')}
+          </div>`) : '';
+
       this.tooltipDiv.html(`
-        <strong>Salary:</strong> ${d3.format("$,")(d['Salary'])}<br>
-        <strong>Job Satisfaction:</strong> ${d['Job Satisfaction']}/10<br>
-        <strong>Age:</strong> ${d['Age']}<br>
-        <strong>Years of Experience:</strong> ${d['Years of Experience']}<br>
-        <strong>Location:</strong> ${d['Location']}<br>
-        <strong>Survey Date:</strong> ${new Date(d['Date']).toLocaleString('default', { month: 'long', year: 'numeric' })}<br>
-        <strong>Firm Type:</strong> ${d['Firm Type']}<br>`)
+      <div>
+          <div style="display: flex; gap: 20px; width: auto; min-width: 300px; flex-wrap: nowrap;">
+            <!-- Column 1 -->
+            <div style="flex: 1 1 auto; min-width: 0;">
+              <h4 class="tooltip bold">${d['Job Title']}</h4>
+              <h4 class="tooltip bold">${d['Location']}</h4>
+              <div style="line-height: 1.5;display: flex; align-items: baseline;">
+                <h4 class="tooltip bold">${d3.format("$,")(d['Salary'])}</h4>
+                <p class="tooltip light" style="margin-left: 5px;">per year</p>
+              </div>
+              <div style="display: flex; align-items: baseline;">
+                <h4 class="tooltip bold">${d['Job Satisfaction']}/10</h4>
+                <p class="tooltip light" style="margin-left: 5px;">satisfaction</p>
+              </div>
+            </div>
+
+            <!-- Column 2 -->
+            <div style="flex: 1 1 auto; min-width: 0;margin-top: 2px;">
+              <p class="tooltip light">${d['Firm Type'] === "N/A"
+          ? `Firm with ${d['Firm Size']} ${personOrPeople}`
+          : `${d['Firm Type']} (${d['Firm Size']} ${personOrPeople})`
+        }</p>
+              <p class="tooltip light" >${d['Years of Experience']} years of experience</p>
+              <p class="tooltip light" >${d['Age']} years old</p>
+              <p class="tooltip light" >${d['Gender']}, ${d['Licensed'] == "Licensed" ? "Licensed" : "Not Licensed"}</p>
+
+            </div>   
+          </div>
+          ${schoolsDiv}
+          <p style="margin-bottom:-10px; align-self: flex-end; text-align: right;" class="tooltip mini">${new Date(d['Date']).toLocaleString('default', { month: 'short', year: 'numeric' })}</p>
+      </div>
+        `)
         .style("left", `${d.cx + 15}px`)
         .style("top", `${d.cy + 15}px`)
         .style("visibility", "visible");

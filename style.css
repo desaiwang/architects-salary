@@ -1,6 +1,67 @@
 body {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  margin: 20px;
   background-color: rgb(60, 65, 67);
   /* Set background color */
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+}
+
+h4.tooltip.bold {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 0;
+  margin-bottom: 0.1rem;
+}
+
+p.tooltip.light {
+  font-size: 0.8rem;
+  margin-top: 0;
+  margin-bottom: 0.1rem;
+  font-weight: 300;
+}
+
+p.tooltip.regular {
+  font-size: 0.8rem;
+  margin-top: 0;
+  margin-bottom: 0.1rem;
+  font-weight: 500;
+}
+
+p.tooltip.mini {
+  margin-top: 0;
+  font-size: 0.6rem;
+  font-weight: 300;
+}
+
+/* h4,
+p {
+  margin: 0;
+} */
+
+h5 {
+  margin: 0;
+  padding-top: 50px;
+}
+
+.container {
+  max-width: 768px;
+}
+
+.larger {
+  max-width: 1200px;
+}
+
+.larger-font {
+  font-size: medium;
 }
 
 .countries {
