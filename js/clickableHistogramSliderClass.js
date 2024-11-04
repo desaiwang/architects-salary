@@ -20,7 +20,8 @@ class ClickableHistogramSlider {
       sortOrder: 'key',
       ascending: true,
       yBetweenLabelAndHist: 15,
-      rotateAxisLabels: false
+      rotateAxisLabels: false,
+      fontsize: '0.6rem'
     };
 
     // Merge user-provided options with defaults
@@ -168,8 +169,11 @@ class ClickableHistogramSlider {
         .style("text-anchor", "end")
         .attr("dx", "-.8em")
         .attr("dy", ".15em")
-        .attr("transform", "rotate(-65)")
-      //gXAxis.style("font-size", "9px");
+        .attr("transform", "rotate(-60)")
+        .style("font-size", this.options.fontsize);
+    } else {
+      gXAxis.selectAll("text")
+        .style("font-size", this.options.fontsize);
     }
 
 

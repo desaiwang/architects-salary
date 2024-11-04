@@ -55,7 +55,8 @@ class CurveSlider {
     this.wrapper = this.container.append("div").attr("class", "controls").style("margin-top", "10px");
     this.wrapper.append("div").text(this.label);
 
-    this.rowwrapper = this.wrapper.append("div").style("display", "flex").style("flex-direction", "column").style("align-items", "center");
+    this.rowwrapper = this.wrapper.append("div").style("display", "flex").style("flex-direction", "column")
+    //.style("align-items", "center");
     this.canvas = this.rowwrapper.append("svg").attr("width", this.sliderWidth).attr("height", this.sliderHeight + 30).attr("attribute", this.attribute);
     this.canvas.append("g").attr("transform", `translate(0,${this.sliderHeight})`).call(this.xAxis);
 

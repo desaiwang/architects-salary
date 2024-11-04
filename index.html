@@ -34,7 +34,7 @@
     <div id="container" style="display: flex; justify-content: center;">
       <div id="canvasContainer" style="position:relative; width:900px; height:1500px">
       </div>
-      <div style="display: flex; flex-direction: column;">
+      <div id="dropdown" style="display: flex; flex-direction: column;">
         <div id="colorScaleDropdown">
           Color by:
           <select id="colorScaleSelect">
@@ -66,6 +66,18 @@
         <div>
           <label for="searchGrad">Graduate School:</label>
           <input type="text" id="searchGrad" placeholder="Type to search...">
+        </div>
+
+        <div id="filter-container">
+          Hello
+          <label>
+            <input type="checkbox" id="yesCheckbox" />
+            Yes
+          </label>
+          <label>
+            <input type="checkbox" id="noCheckbox" />
+            No
+          </label>
         </div>
       </div>
     </div>
@@ -124,19 +136,22 @@
 
 
       //sets up contols
-      let controlWidth = 320;
-      let controlHeight = 70;
+      let controlWidth = 250;
+      let controlHeight = 60;
 
       let controlSalary = d3.select("#controlfilterSalary");
-      function getButtonDataSalary(attribute, values) {
-        return [
-          { label: "> $50k", filterFunc: d => d[attribute] > 50000 },
-          { label: "> $100k", filterFunc: d => d[attribute] > 100000 },
-          { label: "top 20 incomes", filterFunc: d => d[attribute] >= values[19] }
-        ];
-      }
+      // function getButtonDataSalary(attribute, values) {
+      //   return [
+      //     { label: "> $50k", filterFunc: d => d[attribute] > 50000 },
+      //     { label: "> $100k", filterFunc: d => d[attribute] > 100000 },
+      //     { label: "top 20 incomes", filterFunc: d => d[attribute] >= values[19] }
+      //   ];
+      // }
 
-      let salarySlider = new CurveSlider(data, controlSalary, "Salary", "Salary", controlWidth, controlHeight, updateData, filters, { maxLimit: 200000, scaleFormatter: d => d === 0 ? "$0" : d3.format("$.2s")(d), getButtonData: getButtonDataSalary });
+      let salarySlider = new CurveSlider(data, controlSalary, "Salary", "Salary", controlWidth, controlHeight, updateData, filters, {
+        maxLimit: 200000, scaleFormatter: d => d === 0 ? "$0" : d3.format("$.2s")(d),
+        //getButtonData: getButtonDataSalary 
+      });
 
       // let controlAnnualBonus = d3.select("#controlfilterAnnualBonus");
       // let annualBonusSlider = new CurveSlider(data, controlAnnualBonus, "Annual Bonus", "Annual Bonus", controlWidth, controlHeight, updateData, filters, { maxLimit: 50000, scaleFormatter: d => d === 0 ? "$0" : d3.format("$.2s")(d) });
@@ -145,15 +160,14 @@
       // let vacationDaysSlider = new CurveSlider(data, controlVacationDays, "Vacation Days", "Vacation Days", controlWidth, controlHeight, updateData, filters, { maxLimit: 40 });
 
       let controlTime = d3.select("#controlfilterTime");
-      const timeSlider = new ClickableHistogramSlider(data, controlTime, "Survey Year", "Year", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolateGreys, colorInterpolationType: "sequential discrete" });
+      const timeSlider = new ClickableHistogramSlider(data, controlTime, "Survey Year", "Year", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolateGreys, colorInterpolationType: "sequential discrete", fontsize: '0.5rem' });
 
       let controlSatisfaction = d3.select("#controlfilterSatisfaction");
       const BuOrColorInterpolator = d3.piecewise(d3.interpolateRgb, ['#0a1869', '#a9c9e7', "#ffe3a8", '#fc6f03']);
       const satisfactionSlider = new ClickableHistogramSlider(data, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", controlWidth, controlHeight, updateData, filters, { colorInterpolator: BuOrColorInterpolator, colorInterpolationType: "sequential continuous" });
 
       let controlFirmType = d3.select("#controlfilterFirmType");
-      const firmtypeSlider = new ClickableHistogramSlider(data, controlFirmType, "Firm Type", "Firm Type", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: ["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"] });
-      console.log("observable10", d3.schemeObservable10)
+      const firmtypeSlider = new ClickableHistogramSlider(data, controlFirmType, "Firm Type", "Firm Type", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: ["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"], fontsize: '0.5rem' });
 
       let controlFirmSize = d3.select("#controlfilterFirmSize");
       const firmsizeSlider = new ClickableHistogramSlider(data, controlFirmSize, "Firm Size", "Firm Size", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolateGnBu, colorInterpolationType: "sequential discrete", sortOrder: [1, "2-5", "6-10", "11-15", "16-30", "31-50", "51-100", "101-200", "201-500", "501+"], rotateAxisLabels: true });
