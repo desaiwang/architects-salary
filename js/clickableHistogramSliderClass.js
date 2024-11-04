@@ -137,7 +137,7 @@ class ClickableHistogramSlider {
 
         this.histRects
           .attr("fill", d => this.colorRect(d))
-          .style('outline-color', d => d.clicked ? ClickableHistogramSlider.selectedColor : ClickableHistogramSlider.greyedoutColor);
+          .style('stroke', d => d.clicked ? ClickableHistogramSlider.selectedColor : ClickableHistogramSlider.greyedoutColor);
 
 
         this.filters[this.attribute] = (d) => this.valueList.includes(d[this.attribute]);
@@ -184,12 +184,10 @@ class ClickableHistogramSlider {
       .attr("width", this.xScale.bandwidth())
       .attr("height", d => d.count == 0 ? 0 : this.yScale(0) - this.yScale(d.count) + 5)
       .attr("fill", d => this.colorRect(d))
-      .style("border-radius", "1px")
+      .style("rx", "2")
       .attr("cursor", "pointer") //this makes the cursor change to a pointer when hovering over the bars to indicate that things are clickable
-      .style("outline", "solid thin")
-      .style("outline-color", "black")
-      // .append("title")
-      // .text(d => `${d.count} survey responses`)
+      .style("stroke-width", "1")
+      .style("stroke", "black")
       .on('mouseover', (event, d) => {
         this.tooltip
           .attr("x", this.xScale(d.key) + this.xScale.bandwidth() / 2)
@@ -200,16 +198,16 @@ class ClickableHistogramSlider {
           .style("visibility", "visible"); // Show tooltip
 
         d3.select(event.target)
-          .style("outline-width", "medium")
-          .style('outline-color', ClickableHistogramSlider.selectedColor)
+          .style("stroke-width", "2")
+          .style('stroke', ClickableHistogramSlider.selectedColor)
       })
       .on('mouseout', (event, d) => {
         this.tooltip
           .style("visibility", "hidden");
 
         d3.select(event.target)
-          .style("outline-width", "thin")
-          .style('outline-color', d.clicked ? ClickableHistogramSlider.selectedColor : ClickableHistogramSlider.greyedoutColor)
+          .style("stroke-width", "1")
+          .style('stroke', d.clicked ? ClickableHistogramSlider.selectedColor : ClickableHistogramSlider.greyedoutColor)
 
 
       })
@@ -241,7 +239,7 @@ class ClickableHistogramSlider {
         d.clicked = true;
         this.histRects
           .attr("fill", d => this.colorRect(d))
-          .style('outline-color', d => d.clicked ? ClickableHistogramSlider.selectedColor : ClickableHistogramSlider.greyedoutColor);
+          .style('stroke', d => d.clicked ? ClickableHistogramSlider.selectedColor : ClickableHistogramSlider.greyedoutColor);
 
         // Update valueList and filter to only include the double-clicked value
         this.valueList = [d.key];
