@@ -1335,7 +1335,7 @@ id,Job Satisfaction,Salary,Salary Unit,Location,Job Title,Firm Type,Firm Size,He
 18235,7,70000,year,"Brooklyn, NY",Intermediate Architect,Starchitect,11-15,Yes,Unpaid Overtime,15.0,4500.0,Full-time,3-5,31-35,Male,Licensed,,Harvard University,,2023-02-01,2023,40.6526006,-73.9497211
 18234,7,58000,year,"Baltimore, MD",Associate,,16-30,Yes,,,,,3-5,26-30,Male,No,,,,2023-02-01,2023,39.2908816,-76.610759
 18233,6,110000,year,"New York, NY",Project Manager,Boutique,11-15,Yes,Unpaid Overtime,25.0,10000.0,Full-time,11-15,36-40,Female,Licensed,,New Jersey Institute of Technology (NJIT),,2023-02-01,2023,40.7127281,-74.0060152
-18232,4,64000,year,"Honolulu, HI",Designer,Corporate,51-100,Yes,Unpaid Overtime,17.0,3000.0,Full-time,6-7,26-30,Female,No,University of Hawai?i at M?noa,,,2023-02-01,2023,21.304547,-157.855676
+18232,4,64000,year,"Honolulu, HI",Designer,Corporate,51-100,Yes,Unpaid Overtime,17.0,3000.0,Full-time,6-7,26-30,Female,No,University of Hawaiʻi at Mānoa,,,2023-02-01,2023,21.304547,-157.855676
 18231,10,100000,year,"San Francisco, CA",Job Captain,,101-200,Yes,No Overtime,20.0,4000.0,Full-time,3-5,26-30,Female,Licensed,,,,2023-02-01,2023,37.7792588,-122.4193286
 18229,9,57000,year,"Austin, TX",Intermediate Designer,,16-30,,,,,,3,26-30,Male,No,,,,2023-02-01,2023,30.2711286,-97.7436995
 18228,10,90000,year,"Boston, MA",Project Architect,Boutique,6-10,,Unpaid Overtime,15.0,5000.0,Full-time,6-7,31-35,Male,No,Roger Williams University,University of Michigan,,2023-02-01,2023,42.3554334,-71.060511
@@ -2222,7 +2222,7 @@ id,Job Satisfaction,Salary,Salary Unit,Location,Job Title,Firm Type,Firm Size,He
 16924,8,47840,hour,"Sacramento, CA",Designer,,101-200,Yes,Paid Overtime,18.0,3200.0,Full-time,3-5,26-30,Male,No,"California Polytechnic State University, San Luis Obispo",,,2022-06-01,2022,38.5810606,-121.493895
 16923,8,72000,year,"New York, NY",Junior Designer,Other,31-50,Yes,Unpaid Overtime,10.0,1500.0,Full-time,3,26-30,Female,No,Tulane University,,,2022-06-01,2022,40.7127281,-74.0060152
 16922,9,41600,hour,"Houston, TX",Intern,Boutique,2-5,,Unpaid Overtime,3.0,0.0,Full-time,2,26-30,Male,No,University of Houston,,,2022-06-01,2022,29.7589382,-95.3676974
-16921,5,68000,year,"Seattle, WA",Designer,Corporate,501+,Yes,Paid Overtime,17.0,,Full-time,3-5,26-30,Female,No,University of Hawai?i at M?noa,University of Hawai?i at M?noa,,2022-06-01,2022,47.6038321,-122.330062
+16921,5,68000,year,"Seattle, WA",Designer,Corporate,501+,Yes,Paid Overtime,17.0,,Full-time,3-5,26-30,Female,No,University of Hawaiʻi at Mānoa,University of Hawaiʻi at Mānoa,,2022-06-01,2022,47.6038321,-122.330062
 16920,4,72400,year,"Brooklyn, NY",Digital Fabricator,,51-100,,,,,,3,21-25,Female,No,,,,2022-06-01,2022,40.6526006,-73.9497211
 16919,5,86000,year,"Houston, TX",Project Manager,,201-500,,,,,,3-5,26-30,Female,No,,,,2022-06-01,2022,29.7589382,-95.3676974
 16916,10,65000,year,"Austin, TX",Designer,Boutique,51-100,Yes,Unpaid Overtime,15.0,1000.0,Full-time,2,26-30,Male,No,Texas A&M University,University of Pennsylvania,,2022-06-01,2022,30.2711286,-97.7436995
@@ -3162,7 +3162,7 @@ id,Job Satisfaction,Salary,Salary Unit,Location,Job Title,Firm Type,Firm Size,He
 15725,7,80000,year,"Oakland, CA",Intermediate Designer,,16-30,Yes,,15.0,4000.0,Full-time,2,21-25,Female,No,,,,2021-12-01,2021,37.8044557,-122.271356
 15724,8,110000,year,"New York, NY",Principal,Individual,1,,No Overtime,25.0,,Full-time,8-10,31-35,Male,Licensed,The University of Texas at Austin,Columbia University,,2021-12-01,2021,40.7127281,-74.0060152
 15723,7,82000,year,"New York, NY",Associate,Corporate,201-500,Yes,No Overtime,24.0,8000.0,Full-time,6-7,31-35,Male,No,,Columbia University,,2021-12-01,2021,40.7127281,-74.0060152
-15722,5,78000,year,"Honolulu, HI",Designer,Corporate,501+,Yes,Unpaid Overtime,15.0,,Full-time,3-5,26-30,Female,No,University of Hawai?i at M?noa,,,2021-12-01,2021,21.304547,-157.855676
+15722,5,78000,year,"Honolulu, HI",Designer,Corporate,501+,Yes,Unpaid Overtime,15.0,,Full-time,3-5,26-30,Female,No,University of Hawaiʻi at Mānoa,,,2021-12-01,2021,21.304547,-157.855676
 15721,1,93000,year,"New York, NY",Project Architect,Other,31-50,Yes,Unpaid Overtime,10.0,,Full-time,8-10,31-35,Male,No,,,,2021-12-01,2021,40.7127281,-74.0060152
 15720,6,65000,year,"San Francisco, CA",Designer,Other,11-15,Yes,Paid Overtime,10.0,,Full-time,2,26-30,Male,No,University of Southern California (USC),,,2021-12-01,2021,37.7792588,-122.4193286
 15717,2,64000,year,"Miami, FL",Designer,Corporate,201-500,Yes,Unpaid Overtime,12.0,,Full-time,< 1,21-25,Female,No,,,,2021-12-01,2021,25.7741728,-80.19362
@@ -4330,7 +4330,7 @@ id,Job Satisfaction,Salary,Salary Unit,Location,Job Title,Firm Type,Firm Size,He
 14013,7,68000,year,"New York",Designer,Other,31-50,Yes,Unpaid Overtime,14.0,,Full-time,3-5,31-35,Female,No,,,,2019-12-01,2019,40.7127281,-74.0060152
 14012,6,58000,year,"Los Angeles, CA",Project Manager,Boutique,6-10,,Unpaid Overtime,,1000.0,Full-time,3-5,26-30,Female,Licensed,University of North Carolina at Charlotte,,,2019-12-01,2019,34.0536909,-118.242766
 14011,4,88000,year,"Seattle, WA",Designer,Other,6-10,Yes,No Overtime,21.0,5000.0,Full-time,3-5,41-45,Female,No,"University of California, San Diego",University of Washington,,2019-12-01,2019,47.6038321,-122.330062
-14010,7,73000,year,"San Francisco, CA",Designer,Corporate,51-100,Yes,Paid Overtime,15.0,2000.0,Full-time,2,26-30,Female,No,University of Hawai?i at M?noa,"University of California, Los Angeles (UCLA)",,2019-12-01,2019,37.7792588,-122.4193286
+14010,7,73000,year,"San Francisco, CA",Designer,Corporate,51-100,Yes,Paid Overtime,15.0,2000.0,Full-time,2,26-30,Female,No,University of Hawaiʻi at Mānoa,"University of California, Los Angeles (UCLA)",,2019-12-01,2019,37.7792588,-122.4193286
 14008,6,77000,year,"Brooklyn, NY",Project Manager,Other,6-10,Yes,No Overtime,10.0,3000.0,Full-time,6-7,31-35,Male,No,City College of New York (CCNY),,,2019-12-01,2019,40.6526006,-73.9497211
 14007,3,56000,year,"Chicago, IL",Intermediate Architect,Boutique,16-30,Yes,Unpaid Overtime,20.0,2500.0,Full-time,8-10,31-35,Female,No,Miami University,University of Wisconsin-Milwaukee,,2019-12-01,2019,41.8755616,-87.6244212
 14006,9,68000,year,"Charlotte, NC",Project Architect,Corporate,201-500,Yes,Unpaid Overtime,20.0,2500.0,Full-time,3,41-45,Male,Licensed,University of North Carolina at Charlotte,University of North Carolina at Charlotte,,2019-12-01,2019,35.2272086,-80.8430827
@@ -5801,7 +5801,7 @@ id,Job Satisfaction,Salary,Salary Unit,Location,Job Title,Firm Type,Firm Size,He
 11585,7,67000,year,"Seattle, WA",Project Architect,Corporate,501+,Yes,Unpaid Overtime,24.0,,Full-time,6-7,31-35,Female,Licensed,,,,2017-10-01,2017,47.6038321,-122.330062
 11584,7,57500,year,"New York, NY",Junior Designer,Individual,16-30,Yes,No Overtime,10.0,2000.0,Full-time,2,21-25,Female,No,Rice University,,,2017-10-01,2017,40.7127281,-74.0060152
 11583,9,92000,year,"Philadelphia, PA",Project Manager,Starchitect,201-500,Yes,No Overtime,7.0,,Full-time,21-25,36-40,Male,Licensed,,,,2017-10-01,2017,39.9527237,-75.1635262
-11581,3,68000,year,"Honolulu, HI",Project Architect,Corporate,51-100,Yes,Unpaid Overtime,15.0,10000.0,Full-time,16-20,41-45,Male,Licensed,University of Hawai?i at M?noa,,,2017-10-01,2017,21.304547,-157.855676
+11581,3,68000,year,"Honolulu, HI",Project Architect,Corporate,51-100,Yes,Unpaid Overtime,15.0,10000.0,Full-time,16-20,41-45,Male,Licensed,University of Hawaiʻi at Mānoa,,,2017-10-01,2017,21.304547,-157.855676
 11580,6,72000,year,"New York, NY",Associate,,101-200,,,,,,6-7,26-30,Male,No,,,,2017-10-01,2017,40.7127281,-74.0060152
 11579,5,85000,year,"New York, NY",Intermediate Architect,Corporate,501+,Yes,Paid Overtime,15.0,,Full-time,6-7,26-30,Female,Licensed,,,,2017-10-01,2017,40.7127281,-74.0060152
 11577,5,55000,year,"New York, NY",Project Manager,Boutique,11-15,Yes,No Overtime,10.0,2500.0,Full-time,2,26-30,Male,No,University of Washington,Yale University,,2017-10-01,2017,40.7127281,-74.0060152
@@ -7635,7 +7635,7 @@ id,Job Satisfaction,Salary,Salary Unit,Location,Job Title,Firm Type,Firm Size,He
 8732,3,53500,year,"Seattle, WA",Designer,Corporate,31-50,Yes,Unpaid Overtime,10.0,,,8-10,36-40,Male,No,,,,2016-01-01,2016,47.6038321,-122.330062
 8729,6,65000,year,"Cincinnati, OH",Associate,,31-50,,,,,,8-10,31-35,Male,No,,,,2016-01-01,2016,39.1014537,-84.5124602
 8728,9,49500,year,"Los Angeles, CA",Designer,Corporate,201-500,Yes,Paid Overtime,11.0,1000.0,Full-time,3,21-25,Male,No,University of Southern California (USC),,,2016-01-01,2016,34.0536909,-118.242766
-8727,4,33280,hour,"Honolulu, HI",Designer,Corporate,51-100,Yes,Paid Overtime,15.0,3500.0,Full-time,2,26-30,Female,No,,University of Hawai?i at M?noa,,2016-01-01,2016,21.304547,-157.855676
+8727,4,33280,hour,"Honolulu, HI",Designer,Corporate,51-100,Yes,Paid Overtime,15.0,3500.0,Full-time,2,26-30,Female,No,,University of Hawaiʻi at Mānoa,,2016-01-01,2016,21.304547,-157.855676
 8726,8,75000,year,"Milwaukee, WI",Senior Designer,Boutique,101-200,Yes,Unpaid Overtime,25.0,10000.0,Full-time,11-15,36-40,Female,Licensed,,,,2016-01-01,2016,43.0386475,-87.9090751
 8724,7,70000,year,"Chicago, IL",Designer,Corporate,201-500,Yes,Unpaid Overtime,15.0,,Full-time,6-7,36-40,Male,No,,University of Illinois at Chicago,,2016-01-01,2016,41.8755616,-87.6244212
 8723,8,94000,year,"Los Angeles, CA",Interior Designer,Corporate,201-500,Yes,,12.0,3000.0,Full-time,16-20,41-45,Female,Licensed,,,,2016-01-01,2016,34.0536909,-118.242766
@@ -8246,7 +8246,7 @@ id,Job Satisfaction,Salary,Salary Unit,Location,Job Title,Firm Type,Firm Size,He
 7826,8,35360,hour,"Charlottesville, VA",Student Intern,Corporate,31-50,,Paid Overtime,,,Full-time,< 1,26-30,Female,No,,University of Virginia,,2015-07-01,2015,38.029306,-78.4766781
 7825,6,52000,year,"New York, NY",Project Manager,Boutique,16-30,Yes,Unpaid Overtime,11.0,500.0,Full-time,3-5,31-35,Female,No,,Rhode Island School of Design (RISD),,2015-07-01,2015,40.7127281,-74.0060152
 7824,7,68000,year,"Oakland, CA",Intermediate Architect,Boutique,6-10,Yes,Unpaid Overtime,,,Full-time,11-15,36-40,Male,No,,,,2015-07-01,2015,37.8044557,-122.271356
-7823,9,97000,year,"Honolulu, HI",Senior Architect,Other,6-10,Yes,Paid Overtime,15.0,,,16-20,41-45,Female,Licensed,University of Hawai?i at M?noa,,,2015-07-01,2015,21.304547,-157.855676
+7823,9,97000,year,"Honolulu, HI",Senior Architect,Other,6-10,Yes,Paid Overtime,15.0,,,16-20,41-45,Female,Licensed,University of Hawaiʻi at Mānoa,,,2015-07-01,2015,21.304547,-157.855676
 7820,5,55000,year,"San Francisco, CA",Junior Designer,Corporate,31-50,Yes,Unpaid Overtime,10.0,2000.0,Full-time,2,21-25,Female,No,,,,2015-07-01,2015,37.7792588,-122.4193286
 7819,5,60000,year,"New York, NY",Construction Administrator,Other,51-100,Yes,Unpaid Overtime,10.0,2000.0,Full-time,8-10,31-35,Male,Licensed,The Catholic University of America,Cours de Civilisation Française de la Sorbonne,,2015-07-01,2015,40.7127281,-74.0060152
 7817,6,45000,year,"New York, NY",Associate,Other,51-100,Yes,No Overtime,14.0,,Full-time,< 1,21-25,Female,No,University of Virginia,,,2015-07-01,2015,40.7127281,-74.0060152
@@ -9369,7 +9369,7 @@ id,Job Satisfaction,Salary,Salary Unit,Location,Job Title,Firm Type,Firm Size,He
 6276,9,37000,year,"Providence, RI",Designer,Other,11-15,Yes,Unpaid Overtime,10.0,,Full-time,2,21-25,Female,No,Wentworth Institute of Technology,Wentworth Institute of Technology,,2014-09-01,2014,41.8239891,-71.4128343
 6275,8,120000,year,"New York, NY",Associate,Corporate,101-200,Yes,No Overtime,15.0,3000.0,Full-time,11-15,41-45,Male,Licensed,New York Institute of Technology (NYIT),,,2014-09-01,2014,40.7127281,-74.0060152
 6273,8,80000,year,"San Jose, CA",Project Manager,Corporate,31-50,Yes,Paid Overtime,15.0,2000.0,Full-time,8-10,31-35,Female,No,,,,2014-09-01,2014,37.3361663,-121.890591
-6272,7,85000,year,"Hawaii",Project Manager,Corporate,51-100,Yes,Unpaid Overtime,10.0,1500.0,Full-time,26-30,56-60,Female,Licensed,University of Hawai?i at M?noa,"University of California, Los Angeles (UCLA)",,2014-09-01,2014,19.5938015,-155.42837009716908
+6272,7,85000,year,"Hawaii",Project Manager,Corporate,51-100,Yes,Unpaid Overtime,10.0,1500.0,Full-time,26-30,56-60,Female,Licensed,University of Hawaiʻi at Mānoa,"University of California, Los Angeles (UCLA)",,2014-09-01,2014,19.5938015,-155.42837009716908
 6271,10,50000,year,"Dallas, TX",Intern,,31-50,Yes,Paid Overtime,16.0,,Full-time,2,21-25,Female,No,The University of Oklahoma,,,2014-09-01,2014,32.7762719,-96.7968559
 6270,3,63000,year,"Seattle, WA",Project Architect,Corporate,51-100,Yes,Paid Overtime,15.0,,Full-time,8-10,31-35,Female,Licensed,,,,2014-09-01,2014,47.6038321,-122.330062
 6269,6,38010,year,"Washington, DC",Junior Architect,Corporate,201-500,Yes,Unpaid Overtime,13.0,11000.0,Full-time,2,26-30,Female,No,Auburn University,,,2014-09-01,2014,38.8950368,-77.0365427
@@ -9457,7 +9457,7 @@ id,Job Satisfaction,Salary,Salary Unit,Location,Job Title,Firm Type,Firm Size,He
 6126,9,62000,year,"New York, NY",Intermediate Architect,Corporate,51-100,Yes,Unpaid Overtime,10.0,,Full-time,3-5,26-30,Female,No,Barnard College,Columbia University,,2014-08-01,2014,40.7127281,-74.0060152
 6125,7,75000,year,"New York, NY",Project Architect,Corporate,31-50,Yes,Unpaid Overtime,10.0,,Full-time,6-7,31-35,Male,Licensed,"University of California, Berkeley",Columbia University,,2014-08-01,2014,40.7127281,-74.0060152
 6123,9,41600,year,"San Diego, CA",Draftsperson,Boutique,16-30,Yes,Paid Overtime,20.0,,Full-time,3-5,26-30,Female,No,"California Polytechnic State University, San Luis Obispo",,,2014-08-01,2014,32.7174202,-117.162772
-6122,7,60000,year,"New York, NY",Project Manager,Corporate,31-50,Yes,Unpaid Overtime,12.0,10000.0,Full-time,1,26-30,Female,No,University of Hawai?i at M?noa,,,2014-08-01,2014,40.7127281,-74.0060152
+6122,7,60000,year,"New York, NY",Project Manager,Corporate,31-50,Yes,Unpaid Overtime,12.0,10000.0,Full-time,1,26-30,Female,No,University of Hawaiʻi at Mānoa,,,2014-08-01,2014,40.7127281,-74.0060152
 6120,4,68000,year,"New York, NY",Marketing Director,Corporate,501+,Yes,No Overtime,10.0,,Full-time,6-7,31-35,Female,No,,,,2014-08-01,2014,40.7127281,-74.0060152
 6117,5,31200,hour,"Denver, CO",Job Captain,Boutique,11-15,,Paid Overtime,,,Full-time,3-5,26-30,Female,No,,The University of Texas at Austin,,2014-08-01,2014,39.7392364,-104.984862
 6109,10,63000,year,"New York, NY",Interior Designer,Individual,2-5,Yes,Paid Overtime,,500.0,Full-time,3,26-30,Female,No,Pratt Institute,New York School of Interior Design (NYSID),,2014-08-01,2014,40.7127281,-74.0060152
@@ -12125,7 +12125,7 @@ id,Job Satisfaction,Salary,Salary Unit,Location,Job Title,Firm Type,Firm Size,He
 2286,1,56000,year,"Philadelphia, PA",Senior Designer,Corporate,101-200,Yes,Paid Overtime,15.0,3000.0,Full-time,8-10,31-35,Male,No,,,,2013-05-01,2013,39.9527237,-75.1635262
 2285,8,41000,year,"New York, NY",Designer,Boutique,51-100,Yes,Unpaid Overtime,15.0,,Full-time,2,26-30,Male,No,,,,2013-05-01,2013,40.7127281,-74.0060152
 2284,4,59000,year,"Los Angeles, CA",Designer,Corporate,501+,Yes,Unpaid Overtime,,4000.0,Full-time,8-10,36-40,Male,No,,Southern California Institute of Architecture (SCI-Arc),,2013-05-01,2013,34.0536909,-118.242766
-2283,7,100000,year,"Honolulu, HI",Project Manager,Other,101-200,Yes,Unpaid Overtime,10.0,11000.0,Full-time,6-7,46-50,Male,No,University of Hawai?i at M?noa,University of Hawai?i at M?noa,,2013-05-01,2013,21.304547,-157.855676
+2283,7,100000,year,"Honolulu, HI",Project Manager,Other,101-200,Yes,Unpaid Overtime,10.0,11000.0,Full-time,6-7,46-50,Male,No,University of Hawaiʻi at Mānoa,University of Hawaiʻi at Mānoa,,2013-05-01,2013,21.304547,-157.855676
 2282,1,40000,year,"Phoenix, AZ",Engineer,Individual,11-15,,Unpaid Overtime,7.0,,Full-time,3-5,26-30,Female,No,University of Arkansas,Arizona State University,,2013-05-01,2013,33.4484367,-112.074141
 2281,8,39000,year,"Chicago, IL",Intern,Corporate,51-100,Yes,Paid Overtime,15.0,,Full-time,2,21-25,Male,No,Illinois Institute of Technology (IIT),,,2013-05-01,2013,41.8755616,-87.6244212
 2279,8,60000,year,"Atlanta, GA",Designer,,6-10,,,,,,3-5,21-25,Male,No,,,,2013-05-01,2013,33.7489924,-84.3902644
@@ -12975,7 +12975,7 @@ id,Job Satisfaction,Salary,Salary Unit,Location,Job Title,Firm Type,Firm Size,He
 1213,7,75000,year,"Chicago, IL",Project Architect,Boutique,11-15,Yes,Unpaid Overtime,20.0,2000.0,Full-time,11-15,36-40,Male,Licensed,The Ohio State University,University of Illinois at Chicago,,2013-04-01,2013,41.8755616,-87.6244212
 1211,4,56000,year,"New York, NY",Junior Architect,Corporate,201-500,Yes,Unpaid Overtime,18.0,2500.0,Full-time,3,26-30,Male,Licensed,The Ohio State University,Yale University,,2013-04-01,2013,40.7127281,-74.0060152
 1210,8,60000,year,"Milwaukee, WI",Business Manager,,201-500,,,,,,3,26-30,Male,No,,,,2013-04-01,2013,43.0386475,-87.9090751
-1209,7,59000,year,"Rapid City, SD",Intermediate Architect,Individual,2-5,,No Overtime,15.0,1200.0,Full-time,6-7,36-40,Female,Licensed,East Carolina University,University of Hawai?i at M?noa,University of Hawai?i at M?noa,2013-04-01,2013,44.0806041,-103.228023
+1209,7,59000,year,"Rapid City, SD",Intermediate Architect,Individual,2-5,,No Overtime,15.0,1200.0,Full-time,6-7,36-40,Female,Licensed,East Carolina University,University of Hawaiʻi at Mānoa,University of Hawaiʻi at Mānoa,2013-04-01,2013,44.0806041,-103.228023
 1207,5,70000,year,"Philadelphia, PA",Project Architect,Corporate,51-100,Yes,Unpaid Overtime,15.0,750.0,Full-time,16-20,36-40,Male,Licensed,Philadelphia University,,,2013-04-01,2013,39.9527237,-75.1635262
 1205,5,42300,year,"Kearney, NE",Junior Architect,Corporate,31-50,Yes,Unpaid Overtime,6.0,,Full-time,2,26-30,Male,No,University of Nebraska-Lincoln,University of Nebraska-Lincoln,,2013-04-01,2013,40.4906216,-98.9472344
 1204,8,57100,year,"Dallas, TX",Project Architect,Corporate,201-500,Yes,Unpaid Overtime,15.0,3000.0,Full-time,3-5,26-30,Male,Licensed,Louisiana State University,,,2013-04-01,2013,32.7762719,-96.7968559
