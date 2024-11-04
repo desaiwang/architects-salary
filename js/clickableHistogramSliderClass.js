@@ -85,7 +85,7 @@ class ClickableHistogramSlider {
   }
 
   setupScales() {
-    this.xScale = d3.scaleBand().domain(this.uniqueKeys).range([0, this.sliderWidth]).padding(0.2);
+    this.xScale = d3.scaleBand().domain(this.uniqueKeys).range([0, this.sliderWidth]).padding(0.12);
     this.yScale = d3.scaleLinear().domain([0, d3.max(this.groupCounts, d => d.count)]).nice().range([this.sliderHeight, this.options.yBetweenLabelAndHist]);
   }
 
@@ -108,6 +108,8 @@ class ClickableHistogramSlider {
 
   //function for determining color of bars
   colorRect = (d) => d.clicked ? (this.showColors ? d.color : "grey") : "white"
+
+  colorBorder = (d) => d.clicked ? (this.showColors ? d3.lab(d.color).darker() : d3.lab("grey").darker()) : ClickableHistogramSlider.greyedoutColor
 
   setupBrush() {
     //set up brush
@@ -137,7 +139,7 @@ class ClickableHistogramSlider {
 
         this.histRects
           .attr("fill", d => this.colorRect(d))
-          .style('stroke', d => d.clicked ? ClickableHistogramSlider.selectedColor : ClickableHistogramSlider.greyedoutColor);
+          .style('stroke', d => this.colorBorder(d));
 
 
         this.filters[this.attribute] = (d) => this.valueList.includes(d[this.attribute]);
@@ -184,10 +186,10 @@ class ClickableHistogramSlider {
       .attr("width", this.xScale.bandwidth())
       .attr("height", d => d.count == 0 ? 0 : this.yScale(0) - this.yScale(d.count) + 5)
       .attr("fill", d => this.colorRect(d))
+      .attr("stroke", d => this.colorBorder(d))
+      .attr("stroke-width", "1")
       .style("rx", "2")
       .attr("cursor", "pointer") //this makes the cursor change to a pointer when hovering over the bars to indicate that things are clickable
-      .style("stroke-width", "1")
-      .style("stroke", "black")
       .on('mouseover', (event, d) => {
         this.tooltip
           .attr("x", this.xScale(d.key) + this.xScale.bandwidth() / 2)
@@ -207,7 +209,7 @@ class ClickableHistogramSlider {
 
         d3.select(event.target)
           .style("stroke-width", "1")
-          .style('stroke', d.clicked ? ClickableHistogramSlider.selectedColor : ClickableHistogramSlider.greyedoutColor)
+          .style('stroke', this.colorBorder(d))
 
 
       })
@@ -219,12 +221,13 @@ class ClickableHistogramSlider {
           if (d.clicked) {
             d3.select(event.target) //TODO: probably not going to work
               .attr("fill", d => this.showColors ? d.color : "grey")
-              .style('outline-color', ClickableHistogramSlider.selectedColor);
+              .style('stroke', this.colorBorder(d));
 
             this.valueList.push(d.key);
           } else {
             d3.select(event.target)
               .attr("fill", "white")
+              .style('stroke', this.colorBorder(d));
 
             this.valueList = this.valueList.filter(rating => rating != d.key)
           }
@@ -239,7 +242,7 @@ class ClickableHistogramSlider {
         d.clicked = true;
         this.histRects
           .attr("fill", d => this.colorRect(d))
-          .style('stroke', d => d.clicked ? ClickableHistogramSlider.selectedColor : ClickableHistogramSlider.greyedoutColor);
+          .style('stroke', d => this.colorBorder(d));
 
         // Update valueList and filter to only include the double-clicked value
         this.valueList = [d.key];
@@ -270,6 +273,7 @@ class ClickableHistogramSlider {
     this.showColors = bool;
 
     this.histRects.attr("fill", d => this.colorRect(d))
+      .style('stroke', d => this.colorBorder(d))
   }
 
   update() {

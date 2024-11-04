@@ -56,6 +56,10 @@
         <!-- <div id="controlfilterAnnualBonus"></div>
         <div id="controlfilterVacationDays"></div> -->
         <div>
+          <label for="searchLocation">Location:</label>
+          <input type="text" id="searchLocation" placeholder="Type to search...">
+        </div>
+        <div>
           <label for="searchUG">Undergraduate School:</label>
           <input type="text" id="searchUG" placeholder="Type to search...">
         </div>
@@ -148,7 +152,8 @@
       const satisfactionSlider = new ClickableHistogramSlider(data, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", controlWidth, controlHeight, updateData, filters, { colorInterpolator: BuOrColorInterpolator, colorInterpolationType: "sequential continuous" });
 
       let controlFirmType = d3.select("#controlfilterFirmType");
-      const firmtypeSlider = new ClickableHistogramSlider(data, controlFirmType, "Firm Type", "Firm Type", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: d3.schemeObservable10, sortOrder: ["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"] });
+      const firmtypeSlider = new ClickableHistogramSlider(data, controlFirmType, "Firm Type", "Firm Type", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: ["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"] });
+      console.log("observable10", d3.schemeObservable10)
 
       let controlFirmSize = d3.select("#controlfilterFirmSize");
       const firmsizeSlider = new ClickableHistogramSlider(data, controlFirmSize, "Firm Size", "Firm Size", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolateGnBu, colorInterpolationType: "sequential discrete", sortOrder: [1, "2-5", "6-10", "11-15", "16-30", "31-50", "51-100", "101-200", "201-500", "501+"], rotateAxisLabels: true });
@@ -169,6 +174,9 @@
       console.log("firmTypeScale('Other')", firmTypeScale('Other'))
 
       //search bars
+      let searchLocation = d3.select("input#searchLocation")
+      const locationSearchBar = new SearchBar(searchLocation, "Location", filters, updateData);
+
       let searchUG = d3.select("input#searchUG")
       const ugSearchBar = new SearchBar(searchUG, "Undergraduate School", filters, updateData);
 
