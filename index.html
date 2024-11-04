@@ -59,6 +59,10 @@
           <label for="searchUG">Undergraduate School:</label>
           <input type="text" id="searchUG" placeholder="Type to search...">
         </div>
+        <div>
+          <label for="searchGrad">Graduate School:</label>
+          <input type="text" id="searchGrad" placeholder="Type to search...">
+        </div>
       </div>
     </div>
   </div>
@@ -71,9 +75,6 @@
 
   <script type="module">
 
-    //import { curveSlider } from './js/curveSlider.js';
-    import { histogramSlider } from './js/histogramSlider.js';
-    //import { clickableHistogramSlider } from './js/clickableHistogramSlider.js';
     import { hexbinMap } from './js/hexbinMap.js';
     import { geoAlbersUsaPr } from "./js/geoAlbersUsaPr.js";
     import ClickableHistogramSlider from './js/clickableHistogramSliderClass.js';
@@ -170,6 +171,9 @@
       //search bars
       let searchUG = d3.select("input#searchUG")
       const ugSearchBar = new SearchBar(searchUG, "Undergraduate School", filters, updateData);
+
+      let searchGrad = d3.select("input#searchGrad")
+      const gradSearchBar = new SearchBar(searchGrad, "Graduate School", filters, updateData);
 
 
       const salaryExtent = d3.extent(data, d => d['Salary'])
