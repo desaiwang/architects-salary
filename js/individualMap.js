@@ -35,6 +35,7 @@ class IndividualMap {
     this.vizHeight = this.height - this.margins.top - this.margins.bottom;
   };
 
+
   setColors(attribute) {
     this.data.forEach(d => {
       d.color = (this.colorScales[attribute])(d[attribute]);
@@ -114,6 +115,24 @@ class IndividualMap {
       d.cy = this.cyCalc(i, this.numPointsPerRow, this.maxD, this.yOffset);
       d.passesFilter = true;
     });
+  }
+
+  updateWidth(width, height) {
+    this.width = width;
+    this.height = height;
+
+    this.vizWidth = this.width - this.margins.left - this.margins.right;
+    this.vizHeight = this.height - this.margins.top - this.margins.bottom;
+
+    this.vizIndividualsContainer.selectAll("*").remove();
+
+    this.positionData();
+    this.setupCanvas();
+    this.createDelaunayVoronoi();
+    this.addInteraction();
+    //default to job satisfaction
+    // this.setColors("Job Satisfaction");
+    this.render();
   }
 
   setupCanvas() {

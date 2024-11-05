@@ -16,18 +16,6 @@
 </head>
 
 <body style="background-color: rgb(255, 255, 255);">
-  <script>
-    let closed = false;
-    function openNav() {
-      document.getElementById("mySidebar").style.width = "250px";
-      document.getElementById("main").style.marginLeft = "250px";
-    }
-
-    function closeNav() {
-      document.getElementById("mySidebar").style.width = "0";
-      document.getElementById("main").style.marginLeft = "0";
-    }
-  </script>
   <div style="margin-top:30px">
   </div>
   <div id="header">
@@ -44,7 +32,7 @@
     <!-- <div id="hexbinMap">
     </div> -->
 
-    <div id="container" style="display: flex;">
+    <div id="container" style="display: flex; width:100vw">
 
 
 
@@ -107,9 +95,23 @@
         </div>
       </div>
 
-      <div class="main">
-        <div id="canvasContainer" style="position:relative; width:1400px; height:1500px">
+      <div class="main" style="display: flex;">
+        <div id="canvasContainer" style="position:relative; width:1350px; height:1000px">
         </div>
+        <!-- <div id="vizContainer" style="background-color: brown;">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dictum, leo quis consequat semper, sem quam
+          dapibus elit, vel auctor arcu ante ut purus. Cras luctus leo rhoncus ipsum luctus, non vestibulum turpis
+          tempus.
+          Etiam luctus suscipit tristique. Phasellus in viverra nulla. Suspendisse suscipit dignissim nulla, vitae
+          sagittis est. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+          Nam
+          tellus augue, auctor eu justo vel, rutrum euismod eros. Proin lorem dolor, vehicula ac laoreet vitae,
+          malesuada
+          a leo. Suspendisse potenti. Curabitur sed vehicula eros. Ut suscipit neque ut vehicula fringilla. Nam auctor
+          neque urna, dapibus aliquam mauris fermentum ut. Nam convallis nibh urna, sed efficitur velit convallis ut.
+        </div> -->
+
+
       </div>
 
     </div>
@@ -124,6 +126,8 @@
 
     resizeBtn.addEventListener("click", function (e) {
       e.preventDefault();
+      // let vizContainer = d3.select("div.main")
+      // console.log(`div.main width ${vizContainer.style("width")}`)
       document.body.classList.toggle("sb-expanded");
     });
 
@@ -316,6 +320,7 @@
 
       }
 
+      individualMap.updateWidth(1100, 1100);
 
 
       //updateData();
