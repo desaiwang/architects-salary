@@ -36,14 +36,15 @@
 
 
 
-      <div class="aside">
+      <div class="aside" style="overflow:scroll">
         <div class="sidebar" style="display: flex; flex-direction: column;">
 
 
-          <a href="#" data-resize-btn>
+          <button data-resize-btn id="collapse"
+            style="background: none; border: none; cursor: pointer; display: flex; align-items: center;">
             <i class="bx bx-chevrons-right"></i>
             <span>Collapse</span>
-          </a>
+          </button>
 
           <div id="filters">
             <div id="colorScaleDropdown" style="width:20rem">
@@ -96,7 +97,7 @@
       </div>
 
       <div class="main">
-        <div id="canvasContainer" style="width:1350px; height:1000px; position:relative; margin: 0 auto">
+        <div id="canvasContainer" style="width:1100px; height:1100px; position:relative; margin: 0 auto">
         </div>
         <!-- <div id="vizContainer" style="background-color: brown;">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dictum, leo quis consequat semper, sem quam
@@ -122,14 +123,14 @@
   <div style="margin-bottom:100"></div>
   </div>
   <script>
-    const resizeBtn = document.querySelector("[data-resize-btn]");
+    // const resizeBtn = document.querySelector("[data-resize-btn]");
 
-    resizeBtn.addEventListener("click", function (e) {
-      e.preventDefault();
-      // let vizContainer = d3.select("div.main")
-      // console.log(`div.main width ${vizContainer.style("width")}`)
-      document.body.classList.toggle("sb-expanded");
-    });
+    // resizeBtn.addEventListener("click", function (e) {
+    //   e.preventDefault();
+    //   // let vizContainer = d3.select("div.main")
+    //   // console.log(`div.main width ${vizContainer.style("width")}`)
+    //   document.body.classList.toggle("sb-collapsed");
+    // });
 
   </script>
 
@@ -154,6 +155,8 @@
       .attr("height", heightMap)
       .attr("style", "max-width: 100%; height: auto;");
     const mapArea = svgMap.append("g");
+
+
 
     const loadIndividuals = async function () {
       let data = await d3.csv("data/241102_archinect_salaries_fulltime.csv", d3.autoType);
@@ -320,10 +323,49 @@
 
       }
 
-      individualMap.updateWidth(1100, 1100);
 
 
-      //updateData();
+      let collapsed = false;
+      d3.select("button#collapse")
+        .on("click", (event) => {
+          console.log("collapse button clicked")
+          collapsed = !collapsed;
+
+          if (collapsed) {
+            //change sidebar width
+            d3.select("div.aside").style("width", "5rem");
+
+            //change toggle properties
+            d3.select("div.sidebar button span")
+              .style("opacity", 0)
+              .style("visibility", "hidden");
+
+            //change filters visibility
+            d3.select("div#filters")
+              .style("opacity", 0)
+              .style("visibility", "hidden");
+
+            d3.select(".bx-chevrons-right").style("rotate", "180deg")
+
+            individualMap.updateWidth(1300, 1000);
+          } else {
+            //change sidebar width
+            d3.select("div.aside").style("width", "20rem");
+
+            //change toggle properties
+            d3.select("div.sidebar button span")
+              .style("opacity", 1)
+              .style("visibility", "visible");
+
+            //change filters visibility
+            d3.select("div#filters")
+              .style("opacity", 1)
+              .style("visibility", "visible");
+            d3.select(".bx-chevrons-right").style("rotate", "0deg")
+
+            individualMap.updateWidth(1100, 1100);
+          }
+        });
 
     }
 
