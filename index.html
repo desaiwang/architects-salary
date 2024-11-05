@@ -7,6 +7,7 @@
     href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
     rel="stylesheet">
   <link href="./style.css" rel="stylesheet" type="text/css">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script src="https://d3js.org/topojson.v2.min.js"></script>
   <!-- <script src="https://cdn.jsdelivr.net/npm/d3-tile@1"></script> -->
@@ -15,6 +16,18 @@
 </head>
 
 <body style="background-color: rgb(255, 255, 255);">
+  <script>
+    let closed = false;
+    function openNav() {
+      document.getElementById("mySidebar").style.width = "250px";
+      document.getElementById("main").style.marginLeft = "250px";
+    }
+
+    function closeNav() {
+      document.getElementById("mySidebar").style.width = "0";
+      document.getElementById("main").style.marginLeft = "0";
+    }
+  </script>
   <div style="margin-top:30px">
   </div>
   <div id="header">
@@ -28,58 +41,77 @@
   </div>
 
   <div>
-    <div id="hexbinMap">
+    <!-- <div id="hexbinMap">
+    </div> -->
 
-    </div>
-    <div id="container" style="display: flex; justify-content: center;">
-      <div id="canvasContainer" style="position:relative; width:900px; height:1500px">
-      </div>
-      <div id="dropdown" style="display: flex; flex-direction: column;">
-        <div id="colorScaleDropdown">
-          Color by:
-          <select id="colorScaleSelect">
-            <option value="Year">Year</option>
-            <option value="Job Satisfaction" selected>Job Satisfaction</option>
-            <option value="Firm Type">Firm Type</option>
-            <option value="Firm Size">Firm Size</option>
-            <option value="Age">Age</option>
-            <option value="Years of Experience">Years of Experience</option>
-          </select>
-        </div>
-        <div id="controlfilterTime"></div>
-        <div id="controlfilterSalary"></div>
-        <div id="controlfilterSatisfaction"></div>
-        <div id="controlfilterFirmType"></div>
-        <div id="controlfilterFirmSize"></div>
-        <div id="controlfilterAge"></div>
-        <div id="controlfilterYearsOfExperience"></div>
-        <!-- <div id="controlfilterAnnualBonus"></div>
-        <div id="controlfilterVacationDays"></div> -->
-        <div>
-          <label for="searchLocation">Location:</label>
-          <input type="text" id="searchLocation" placeholder="Type to search...">
-        </div>
-        <div>
-          <label for="searchUG">Undergraduate School:</label>
-          <input type="text" id="searchUG" placeholder="Type to search...">
-        </div>
-        <div>
-          <label for="searchGrad">Graduate School:</label>
-          <input type="text" id="searchGrad" placeholder="Type to search...">
-        </div>
+    <div id="container" style="display: flex;">
 
-        <div id="filter-container">
-          Hello
-          <label>
-            <input type="checkbox" id="yesCheckbox" />
-            Yes
-          </label>
-          <label>
-            <input type="checkbox" id="noCheckbox" />
-            No
-          </label>
+
+
+      <div class="aside">
+        <div class="sidebar" style="display: flex; flex-direction: column;">
+
+
+          <a href="#" data-resize-btn>
+            <i class="bx bx-chevrons-right"></i>
+            <span>Collapse</span>
+          </a>
+
+          <div id="filters">
+            <div id="colorScaleDropdown" style="width:20rem">
+              Color by: &nbsp
+              <select id="colorScaleSelect">
+                <option value="Year">Year</option>
+                <option value="Job Satisfaction" selected>Job Satisfaction</option>
+                <option value="Firm Type">Firm Type</option>
+                <option value="Firm Size">Firm Size</option>
+                <option value="Age">Age</option>
+                <option value="Years of Experience">Years of Experience</option>
+              </select>
+            </div>
+            <div id="controlfilterTime"></div>
+            <div id="controlfilterSalary"></div>
+            <div id="controlfilterSatisfaction"></div>
+            <div id="controlfilterFirmType"></div>
+            <div id="controlfilterFirmSize"></div>
+            <div id="controlfilterAge"></div>
+            <div id="controlfilterYearsOfExperience"></div>
+            <!-- <div id="controlfilterAnnualBonus"></div>
+            <div id="controlfilterVacationDays"></div> -->
+            <div>
+              <label for="searchLocation">Location:</label>
+              <input type="text" id="searchLocation" placeholder="Type to search...">
+            </div>
+            <div>
+              <label for="searchUG">Undergraduate School:</label>
+              <input type="text" id="searchUG" placeholder="Type to search...">
+            </div>
+            <div>
+              <label for="searchGrad">Graduate School:</label>
+              <input type="text" id="searchGrad" placeholder="Type to search...">
+            </div>
+
+            <div id="filter-container">
+              Hello
+              <label>
+                <input type="checkbox" id="yesCheckbox" />
+                Yes
+              </label>
+              <label>
+                <input type="checkbox" id="noCheckbox" />
+                No
+              </label>
+            </div>
+          </div>
+
         </div>
       </div>
+
+      <div class="main">
+        <div id="canvasContainer" style="position:relative; width:1400px; height:1500px">
+        </div>
+      </div>
+
     </div>
   </div>
   </div>
@@ -87,7 +119,15 @@
   </div>
   <div style="margin-bottom:100"></div>
   </div>
+  <script>
+    const resizeBtn = document.querySelector("[data-resize-btn]");
 
+    resizeBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      document.body.classList.toggle("sb-expanded");
+    });
+
+  </script>
 
   <script type="module">
 
@@ -136,7 +176,7 @@
 
 
       //sets up contols
-      let controlWidth = 250;
+      let controlWidth = 300;
       let controlHeight = 60;
 
       let controlSalary = d3.select("#controlfilterSalary");
@@ -185,7 +225,6 @@
       });
 
       const firmTypeScale = d3.scaleOrdinal().domain(["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"]).range(d3.schemeTableau10);
-      console.log("firmTypeScale('Other')", firmTypeScale('Other'))
 
       //search bars
       let searchLocation = d3.select("input#searchLocation")
@@ -197,10 +236,8 @@
       let searchGrad = d3.select("input#searchGrad")
       const gradSearchBar = new SearchBar(searchGrad, "Graduate School", filters, updateData);
 
-
       const salaryExtent = d3.extent(data, d => d['Salary'])
       const salaryScale = d3.scaleSqrt().domain(salaryExtent).range([0.5, 15])
-
 
       const satisfactionScale = satisfactionSlider.colorScale;
       const colorScales = {
@@ -234,16 +271,16 @@
 
       const projection = geoAlbersUsaPr().scale(4 / 3 * widthMap).translate([widthMap / 2, heightMap / 2]);
 
-      // Append the state mesh.
-      mapArea.append("path")
-        .datum(stateMesh)
-        .attr("fill", "none")
-        .attr("stroke", "#777")
-        .attr("stroke-width", 0.5)
-        .attr("stroke-linejoin", "round")
-        .attr("d", d3.geoPath(projection));
-      //set up the layer used for hexBin rendering
-      let hexBinLayer = mapArea.append("g");
+      // // Append the state mesh.
+      // mapArea.append("path")
+      //   .datum(stateMesh)
+      //   .attr("fill", "none")
+      //   .attr("stroke", "#777")
+      //   .attr("stroke-width", 0.5)
+      //   .attr("stroke-linejoin", "round")
+      //   .attr("d", d3.geoPath(projection));
+      // //set up the layer used for hexBin rendering
+      // let hexBinLayer = mapArea.append("g");
 
 
       function updateData() {
