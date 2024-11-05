@@ -2,7 +2,7 @@ body {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
   margin: 20px;
-  background-color: rgb(60, 65, 67);
+  /* background-color: rgb(60, 65, 67); */
   /* Set background color */
 }
 
@@ -63,7 +63,7 @@ body.sb-expanded {
 
 /* controls placement of aside div */
 div.aside {
-  background-color: #d6d6d6;
+  /* background-color: #d6d6d6; */
   position: fixed;
   inset: 0 0 0 auto;
   padding: 1rem;
@@ -132,7 +132,7 @@ div#filters {
 
 div.main {
   width: 5rem;
-  padding: 1rem 4rem 1rem 1rem;
+  padding: 1rem;
   transition: width 0.5s ease-in-out;
 }
 
