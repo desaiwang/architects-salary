@@ -24,25 +24,19 @@
     <h5 style="text-align: center; margin-top: -65px; margin-bottom: 50px"> Desai Wang</h5>
   </div>
 
-  <div style="display: flex; justify-content: center;">
-    <h2 id="summaryText"></h2>
-  </div>
+
 
   <div>
     <!-- <div id="hexbinMap">
     </div> -->
 
-    <div id="container" style="display: flex; width:100vw">
-
-
-
-      <div class="aside" style="overflow:scroll">
+    <div id="container" style="display: flex;">
+      <div class="aside" style="overflow-y:scroll; overflow-x: hidden;">
         <div class="sidebar" style="display: flex; flex-direction: column;">
 
-
-          <button data-resize-btn id="collapse"
+          <button data-resize-btn id="sidebarcollapse" class="collapse"
             style="background: none; border: none; cursor: pointer; display: flex; align-items: center;">
-            <i class="bx bx-chevrons-right"></i>
+            <i class="bx bx-chevron-right"></i>
             <span>Collapse</span>
           </button>
 
@@ -58,6 +52,7 @@
                 <option value="Years of Experience">Years of Experience</option>
               </select>
             </div>
+
             <div id="controlfilterTime"></div>
             <div id="controlfilterSalary"></div>
             <div id="controlfilterSatisfaction"></div>
@@ -97,6 +92,9 @@
       </div>
 
       <div class="main">
+        <div style="display: flex; margin-left:2rem">
+          <h2 id="summaryText"></h2>
+        </div>
         <div id="canvasContainer" style="width:1100px; height:1100px; position:relative; margin: 0 auto">
         </div>
         <!-- <div id="vizContainer" style="background-color: brown;">
@@ -326,9 +324,8 @@
 
 
       let collapsed = false;
-      d3.select("button#collapse")
+      d3.select("button#sidebarcollapse")
         .on("click", (event) => {
-          console.log("collapse button clicked")
           collapsed = !collapsed;
 
           if (collapsed) {
@@ -345,12 +342,12 @@
               .style("opacity", 0)
               .style("visibility", "hidden");
 
-            d3.select(".bx-chevrons-right").style("rotate", "180deg")
+            d3.select(".bx.bx-chevron-right").style("rotate", "180deg")
 
             individualMap.updateWidth(1300, 1000);
           } else {
             //change sidebar width
-            d3.select("div.aside").style("width", "20rem");
+            d3.select("div.aside").style("width", "350px");
 
             //change toggle properties
             d3.select("div.sidebar button span")
@@ -361,7 +358,7 @@
             d3.select("div#filters")
               .style("opacity", 1)
               .style("visibility", "visible");
-            d3.select(".bx-chevrons-right").style("rotate", "0deg")
+            d3.select(".bx.bx-chevron-right").style("rotate", "0deg")
 
             individualMap.updateWidth(1100, 1100);
           }

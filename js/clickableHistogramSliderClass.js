@@ -98,12 +98,43 @@ class ClickableHistogramSlider {
   setupSvg() {
     // Create wrapper and SVG elements
     let wrapper = this.container.append("div").attr("class", "controls").style("margin-top", "10px");
-    wrapper.append("div").text(this.label);
+    let button = wrapper.append("div").
+      append("button").attr("class", "collapse");
+    let chevron = button.append("i")
+      .attr("class", "bx bx-chevron-right")
+      .style("rotate", "0deg")
+      ;
+    button.append("span").text(this.label)
 
-    this.svg = wrapper.append("svg")
+    this.svg = wrapper.append("svg").attr("class", "filter").style("margin-left", "1.25rem")
       .attr("width", this.sliderWidth)
       .attr("height", this.sliderHeight + (this.options.rotateAxisLabels ? 60 : 30))
       .attr("attribute", this.attribute);
+
+    //add control to button
+    this.collapsed = false;
+    button.on("click", async () => {
+      this.collapsed = !this.collapsed;
+
+      chevron.transition()
+        .style("rotate", this.collapsed ? "0deg" : "90deg")
+
+
+      if (this.collapsed) {
+        this.svg
+          .transition()
+          .style("opacity", 0)
+          .style("visibility", "hidden")
+          .attr("display", "none");
+      } else {
+        this.svg
+          .attr("display", "block")
+          .transition()
+          .style("opacity", 1)
+          .style("visibility", "visible")
+      }
+
+    });
 
   }
 

@@ -51,11 +51,24 @@ class CurveSlider {
       (this.maxLimit !== 0 && d === this.maxLimit) ? `${this.scaleFormatter(this.maxLimit)}+` : this.scaleFormatter(d)
     ));
 
+
     // Create HTML elements
     this.wrapper = this.container.append("div").attr("class", "controls").style("margin-top", "10px");
-    this.wrapper.append("div").text(this.label);
 
-    this.rowwrapper = this.wrapper.append("div").style("display", "flex").style("flex-direction", "column")
+    //append collapse button to wrapper
+    let button = this.wrapper.append("div").
+      append("button").attr("class", "collapse");
+    let chevron = button.append("i")
+      .attr("class", "bx bx-chevron-right")
+      .style("rotate", "0deg")
+      ;
+    button.append("span").text(this.label)
+
+
+    this.rowwrapper = this.wrapper.append("div")
+      .style("display", "flex")
+      .style("flex-direction", "column")
+      .style("margin-left", "1.25rem")
     //.style("align-items", "center");
     this.canvas = this.rowwrapper.append("svg").attr("width", this.sliderWidth).attr("height", this.sliderHeight + 30).attr("attribute", this.attribute);
     this.canvas.append("g").attr("transform", `translate(0,${this.sliderHeight})`).call(this.xAxis);
@@ -63,6 +76,34 @@ class CurveSlider {
     // Buttons
     this.buttons = this.rowwrapper.append("div").style("display", "flex").style("flex-direction", "row").style("justify-content", "center");
     if (this.getButtonData) this.setupButtons();
+
+    //collapse button
+    //add control to button
+    this.collapsed = false;
+    button.on("click", async () => {
+      this.collapsed = !this.collapsed;
+
+      chevron.transition()
+        .style("rotate", this.collapsed ? "0deg" : "90deg")
+
+      if (this.collapsed) {
+        this.rowwrapper
+          .transition()
+          .style("opacity", 0)
+          .style("visibility", "hidden")
+          .attr("display", "none");
+
+        this.canvas.attr("display", "none")
+      } else {
+        this.rowwrapper
+          .attr("display", "block")
+          .transition()
+          .style("opacity", 1)
+          .style("visibility", "visible")
+
+        this.canvas.attr("display", "block")
+      }
+    });
 
     // Area chart and brush setup
     this.setupAreaChart();
