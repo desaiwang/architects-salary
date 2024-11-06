@@ -73,7 +73,7 @@ class ClickableHistogramSlider {
     }
 
     this.valueList = this.uniqueKeys;
-    console.log("valueList upon initiation", this.valueList)
+    // console.log("valueList upon initiation", this.valueList)
 
     this.groupCounts.forEach(d =>
       d.color = this.colorScale ? this.colorScale(d.key) : "grey"
@@ -97,10 +97,10 @@ class ClickableHistogramSlider {
   static selectedColor = "black";
   setupSvg() {
     // Create wrapper and SVG elements
-    let wrapper = this.container.append("div").attr("class", "controls").style("margin-top", "6px");
+    let wrapper = this.container.append("div").attr("class", "controls");
     let button = wrapper.append("div").
       append("button").attr("class", "collapse");
-    let chevron = button.append("i")
+    this.chevron = button.append("i")
       .attr("class", "bx bx-chevron-right")
       .style("rotate", "90deg")
       ;
@@ -116,25 +116,33 @@ class ClickableHistogramSlider {
     button.on("click", async () => {
       this.collapsed = !this.collapsed;
 
-      chevron.transition()
-        .style("rotate", this.collapsed ? "0deg" : "90deg")
-
-
-      if (this.collapsed) {
-        this.svg
-          .transition()
-          .style("opacity", 0)
-          .style("visibility", "hidden")
-          .attr("display", "none");
-      } else {
-        this.svg
-          .attr("display", "block")
-          .transition()
-          .style("opacity", 1)
-          .style("visibility", "visible")
-      }
-
+      this.onCollapsedChange();
     });
+
+  }
+
+  changeCollapsed(bool) {
+    this.collapsed = bool;
+    this.onCollapsedChange();
+  }
+
+  onCollapsedChange() {
+    this.chevron.transition()
+      .style("rotate", this.collapsed ? "0deg" : "90deg")
+
+    if (this.collapsed) {
+      this.svg
+        .transition()
+        .style("opacity", 0)
+        .style("visibility", "hidden")
+        .style("display", "none");
+    } else {
+      this.svg
+        .style("display", "block")
+        .transition()
+        .style("opacity", 1)
+        .style("visibility", "visible")
+    }
 
   }
 
@@ -167,12 +175,9 @@ class ClickableHistogramSlider {
         //select only the bars in brush selection
         this.groupCounts.forEach(item => item.clicked = (this.valueList.includes(item.key)));
 
-
-
         this.histRects
           .attr("fill", d => this.colorRect(d))
           .style('stroke', d => this.colorBorder(d));
-
 
         this.filters[this.attribute] = (d) => this.valueList.includes(d[this.attribute]);
 
