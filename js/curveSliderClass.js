@@ -53,14 +53,14 @@ class CurveSlider {
 
 
     // Create HTML elements
-    this.wrapper = this.container.append("div").attr("class", "controls").style("margin-top", "10px");
+    this.wrapper = this.container.append("div").attr("class", "controls").style("margin-top", "6px");
 
     //append collapse button to wrapper
     let button = this.wrapper.append("div").
       append("button").attr("class", "collapse");
     let chevron = button.append("i")
       .attr("class", "bx bx-chevron-right")
-      .style("rotate", "0deg")
+      .style("rotate", "90deg")
       ;
     button.append("span").text(this.label)
 

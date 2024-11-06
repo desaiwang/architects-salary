@@ -34,15 +34,15 @@
       <div class="aside" style="overflow-y:scroll; overflow-x: hidden;">
         <div class="sidebar" style="display: flex; flex-direction: column;">
 
-          <button data-resize-btn id="sidebarcollapse" class="collapse"
-            style="background: none; border: none; cursor: pointer; display: flex; align-items: center;">
+          <button data-resize-btn id="sidebarcollapse" class="collapse">
             <i class="bx bx-chevron-right"></i>
-            <span>Collapse</span>
+            <span style="font-weight:600;">Collapse</span>
           </button>
 
           <div id="filters">
-            <div id="colorScaleDropdown" style="width:20rem">
-              Color by: &nbsp
+            <div id="colorScaleDropdown" style="display:flex; 
+            flex-direction:column;">
+              <div style="margin-bottom:10px">Color by: &nbsp</div>
               <select id="colorScaleSelect">
                 <option value="Year">Year</option>
                 <option value="Job Satisfaction" selected>Job Satisfaction</option>
@@ -181,7 +181,7 @@
 
 
       //sets up contols
-      let controlWidth = 300;
+      let controlWidth = 270;
       let controlHeight = 60;
 
       let controlSalary = d3.select("#controlfilterSalary");

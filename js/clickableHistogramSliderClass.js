@@ -97,12 +97,12 @@ class ClickableHistogramSlider {
   static selectedColor = "black";
   setupSvg() {
     // Create wrapper and SVG elements
-    let wrapper = this.container.append("div").attr("class", "controls").style("margin-top", "10px");
+    let wrapper = this.container.append("div").attr("class", "controls").style("margin-top", "6px");
     let button = wrapper.append("div").
       append("button").attr("class", "collapse");
     let chevron = button.append("i")
       .attr("class", "bx bx-chevron-right")
-      .style("rotate", "0deg")
+      .style("rotate", "90deg")
       ;
     button.append("span").text(this.label)
 
