@@ -9,15 +9,19 @@ class ClickableHistogramSlider {
     this.filters = filters;
     this.updateData = updateData;
     this.options = options;
+    this.showColors = false;
 
     // Default options
     const defaultOptions = {
       scaleFormatter: null,
-      colorList: null,
+      colorInterpolator: null,
+      colorInterpolationType: null,
+      colorScheme: d3.schemeCategory10,
       sortOrder: 'key',
       ascending: true,
       yBetweenLabelAndHist: 15,
-      rotateAxisLabels: false
+      rotateAxisLabels: false,
+      fontsize: '0.6rem'
     };
 
     // Merge user-provided options with defaults
@@ -55,11 +59,24 @@ class ClickableHistogramSlider {
     //set timeout to be null
     this.timeout = null;
     this.uniqueKeys = this.groupCounts.map(d => d.key);
+    //set colorScale if colorInterpolator is provided
+
+    if (this.options.colorInterpolationType) {
+      if (this.options.colorInterpolationType === "sequential discrete") {
+        this.colorScale = (x) => this.options.colorInterpolator(d3.scalePoint().domain(this.uniqueKeys).range([0, 1])(x))
+      }
+      else if (this.options.colorInterpolationType === "sequential continuous") {
+        this.colorScale = (x) => this.options.colorInterpolator(d3.scaleLinear().domain(d3.extent(this.uniqueKeys)).range([0, 1])(x))
+      } else if (this.options.colorInterpolationType === "categorical") {
+        this.colorScale = (x) => d3.scaleOrdinal().domain(this.uniqueKeys).range(this.options.colorScheme)(x)
+      }
+    }
+
     this.valueList = this.uniqueKeys;
     console.log("valueList upon initiation", this.valueList)
 
     this.groupCounts.forEach(d =>
-      d.color = this.options.colorList ? this.options.colorList[this.uniqueKeys.indexOf(d.key)] : "grey"
+      d.color = this.colorScale ? this.colorScale(d.key) : "grey"
     );
 
     this.setupScales();
@@ -69,29 +86,67 @@ class ClickableHistogramSlider {
   }
 
   setupScales() {
-    this.xScale = d3.scaleBand().domain(this.uniqueKeys).range([0, this.sliderWidth]).padding(0.2);
+    this.xScale = d3.scaleBand().domain(this.uniqueKeys).range([0, this.sliderWidth]).padding(0.12);
     this.yScale = d3.scaleLinear().domain([0, d3.max(this.groupCounts, d => d.count)]).nice().range([this.sliderHeight, this.options.yBetweenLabelAndHist]);
   }
+
+
 
   //default colors for bars
   static greyedoutColor = "grey";
   static selectedColor = "black";
   setupSvg() {
     // Create wrapper and SVG elements
-    let wrapper = this.container.append("div").attr("class", "controls").style("margin-top", "10px");
-    wrapper.append("div").text(this.label);
+    let wrapper = this.container.append("div").attr("class", "controls").style("margin-top", "6px");
+    let button = wrapper.append("div").
+      append("button").attr("class", "collapse");
+    let chevron = button.append("i")
+      .attr("class", "bx bx-chevron-right")
+      .style("rotate", "90deg")
+      ;
+    button.append("span").text(this.label)
 
-    this.svg = wrapper.append("svg")
+    this.svg = wrapper.append("svg").attr("class", "filter").style("margin-left", "1.25rem")
       .attr("width", this.sliderWidth)
       .attr("height", this.sliderHeight + (this.options.rotateAxisLabels ? 60 : 30))
       .attr("attribute", this.attribute);
 
+    //add control to button
+    this.collapsed = false;
+    button.on("click", async () => {
+      this.collapsed = !this.collapsed;
+
+      chevron.transition()
+        .style("rotate", this.collapsed ? "0deg" : "90deg")
+
+
+      if (this.collapsed) {
+        this.svg
+          .transition()
+          .style("opacity", 0)
+          .style("visibility", "hidden")
+          .attr("display", "none");
+      } else {
+        this.svg
+          .attr("display", "block")
+          .transition()
+          .style("opacity", 1)
+          .style("visibility", "visible")
+      }
+
+    });
+
   }
+
+  //function for determining color of bars
+  colorRect = (d) => d.clicked ? (this.showColors ? d.color : "grey") : "white"
+
+  colorBorder = (d) => d.clicked ? (this.showColors ? d3.lab(d.color).darker() : d3.lab("grey").darker()) : ClickableHistogramSlider.greyedoutColor
 
   setupBrush() {
     //set up brush
     var brush = d3.brushX().extent([[0, 0],
-    [this.sliderWidth, this.sliderHeight]])
+    [this.sliderWidth, this.sliderHeight + 5]])
       .on("start", (event) => {
         //temporarily disable pointer events on the bars
         this.histRects.style("pointer-events", "none");
@@ -108,18 +163,18 @@ class ClickableHistogramSlider {
 
         // Add uniqueKeys within the brush selection to a new list
         this.valueList = this.uniqueKeys.slice(start, end);
-        console.log(this.valueList)
-
-        console.log((x0 + this.xScale.padding()) / step, start, x1 / step, end)
 
         //select only the bars in brush selection
         this.groupCounts.forEach(item => item.clicked = (this.valueList.includes(item.key)));
+
+
+
         this.histRects
-          .attr("fill", d => d.clicked ? d.color : "white")
-          .style('outline-color', d => d.clicked ? ClickableHistogramSlider.selectedColor : ClickableHistogramSlider.greyedoutColor);
+          .attr("fill", d => this.colorRect(d))
+          .style('stroke', d => this.colorBorder(d));
 
 
-        this.filters[this.attribute] = (d) => this.valueList.includes(d[this.attribute] === null ? "N/A" : d[this.attribute]);
+        this.filters[this.attribute] = (d) => this.valueList.includes(d[this.attribute]);
 
         this.updateData();
 
@@ -145,8 +200,11 @@ class ClickableHistogramSlider {
         .style("text-anchor", "end")
         .attr("dx", "-.8em")
         .attr("dy", ".15em")
-        .attr("transform", "rotate(-65)")
-      //gXAxis.style("font-size", "9px");
+        .attr("transform", "rotate(-60)")
+        .style("font-size", this.options.fontsize);
+    } else {
+      gXAxis.selectAll("text")
+        .style("font-size", this.options.fontsize);
     }
 
 
@@ -162,13 +220,11 @@ class ClickableHistogramSlider {
       .attr("y", d => this.yScale(d.count))
       .attr("width", this.xScale.bandwidth())
       .attr("height", d => d.count == 0 ? 0 : this.yScale(0) - this.yScale(d.count) + 5)
-      .attr("fill", d => d.color)
-      .style("border-radius", "1px")
+      .attr("fill", d => this.colorRect(d))
+      .attr("stroke", d => this.colorBorder(d))
+      .attr("stroke-width", "1")
+      .style("rx", "2")
       .attr("cursor", "pointer") //this makes the cursor change to a pointer when hovering over the bars to indicate that things are clickable
-      .style("outline", "solid thin")
-      .style("outline-color", "black")
-      // .append("title")
-      // .text(d => `${d.count} survey responses`)
       .on('mouseover', (event, d) => {
         this.tooltip
           .attr("x", this.xScale(d.key) + this.xScale.bandwidth() / 2)
@@ -179,23 +235,18 @@ class ClickableHistogramSlider {
           .style("visibility", "visible"); // Show tooltip
 
         d3.select(event.target)
-          .style("outline-width", "medium")
-          .style('outline-color', ClickableHistogramSlider.selectedColor)
+          .style("stroke-width", "2")
+          .style('stroke', ClickableHistogramSlider.selectedColor)
       })
       .on('mouseout', (event, d) => {
         this.tooltip
           .style("visibility", "hidden");
 
-        if (!d.clicked) {
-          d3.select(event.target)
-            .style("outline-width", "thin")
-            .style('outline-color', ClickableHistogramSlider.greyedoutColor)
-        }
-        else {
-          d3.select(event.target)
-            .style("outline-width", "thin")
-            .style('outline-color', ClickableHistogramSlider.selectedColor);
-        }
+        d3.select(event.target)
+          .style("stroke-width", "1")
+          .style('stroke', this.colorBorder(d))
+
+
       })
       .on('click', (event, d) => {
         clearTimeout(this.timeout);
@@ -204,19 +255,18 @@ class ClickableHistogramSlider {
 
           if (d.clicked) {
             d3.select(event.target) //TODO: probably not going to work
-              .attr("fill", d => {
-                return d.color
-              })
-              .style('outline-color', ClickableHistogramSlider.selectedColor);
+              .attr("fill", d => this.showColors ? d.color : "grey")
+              .style('stroke', this.colorBorder(d));
 
             this.valueList.push(d.key);
           } else {
             d3.select(event.target)
               .attr("fill", "white")
+              .style('stroke', this.colorBorder(d));
 
             this.valueList = this.valueList.filter(rating => rating != d.key)
           }
-          this.filters[this.attribute] = (d) => this.valueList.includes(d[this.attribute] === null ? "N/A" : d[this.attribute]);
+          this.filters[this.attribute] = (d) => this.valueList.includes(d[this.attribute]);
           this.updateData()
         }, 200);
       }).on('dblclick', (event, d) => {
@@ -226,14 +276,14 @@ class ClickableHistogramSlider {
         // Set only the double-clicked bar to selected
         d.clicked = true;
         this.histRects
-          .attr("fill", d => d.clicked ? d.color : "white")
-          .style('outline-color', d => d.clicked ? ClickableHistogramSlider.selectedColor : ClickableHistogramSlider.greyedoutColor);
+          .attr("fill", d => this.colorRect(d))
+          .style('stroke', d => this.colorBorder(d));
 
         // Update valueList and filter to only include the double-clicked value
         this.valueList = [d.key];
         console.log(this.valueList)
 
-        this.filters[this.attribute] = (item) => item[this.attribute] === (d.key === "N/A" ? null : d.key);
+        this.filters[this.attribute] = (item) => item[this.attribute] === d.key;
 
         this.updateData();
       });
@@ -253,6 +303,14 @@ class ClickableHistogramSlider {
     return stillPassed;
   }
 
+  updateColor(bool) {
+
+    this.showColors = bool;
+
+    this.histRects.attr("fill", d => this.colorRect(d))
+      .style('stroke', d => this.colorBorder(d))
+  }
+
   update() {
 
     // Filter dataAll based on some condition
@@ -268,11 +326,11 @@ class ClickableHistogramSlider {
     // Update the count in groupCounts based on the filtered data
     this.groupCounts = this.groupCounts.map(group => ({
       ...group,
-      count: countsMap.get(group.key === "N/A" ? null : group.key) || 0 // Set to 0 if no data in the group
+      count: countsMap.get(group.key) || 0 // Set to 0 if no data in the group
     }));
 
     //update y scale
-    this.yScale.domain([0, d3.max(this.groupCounts, d => d.count)])
+    this.yScale.domain([0, d3.max(this.groupCounts, d => d.count)]).nice();
 
     this.histRects
       .data(this.groupCounts, d => d.key) // Use the key as the identifier
