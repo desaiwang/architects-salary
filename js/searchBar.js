@@ -52,7 +52,7 @@ class SearchBar {
 
     //add control to button
     this.collapsed = false;
-    button.on("click", async () => {
+    button.on("click", () => {
       this.collapsed = !this.collapsed;
       this.onCollapsedChange();
     });

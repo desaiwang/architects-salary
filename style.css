@@ -86,7 +86,7 @@ button.collapse {
   display: flex;
   align-items: center;
   gap: 0.125rem;
-  padding: 0.625rem 0rem;
+  padding: 0.5rem 0rem;
   font-size: 1.25rem;
   line-height: 1;
   color: #000000;
@@ -95,6 +95,9 @@ button.collapse {
   transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
 }
 
+div.filter {
+  margin-top: 6px;
+}
 
 div.sidebar button.active,
 div.sidebar button:hover,
