@@ -15,7 +15,7 @@ class SearchBar {
 
     let button = this.div.append("div").
       append("button").attr("class", "collapse");
-    let chevron = button.append("i")
+    this.chevron = button.append("i")
       .attr("class", "bx bx-chevron-right")
       .style("rotate", "90deg")
       ;
@@ -54,26 +54,33 @@ class SearchBar {
     this.collapsed = false;
     button.on("click", async () => {
       this.collapsed = !this.collapsed;
-
-      chevron.transition()
-        .style("rotate", this.collapsed ? "0deg" : "90deg")
-
-
-      if (this.collapsed) {
-        this.input
-          .transition()
-          .style("opacity", 0)
-          .style("visibility", "hidden")
-          .style("display", "none");
-      } else {
-        this.input
-          .style("display", "block")
-          .transition()
-          .style("opacity", 1)
-          .style("visibility", "visible")
-      }
-
+      this.onCollapsedChange();
     });
+  }
+
+  changeCollapsed(bool) {
+    this.collapsed = bool;
+    this.onCollapsedChange();
+  }
+
+  onCollapsedChange() {
+    this.chevron.transition()
+      .style("rotate", this.collapsed ? "0deg" : "90deg")
+
+
+    if (this.collapsed) {
+      this.input
+        .transition()
+        .style("opacity", 0)
+        .style("visibility", "hidden")
+        .style("display", "none");
+    } else {
+      this.input
+        .style("display", "block")
+        .transition()
+        .style("opacity", 1)
+        .style("visibility", "visible")
+    }
   }
 
 }

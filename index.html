@@ -264,8 +264,11 @@
         .on("change", function () {
           individualMap.updateColors(this.value);
           sliders.forEach(slider => {
-            if (slider.attribute == this.value) slider.updateColor(true);
-            else slider.updateColor(false);
+            if (slider.attribute == this.value) {
+              slider.updateColor(true)
+              slider.changeCollapsed(false); //open it up
+            }
+            else { slider.updateColor(false) };
           });
         });
 
