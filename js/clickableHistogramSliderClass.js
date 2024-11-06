@@ -125,10 +125,10 @@ class ClickableHistogramSlider {
           .transition()
           .style("opacity", 0)
           .style("visibility", "hidden")
-          .attr("display", "none");
+          .style("display", "none");
       } else {
         this.svg
-          .attr("display", "block")
+          .style("display", "block")
           .transition()
           .style("opacity", 1)
           .style("visibility", "visible")

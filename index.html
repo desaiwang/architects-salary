@@ -62,17 +62,17 @@
             <div id="controlfilterYearsOfExperience"></div>
             <!-- <div id="controlfilterAnnualBonus"></div>
             <div id="controlfilterVacationDays"></div> -->
-            <div>
-              <label for="searchLocation">Location:</label>
-              <input type="text" id="searchLocation" placeholder="Type to search...">
+            <div id="searchLocation">
+              <!-- <label for="searchLocation">Location:</label>
+              <input type="text" id="searchLocation" placeholder="Type to search..."> -->
             </div>
-            <div>
-              <label for="searchUG">Undergraduate School:</label>
-              <input type="text" id="searchUG" placeholder="Type to search...">
+            <div id="searchUG">
+              <!-- <label for="searchUG">Undergraduate School:</label>
+              <input type="text" id="searchUG" placeholder="Type to search..."> -->
             </div>
-            <div>
-              <label for="searchGrad">Graduate School:</label>
-              <input type="text" id="searchGrad" placeholder="Type to search...">
+            <div id="searchGrad">
+              <!-- <label for="searchGrad">Graduate School:</label>
+              <input type="text" id="searchGrad" placeholder="Type to search..."> -->
             </div>
 
             <div id="filter-container">
@@ -232,13 +232,13 @@
       const firmTypeScale = d3.scaleOrdinal().domain(["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"]).range(d3.schemeTableau10);
 
       //search bars
-      let searchLocation = d3.select("input#searchLocation")
+      let searchLocation = d3.select("div#searchLocation")
       const locationSearchBar = new SearchBar(searchLocation, "Location", filters, updateData);
 
-      let searchUG = d3.select("input#searchUG")
+      let searchUG = d3.select("div#searchUG")
       const ugSearchBar = new SearchBar(searchUG, "Undergraduate School", filters, updateData);
 
-      let searchGrad = d3.select("input#searchGrad")
+      let searchGrad = d3.select("div#searchGrad")
       const gradSearchBar = new SearchBar(searchGrad, "Graduate School", filters, updateData);
 
       const salaryExtent = d3.extent(data, d => d['Salary'])
