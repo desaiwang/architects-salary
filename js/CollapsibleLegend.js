@@ -1,17 +1,13 @@
 import { Legend } from './legend.js';
 
 class CollapsibleLegend {
-  constructor(div, colorAttribute, colorsAndValueLists, options = {}) {
+  constructor(div, initialcolorAttribute, initialLegendNode, options = {}) {
 
     const { } = options;
 
     this.div = div;
-    this.colorAttribute = colorAttribute;
-    this.colorsAndValueLists = colorsAndValueLists;
-
-
     this.initialize();
-    this.updateColorScale("Job Satisfaction");
+    this.updateColorScale(initialcolorAttribute, initialLegendNode);
   }
 
   initialize() {
@@ -37,30 +33,20 @@ class CollapsibleLegend {
 
   }
 
-  updateColorScale(attribute) {
-    this.attribute = attribute;
+  updateColorScale(colorAttribute, legendNode) {
 
-    this.dictItem = this.colorsAndValueLists[this.attribute];
-    console.log("dictItem", this.dictItem)
-    const legend = Legend(d3.scaleOrdinal(this.dictItem.valueList, this.dictItem.colors
-    ), {
-      title: this.attribute,
-      // tickValues: [1, "6-10", "16-30", "51-100", "201-500"],
-      tickSize: 0,
-      width: 225
-    })
+    // Remove existing child nodes
+    while (this.colorLegend.node().firstChild) {
+      this.colorLegend.node().removeChild(this.colorLegend.node().firstChild);
+    }
 
-    //this is for continuous color scale
-    // const legend = Legend(d3.scaleSequential([1, 10], d3.piecewise(d3.interpolateRgb, ['#0a1869', '#a9c9e7', "#ffe3a8", '#fc6f03'])), {
-    //   title: "Job Satisfaction",
-    //   tickValues: [1, 4, 7, 10],
-    //   width: 225
-    // });
+    this.colorLegend.append("div").attr("id", "colorLegendAttribute")
+      .style("margin-bottom", "0.3rem")
+      .style("font-size", "0.8rem")
+      .text(colorAttribute);
 
-
-    this.colorLegend.selectAll("*").remove();
-    this.colorLegend.node().appendChild(legend);
-
+    // Append the new legend node
+    this.colorLegend.node().appendChild(legendNode);
   }
 
   changeCollapsed(bool) {

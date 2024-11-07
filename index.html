@@ -241,23 +241,6 @@
         }],
         filters, updateData);
 
-      //legend
-      const colorsAndValueLists = {
-        "Year": { colors: timeSlider.colors, valueList: timeSlider.valueList },
-        "Job Satisfaction": { colors: satisfactionSlider.colors, valueList: satisfactionSlider.valueList },
-        "Firm Type": { colors: firmtypeSlider.colors, valueList: firmtypeSlider.valueList },
-        "Firm Size": { colors: firmsizeSlider.colors, valueList: firmsizeSlider.valueList },
-        "Age": { colors: ageSlider.colors, valueList: ageSlider.valueList },
-        "Years of Experience": { colors: yearsOfExperienceSlider.colors, valueList: yearsOfExperienceSlider.valueList }
-      };
-
-      let collapsibleLegend = d3.select("div#collapsibleLegend")
-      const legend = new CollapsibleLegend(collapsibleLegend, "Job Satisfaction", colorsAndValueLists);
-
-      ageSlider.setupLegend(200, 8, "0.6rem");
-      let legendNode = ageSlider.getLegendNode();
-      let testLegend = d3.select("div#testLegend").node().appendChild(legendNode);
-
       //scales
       const salaryExtent = d3.extent(data, d => d['Salary'])
       const salaryScale = d3.scaleSqrt().domain(salaryExtent).range([0.5, 15])
@@ -278,14 +261,26 @@
 
       //listener for color scale change
       const sliders = [timeSlider, satisfactionSlider, firmtypeSlider, firmsizeSlider, ageSlider, yearsOfExperienceSlider];
+
+      //set up the legends in all the sliders
+      sliders.forEach(slider => {
+        slider.setupLegend(controlWidth - 25, 8);
+      });
+
+      //legend
+      let collapsibleLegend = d3.select("div#collapsibleLegend")
+      const legend = new CollapsibleLegend(collapsibleLegend, "Job Satisfaction", satisfactionSlider.getLegendNode());
+
+      //color scale dropdown
       d3.select("select#colorScaleSelect")
         .on("change", function () {
           individualMap.updateColors(this.value);
-          legend.updateColorScale(this.value);
+
           sliders.forEach(slider => {
             if (slider.attribute == this.value) {
               slider.updateColor(true)
               slider.changeCollapsed(false); //open it up
+              legend.updateColorScale(this.value, slider.getLegendNode());
             }
             else { slider.updateColor(false) };
           });

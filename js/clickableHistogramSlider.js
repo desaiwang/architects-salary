@@ -88,7 +88,7 @@ class ClickableHistogramSlider {
 
   setupScales() {
     this.xScale = d3.scaleBand().domain(this.uniqueKeys).range([0, this.sliderWidth]).padding(0.12);
-    this.yScale = d3.scaleLinear().domain([0, d3.max(this.groupCounts, d => d.count)]).nice().range([this.sliderHeight, this.options.yBetweenLabelAndHist]);
+    this.yScale = d3.scaleLinear().domain([0, d3.max(this.groupCounts, d => d.count)]).nice().range([this.sliderHeight - 4, this.options.yBetweenLabelAndHist]);
   }
 
 
@@ -196,16 +196,15 @@ class ClickableHistogramSlider {
     this.brushRegion.call(brush);
   }
 
-  setupLegend(legendWidth, legendHeight, fontSize) {
+  setupLegend(legendWidth, legendHeight, fontSize = this.options.fontsize) {
 
     const legendSvg = d3.create("svg")
       .attr("width", legendWidth)
-      .attr("height", legendHeight + (this.options.rotateAxisLabels ? 60 : 30))
-      .attr("attribute", this.attribute);
+      .attr("height", legendHeight + (this.options.rotateAxisLabels ? 45 : 15));
 
 
-    let xScaleLegend = d3.scaleBand().domain(this.uniqueKeys).range([0, legendWidth]).padding(0.12);
-    let gXAxis = legendSvg.append("g").attr("transform", `translate(3,${legendHeight})`).call(
+    let xScaleLegend = d3.scaleBand().domain(this.uniqueKeys).range([1, legendWidth]).padding(0.12);
+    let gXAxis = legendSvg.append("g").attr("transform", `translate(${this.options.rotateAxisLabels ? 4 : 0},${this.options.rotateAxisLabels ? legendHeight + 2 : legendHeight + 4})`).call(
       d3.axisBottom(xScaleLegend)
         .tickSize(0)
         .tickFormat(this.options.scaleFormatter || (d => d))
@@ -228,12 +227,12 @@ class ClickableHistogramSlider {
     // Render rectangles
     legendSvg.append("g").selectAll("rect").data(this.groupCounts).join("rect")
       .attr("x", d => xScaleLegend(d.key))
-      .attr("y", 0)
+      .attr("y", 1)
       .attr("width", xScaleLegend.bandwidth())
-      .attr("height", legendHeight)
+      .attr("height", legendHeight + 1)
       .attr("fill", d => d.color)
-      // .attr("stroke", d => this.colorBorder(d))
-      // .attr("stroke-width", "1")
+      .attr("stroke", d => d3.lab(d.color).darker())
+      .attr("stroke-width", "1")
       .style("rx", "2")
 
     this.legendNode = legendSvg.node();
