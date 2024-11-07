@@ -15,7 +15,7 @@
 
 </head>
 
-<body style="background-color: rgb(255, 255, 255);">
+<body>
   <div style="margin-top:30px">
   </div>
 
@@ -347,7 +347,8 @@
 
           if (collapsed) {
             //change sidebar width
-            d3.select("div.aside").style("width", "5rem");
+            d3.select("div.aside").style("width", "2rem")
+              .style("overflow", "hidden");
 
             //change toggle properties
             d3.select("div.sidebar button span")
@@ -364,7 +365,8 @@
             individualMap.updateWidth(1300, 1000);
           } else {
             //change sidebar width
-            d3.select("div.aside").style("width", "350px");
+            d3.select("div.aside").style("width", "21rem")
+              .style("overflow-y", "scroll");
 
             //change toggle properties
             d3.select("div.sidebar button span")

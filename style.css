@@ -5,7 +5,7 @@ body {
   font-size: 16px;
   /* line-height: 1.7; */
   color: #333;
-  background-color: #fff;
+  background-color: #F8F8F8;
 }
 
 /* text.legendTitle {
@@ -58,11 +58,11 @@ h5 {
 
 /* controls placement of aside div */
 div.aside {
-  /* background-color: #d6d6d6; */
+  background-color: #ffffff;
   position: fixed;
   inset: 0 0 0 auto;
-  padding: 1rem 1rem 1rem 0rem;
-  width: 20rem;
+  padding: 1rem 1rem 1rem 1rem;
+  width: 21rem;
   /* transition: width 0.5s ease-in-out; */
 }
 
@@ -94,9 +94,9 @@ button.collapse {
   transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
 }
 
-div.filter {
+/* div.filter {
   margin-top: 6px;
-}
+} */
 
 div.sidebar button.active,
 div.sidebar button:hover,
