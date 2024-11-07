@@ -74,6 +74,7 @@ class Checkboxes {
       })
 
     labels.append("span")
+      .style("font-size", "0.8rem")
       .text(d => d.label)
 
     //add control to button

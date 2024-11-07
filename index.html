@@ -63,6 +63,7 @@
 
             <div id="checkboxLicensed"></div>
             <div id="checkboxGender"></div>
+            <div id="collapsibleLegend"></div>
           </div>
         </div>
       </div>
@@ -111,6 +112,7 @@
     import IndividualMap from './js/individualMap.js';
     import SearchBar from './js/searchBar.js';
     import Checkboxes from './js/checkboxes.js';
+    import CollapsibleLegend from './js/collapsibleLegend.js';
 
 
     //set up for map
@@ -237,6 +239,9 @@
           "attributeVal": "Other"
         }],
         filters, updateData);
+
+      let collapsibleLegend = d3.select("div#collapsibleLegend")
+      const legend = new CollapsibleLegend(collapsibleLegend, "Job Satisfaction");
 
       //scales
       const salaryExtent = d3.extent(data, d => d['Salary'])
