@@ -72,6 +72,7 @@ class ClickableHistogramSlider {
       }
     }
 
+    this.colors = this.uniqueKeys.map(d => this.colorScale(d));
     this.valueList = this.uniqueKeys;
     // console.log("valueList upon initiation", this.valueList)
 
@@ -195,8 +196,55 @@ class ClickableHistogramSlider {
     this.brushRegion.call(brush);
   }
 
+  setupLegend(legendWidth, legendHeight, fontSize) {
+
+    const legendSvg = d3.create("svg")
+      .attr("width", legendWidth)
+      .attr("height", legendHeight + (this.options.rotateAxisLabels ? 60 : 30))
+      .attr("attribute", this.attribute);
+
+
+    let xScaleLegend = d3.scaleBand().domain(this.uniqueKeys).range([0, legendWidth]).padding(0.12);
+    let gXAxis = legendSvg.append("g").attr("transform", `translate(3,${legendHeight})`).call(
+      d3.axisBottom(xScaleLegend)
+        .tickSize(0)
+        .tickFormat(this.options.scaleFormatter || (d => d))
+    )
+      .call(g => g.select(".domain").remove())//remove horizontal line
+      ;
+
+    if (this.options.rotateAxisLabels) {
+      gXAxis.selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-60)")
+        .style("font-size", fontSize);
+    } else {
+      gXAxis.selectAll("text")
+        .style("font-size", fontSize);
+    }
+
+    // Render rectangles
+    legendSvg.append("g").selectAll("rect").data(this.groupCounts).join("rect")
+      .attr("x", d => xScaleLegend(d.key))
+      .attr("y", 0)
+      .attr("width", xScaleLegend.bandwidth())
+      .attr("height", legendHeight)
+      .attr("fill", d => d.color)
+      // .attr("stroke", d => this.colorBorder(d))
+      // .attr("stroke-width", "1")
+      .style("rx", "2")
+
+    this.legendNode = legendSvg.node();
+  }
+
+  getLegendNode() {
+    return this.legendNode;
+  }
+
   setupHistogram() {
-    let gXAxis = this.svg.append("g").attr("transform", `translate(0,${this.sliderHeight + 8})`).call(
+    let gXAxis = this.svg.append("g").attr("transform", `translate(0,${this.sliderHeight + 4})`).call(
       d3.axisBottom(this.xScale).tickSizeOuter(0).tickFormat(this.options.scaleFormatter || (d => d))
     );
 
