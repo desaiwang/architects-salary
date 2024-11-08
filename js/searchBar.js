@@ -21,12 +21,17 @@ class SearchBar {
       ;
     button.append("span").text(this.attribute)
 
-    this.input = this.div.append("input")
+
+    this.input = this.div.append("div")
+      .style("margin", "0.25rem 0 0.75rem 1.25rem")
+
     this.input
-      .style("margin-left", "1.25rem")
-      .attr("type", "text")
+      .append("input")
       .attr("id", this.attribute)
+      .attr("type", "text")
       .attr("placeholder", this.placeholderText)
+      .style("border", "1px solid lightgray")
+      .style("border-radius", "2px")
       .on("input", (event) => {
         const query = event.target.value;
         if (query === "") {

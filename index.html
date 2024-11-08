@@ -27,25 +27,34 @@
 
     <div id="container" style="display: flex;">
       <div class="aside" style="overflow-y:scroll; overflow-x: hidden;">
-        <div class="sidebar" style="display: flex; flex-direction: column;">
+        <div style="position:sticky; top:0; background-color:white; z-index: 20">
+          <div style="padding-top:1rem">
+            <button data-resize-btn id="sidebarcollapse" class="collapse">
+              <i class="bx bx-chevron-right"></i>
+              <span style="font-weight:600;">Collapse</span>
+            </button>
+          </div>
 
-          <button data-resize-btn id="sidebarcollapse" class="collapse">
-            <i class="bx bx-chevron-right"></i>
-            <span style="font-weight:600;">Collapse</span>
-          </button>
+        </div>
 
+        <div class="sidebar" style="display: flex; flex-direction: column; margin-left:1rem">
           <div id="filters">
             <div id="colorScaleDropdown" style="display:flex; 
             flex-direction:column;">
-              <div style="margin-bottom:10px">Color by: &nbsp</div>
-              <select id="colorScaleSelect">
-                <option value="Year">Year</option>
-                <option value="Job Satisfaction" selected>Job Satisfaction</option>
-                <option value="Firm Type">Firm Type</option>
-                <option value="Firm Size">Firm Size</option>
-                <option value="Age">Age</option>
-                <option value="Years of Experience">Years of Experience</option>
-              </select>
+              <button class="collapse" id="colorBy">
+                <i class="bx bx-chevron-right" style="rotate: 90deg;"></i>
+                <span>Color by:</span>
+              </button>
+              <div style="margin-left:1.25rem">
+                <select id="colorScaleSelect">
+                  <option value="Year">Year</option>
+                  <option value="Job Satisfaction" selected>Job Satisfaction</option>
+                  <option value="Firm Type">Firm Type</option>
+                  <option value="Firm Size">Firm Size</option>
+                  <option value="Age">Age</option>
+                  <option value="Years of Experience">Years of Experience</option>
+                </select>
+              </div>
             </div>
 
             <div id="controlfilterTime" class="filter"></div>
@@ -348,7 +357,7 @@
               .style("overflow", "hidden");
 
             //change toggle properties
-            d3.select("div.sidebar button span")
+            d3.select("div.aside button span")
               .style("opacity", 0)
               .style("visibility", "hidden");
 
@@ -357,7 +366,7 @@
               .style("opacity", 0)
               .style("visibility", "hidden");
 
-            d3.select(".bx.bx-chevron-right").style("rotate", "180deg")
+            d3.select("div.aside.bx.bx-chevron-right").style("rotate", "180deg")
 
             individualMap.updateWidth(1300, 1000);
           } else {
@@ -366,7 +375,7 @@
               .style("overflow-y", "scroll");
 
             //change toggle properties
-            d3.select("div.sidebar button span")
+            d3.select("div.aside button span")
               .style("opacity", 1)
               .style("visibility", "visible");
 
@@ -374,7 +383,7 @@
             d3.select("div#filters")
               .style("opacity", 1)
               .style("visibility", "visible");
-            d3.select(".bx.bx-chevron-right").style("rotate", "0deg")
+            d3.select("div.aside.bx.bx-chevron-right").style("rotate", "0deg")
 
             individualMap.updateWidth(1100, 1100);
           }

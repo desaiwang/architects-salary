@@ -32,8 +32,8 @@ class CollapsibleLegend {
 
     //this.input stores everthing that can be toggled
     this.input = this.div.append("div").attr("id", "wrapper");
-    this.sizeLegend = this.input.append("div").attr("id", "sizeLegend").style("margin", "0rem 1.5rem 0.5rem 1.5rem");
-    this.colorLegend = this.input.append("div").attr("id", "colorLegend").style("margin", "0.5rem 1.5rem");
+    this.sizeLegend = this.input.append("div").attr("id", "sizeLegend").style("margin", "1rem 1.5rem");
+    this.colorLegend = this.input.append("div").attr("id", "colorLegend").style("margin", "1rem 1.5rem");
 
     //add control to button
     this.collapsed = false;
@@ -47,9 +47,9 @@ class CollapsibleLegend {
   setupSalaryLegend(salaryScale) {
 
     this.sizeLegend.append("div").attr("id", "colorLegendAttribute")
-      .style("margin-bottom", "0.1rem")
+      .style("margin-bottom", "0.5rem")
       .style("font-size", this.options.titleFontSize)
-      .text("Circle Size: Salary");
+      .text("salary (circle size)");
 
     let salaryPoints = [50000, 100000, 150000, 200000]
 
@@ -85,9 +85,9 @@ class CollapsibleLegend {
     }
 
     this.colorLegend.append("div").attr("id", "colorLegendAttribute")
-      .style("margin-bottom", "0.3rem")
+      .style("margin-bottom", "0.5rem")
       .style("font-size", this.options.titleFontSize)
-      .text(`Circle Color: ${colorAttribute}`);
+      .text(`${colorAttribute.toLowerCase()} (circle color)`);
 
     // Append the new legend node
     this.colorLegend.node().appendChild(legendNode);
