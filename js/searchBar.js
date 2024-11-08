@@ -1,13 +1,14 @@
 class SearchBar {
   constructor(div, attribute, filters, updateData, options = {}) {
 
-    const { placeholderText = "type to search..." } = options;
+    const { placeholderText = "type to search...", initiateCollapsed = false } = options;
     this.div = div;
     this.attribute = attribute;
     this.filters = filters;
     this.updateData = updateData;
 
     this.placeholderText = placeholderText
+    this.initiateCollapsed = initiateCollapsed;
     this.initialize();
   }
 
@@ -17,13 +18,25 @@ class SearchBar {
       append("button").attr("class", "collapse");
     this.chevron = button.append("i")
       .attr("class", "bx bx-chevron-right")
-      .style("rotate", "90deg")
+      .style("rotate", this.initiateCollapsed ? "0deg" : "90deg")
       ;
     button.append("span").text(this.attribute)
 
 
     this.input = this.div.append("div")
       .style("margin", "0.125rem 0 0.75rem 1.25rem")
+
+    if (this.initiateCollapsed) {
+      this.input.style("opacity", 0)
+        .style("visibility", "hidden")
+        .style("display", "none");
+    }
+    else {
+      this.input
+        .style("display", "block")
+        .style("opacity", 1)
+        .style("visibility", "visible")
+    }
 
     this.input
       .append("input")
@@ -56,7 +69,7 @@ class SearchBar {
       });
 
     //add control to button
-    this.collapsed = false;
+    this.collapsed = this.initiateCollapsed;
     button.on("click", () => {
       this.collapsed = !this.collapsed;
       this.onCollapsedChange();

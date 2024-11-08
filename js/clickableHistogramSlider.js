@@ -22,7 +22,8 @@ class ClickableHistogramSlider {
       //height reserved for tooltip on hover
       yBetweenLabelAndHist: 15,
       rotateAxisLabels: false,
-      fontsize: '0.6rem'
+      fontsize: '0.6rem',
+      initatiateCollapsed: false
     };
 
     // Merge user-provided options with defaults
@@ -104,17 +105,28 @@ class ClickableHistogramSlider {
       append("button").attr("class", "collapse");
     this.chevron = button.append("i")
       .attr("class", "bx bx-chevron-right")
-      .style("rotate", "90deg")
+      .style("rotate", this.options.initiateCollapsed ? "0deg" : "90deg")
       ;
     button.append("span").text(this.label)
 
     this.svg = wrapper.append("svg").attr("class", "filter").style("margin-left", "1.25rem")
       .attr("width", this.sliderWidth)
-      .attr("height", this.sliderHeight + (this.options.rotateAxisLabels ? 60 : 30))
-      .attr("attribute", this.attribute);
+      .attr("height", this.sliderHeight + (this.options.rotateAxisLabels ? 60 : 30));
+
+    if (this.options.initiateCollapsed) {
+      this.svg.style("opacity", 0)
+        .style("visibility", "hidden")
+        .style("display", "none");
+    }
+    else {
+      this.svg
+        .style("display", "block")
+        .style("opacity", 1)
+        .style("visibility", "visible")
+    };
 
     //add control to button
-    this.collapsed = false;
+    this.collapsed = this.options.initiateCollapsed;
     button.on("click", async () => {
       this.collapsed = !this.collapsed;
 

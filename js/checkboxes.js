@@ -1,12 +1,13 @@
 class Checkboxes {
   constructor(div, attribute, metadata, filters, updateData, options = {}) {
 
-    const { } = options;
+    const { initiateCollapsed = false } = options;
 
     this.div = div;
     this.attribute = attribute;
     this.filters = filters;
     this.updateData = updateData;
+    this.initiateCollapsed = initiateCollapsed;
 
     //set timeout to be null
     this.timeout = null;
@@ -22,7 +23,7 @@ class Checkboxes {
       append("button").attr("class", "collapse");
     this.chevron = button.append("i")
       .attr("class", "bx bx-chevron-right")
-      .style("rotate", "90deg")
+      .style("rotate", this.initiateCollapsed ? "0deg" : "90deg")
       ;
     button.append("span").text(this.attribute)
 
@@ -32,6 +33,19 @@ class Checkboxes {
     this.valueList = this.data.map(d => d.attributeVal)
 
     this.input = this.div.append("div")
+
+    if (this.initiateCollapsed) {
+      this.input.style("opacity", 0)
+        .style("visibility", "hidden")
+        .style("display", "none");
+    }
+    else {
+      this.input
+        .style("display", "block")
+        .style("opacity", 1)
+        .style("visibility", "visible")
+    }
+
     let labels = this.input
       .style("margin-left", "1.25rem")
       .style("margin-bottom", "0.5rem")
