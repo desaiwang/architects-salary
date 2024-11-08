@@ -265,7 +265,7 @@ class IndividualMap {
         }</p>
               <p class="tooltip light" >${d['Years of Experience']} years of experience</p>
               <p class="tooltip light" >${d['Age']} years old</p>
-              <p class="tooltip light" >${d['Gender']}, ${d['Licensed'] == "Licensed" ? "Licensed" : "Not Licensed"}</p>
+              <p class="tooltip light" >${d['Gender']}, ${d['Licensed'] == "Yes" ? "Licensed" : "Not Licensed"}</p>
 
             </div>   
           </div>

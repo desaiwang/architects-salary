@@ -6,7 +6,7 @@ class CollapsibleLegend {
     // Default options
     const defaultOptions = {
       colorLegendWidth: 250,
-      colorLegendHeight: 30,
+      colorLegendHeight: 40,
       titleFontSize: "0.8rem",
       tickFontSize: "0.6rem"
     };
@@ -32,9 +32,9 @@ class CollapsibleLegend {
 
     //this.input stores everthing that can be toggled
     this.input = this.div.append("div").attr("id", "wrapper");
-    this.sizeLegend = this.input.append("div").attr("id", "sizeLegend").style("margin", "1rem 1.5rem");
-    this.colorLegend = this.input.append("div").attr("id", "colorLegend").style("margin", "1rem 1.5rem");
+    this.colorLegend = this.input.append("div").attr("id", "colorLegend").style("padding", "0.75rem 1.5rem");
 
+    this.sizeLegend = this.input.append("div").attr("id", "sizeLegend").style("padding", "0rem 1.5rem");
     //add control to button
     this.collapsed = false;
     button.on("click", () => {
@@ -47,11 +47,11 @@ class CollapsibleLegend {
   setupSalaryLegend(salaryScale) {
 
     this.sizeLegend.append("div").attr("id", "colorLegendAttribute")
-      .style("margin-bottom", "0.5rem")
+      // .style("margin-bottom", "0rem")
       .style("font-size", this.options.titleFontSize)
       .text("salary (circle size)");
 
-    let salaryPoints = [50000, 100000, 150000, 200000]
+    let salaryPoints = [50000, 100000, 150000, 200000, 250000]
 
     let circles = this.sizeLegend.append("svg")
       .attr("width", this.options.colorLegendWidth)
@@ -59,18 +59,20 @@ class CollapsibleLegend {
       .selectAll()
       .data(salaryPoints)
       .join("g")
-      .style("transform", (d, i) => `translate(${25 + i * 50 - 0.5 * salaryScale(d)}px, 8px)`)
+      .style("transform", (d, i) => `translate(${25 + i * 50 - 0.5 * salaryScale(d)}px, 18px)`)
 
     circles
       .append("circle")
       .attr("r", d => salaryScale(d))
+      // .attr("y", d => -0.5 * salaryScale(d))
+      .style("transform", (d, i) => `translate(0px,${-1 * salaryScale(d)}px)`)
       .attr("stroke", "black")
       .attr("stroke-width", 1)
       .attr("fill", "none")
 
     circles.append("text")
       .style("font-size", this.options.tickFontSize)
-      .attr("y", 18)
+      .attr("y", 12)
       .text(d => d3.format("$.2s")(d))
       .each(function (d) { // Center text based on its width
         const textWidth = this.getBBox().width;
