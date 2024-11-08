@@ -59,23 +59,24 @@
               </div>
             </div>
 
-            <div id="controlfilterTime" class="filter"></div>
+
             <div id="controlfilterSalary" class="filter"></div>
             <div id="controlfilterSatisfaction" class="filter"></div>
-            <div id="controlfilterFirmType" class="filter"></div>
-            <div id="controlfilterFirmSize" class="filter"></div>
             <div id="controlfilterAge" class="filter"></div>
             <div id="controlfilterYearsOfExperience" class="filter"></div>
+            <div id="controlfilterGender"></div>
 
+            <div id="controlfilterLicensed"></div>
+            <div id="controlfilterFirmType" class="filter"></div>
+            <div id="controlfilterFirmSize" class="filter"></div>
+
+            <div id="controlfilterTime" class="filter"></div>
             <div id="searchJobTitle"></div>
             <div id="searchLocation" class="filter"></div>
             <div id="searchUG" class="filter"></div>
             <div id="searchGrad" class="filter"></div>
 
-            <div id="controlfilterLicensed"></div>
-            <div id="checkboxLicensed"></div>
-            <div id="controlfilterGender"></div>
-            <div id="checkboxGender"></div>
+
             <div id="collapsibleLegend"></div>
             <div id="bottomBuffer" style="margin-bottom:2rem"></div>
           </div>
@@ -231,33 +232,8 @@
       const licensedSlider = new ClickableHistogramSlider(data, controlLicensed, "Licensed", "Licensed", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: ["Yes", "No"] });
 
       let controlGender = d3.select("#controlfilterGender");
-      const genderSlider = new ClickableHistogramSlider(data, controlGender, "Gender", "Gender", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: ["Female", "Male"] });
+      const genderSlider = new ClickableHistogramSlider(data, controlGender, "Gender", "Gender", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: ["Female", "Male", "Other"] });
 
-      let checkboxLicensed = d3.select("div#checkboxLicensed")
-      const licensedCheckbox = new Checkboxes(checkboxLicensed, "Licensed",
-        [{
-          "label": "Yes",
-          "attributeVal": "Licensed"
-        }, {
-          "label": "No",
-          "attributeVal": "No"
-        }],
-        filters, updateData);
-
-      let checkboxGender = d3.select("div#checkboxGender")
-      const genderCheckbox = new Checkboxes(checkboxGender, "Gender",
-        [{
-          "label": "Female",
-          "attributeVal": "Female"
-        }, {
-          "label": "Male",
-          "attributeVal": "Male"
-        },
-        {
-          "label": "Other",
-          "attributeVal": "Other"
-        }],
-        filters, updateData);
 
       //scales
       const salaryExtent = d3.extent(data, d => d['Salary'])
