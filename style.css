@@ -58,12 +58,19 @@ h5 {
 
 /* controls placement of aside div */
 div.aside {
+  scrollbar-width: none;
+  /*Hide Scrollbar for Firefox */
   background-color: #ffffff;
   position: fixed;
   inset: 0 0 0 auto;
   padding: 1rem 1rem 1rem 1rem;
   width: 21rem;
   /* transition: width 0.5s ease-in-out; */
+}
+
+div.aside::-webkit-scrollbar {
+  display: none;
+  /*Hide Scrollbar for Chrome */
 }
 
 div.sidebar {

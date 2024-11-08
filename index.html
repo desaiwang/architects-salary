@@ -55,8 +55,8 @@
             <div id="controlfilterFirmSize" class="filter"></div>
             <div id="controlfilterAge" class="filter"></div>
             <div id="controlfilterYearsOfExperience" class="filter"></div>
-            <!-- <div id="controlfilterAnnualBonus"></div>
-            <div id="controlfilterVacationDays"></div> -->
+
+            <div id="searchJobTitle"></div>
             <div id="searchLocation" class="filter"></div>
             <div id="searchUG" class="filter"></div>
             <div id="searchGrad" class="filter"></div>
@@ -172,12 +172,6 @@
         //getButtonData: getButtonDataSalary 
       });
 
-      // let controlAnnualBonus = d3.select("#controlfilterAnnualBonus");
-      // let annualBonusSlider = new CurveSlider(data, controlAnnualBonus, "Annual Bonus", "Annual Bonus", controlWidth, controlHeight, updateData, filters, { maxLimit: 50000, scaleFormatter: d => d === 0 ? "$0" : d3.format("$.2s")(d) });
-
-      // let controlVacationDays = d3.select("#controlfilterVacationDays");
-      // let vacationDaysSlider = new CurveSlider(data, controlVacationDays, "Vacation Days", "Vacation Days", controlWidth, controlHeight, updateData, filters, { maxLimit: 40 });
-
       let controlTime = d3.select("#controlfilterTime");
       const timeSlider = new ClickableHistogramSlider(data, controlTime, "Survey Year", "Year", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolateGreys, colorInterpolationType: "sequential discrete", fontsize: '0.5rem' });
 
@@ -206,6 +200,9 @@
       const firmTypeScale = d3.scaleOrdinal().domain(["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"]).range(d3.schemeTableau10);
 
       //search bars
+      let searchJobTitle = d3.select("div#searchJobTitle")
+      const jobTitleSearchBar = new SearchBar(searchJobTitle, "Job Title", filters, updateData);
+
       let searchLocation = d3.select("div#searchLocation")
       const locationSearchBar = new SearchBar(searchLocation, "Location", filters, updateData);
 

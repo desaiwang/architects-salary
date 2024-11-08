@@ -49,7 +49,7 @@ class CollapsibleLegend {
     this.sizeLegend.append("div").attr("id", "colorLegendAttribute")
       .style("margin-bottom", "0.1rem")
       .style("font-size", this.options.titleFontSize)
-      .text("Salary");
+      .text("Circle Size: Salary");
 
     let salaryPoints = [50000, 100000, 150000, 200000]
 
@@ -87,7 +87,7 @@ class CollapsibleLegend {
     this.colorLegend.append("div").attr("id", "colorLegendAttribute")
       .style("margin-bottom", "0.3rem")
       .style("font-size", this.options.titleFontSize)
-      .text(colorAttribute);
+      .text(`Circle Color: ${colorAttribute}`);
 
     // Append the new legend node
     this.colorLegend.node().appendChild(legendNode);
