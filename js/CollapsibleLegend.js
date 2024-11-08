@@ -1,12 +1,22 @@
 import { Legend } from './legend.js';
 
 class CollapsibleLegend {
-  constructor(div, initialcolorAttribute, initialLegendNode, options = {}) {
+  constructor(div, initialcolorAttribute, initialLegendNode, salaryScale, options = {}) {
 
-    const { } = options;
+    // Default options
+    const defaultOptions = {
+      colorLegendWidth: 250,
+      colorLegendHeight: 30,
+      titleFontSize: "0.8rem",
+      tickFontSize: "0.6rem"
+    };
+
+    // Merge user-provided options with defaults
+    this.options = Object.assign({}, defaultOptions, options);
 
     this.div = div;
     this.initialize();
+    this.setupSalaryLegend(salaryScale);
     this.updateColorScale(initialcolorAttribute, initialLegendNode);
   }
 
@@ -22,6 +32,7 @@ class CollapsibleLegend {
 
     //this.input stores everthing that can be toggled
     this.input = this.div.append("div").attr("id", "wrapper");
+    this.sizeLegend = this.input.append("div").attr("id", "sizeLegend").style("margin", "0rem 1.5rem 0.5rem 1.5rem");
     this.colorLegend = this.input.append("div").attr("id", "colorLegend").style("margin", "0.5rem 1.5rem");
 
     //add control to button
@@ -33,6 +44,39 @@ class CollapsibleLegend {
 
   }
 
+  setupSalaryLegend(salaryScale) {
+
+    this.sizeLegend.append("div").attr("id", "colorLegendAttribute")
+      .style("margin-bottom", "0.1rem")
+      .style("font-size", this.options.titleFontSize)
+      .text("Salary");
+
+    let salaryPoints = [50000, 100000, 150000, 200000]
+
+    let circles = this.sizeLegend.append("svg")
+      .attr("width", this.options.colorLegendWidth)
+      .attr("height", this.options.colorLegendHeight)
+      .selectAll()
+      .data(salaryPoints)
+      .join("g")
+      .style("transform", (d, i) => `translate(${25 + i * 50 - 0.5 * salaryScale(d)}px, 8px)`)
+
+    circles
+      .append("circle")
+      .attr("r", d => salaryScale(d))
+      .attr("stroke", "black")
+      .attr("stroke-width", 1)
+      .attr("fill", "none")
+
+    circles.append("text")
+      .style("font-size", this.options.tickFontSize)
+      .attr("y", 18)
+      .text(d => d3.format("$.2s")(d))
+      .each(function (d) { // Center text based on its width
+        const textWidth = this.getBBox().width;
+        d3.select(this).attr("x", - textWidth / 2);
+      })
+  }
   updateColorScale(colorAttribute, legendNode) {
 
     // Remove existing child nodes
@@ -42,7 +86,7 @@ class CollapsibleLegend {
 
     this.colorLegend.append("div").attr("id", "colorLegendAttribute")
       .style("margin-bottom", "0.3rem")
-      .style("font-size", "0.8rem")
+      .style("font-size", this.options.titleFontSize)
       .text(colorAttribute);
 
     // Append the new legend node

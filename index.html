@@ -64,7 +64,7 @@
             <div id="checkboxLicensed"></div>
             <div id="checkboxGender"></div>
             <div id="collapsibleLegend"></div>
-            <div id="testLegend" height="100"></div>
+            <div id="bottomBuffer" style="margin-bottom:2rem"></div>
           </div>
         </div>
       </div>
@@ -269,7 +269,7 @@
 
       //legend
       let collapsibleLegend = d3.select("div#collapsibleLegend")
-      const legend = new CollapsibleLegend(collapsibleLegend, "Job Satisfaction", satisfactionSlider.getLegendNode());
+      const legend = new CollapsibleLegend(collapsibleLegend, "Job Satisfaction", satisfactionSlider.getLegendNode(), salaryScale);
 
       //color scale dropdown
       d3.select("select#colorScaleSelect")
