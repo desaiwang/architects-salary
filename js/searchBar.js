@@ -23,7 +23,7 @@ class SearchBar {
 
 
     this.input = this.div.append("div")
-      .style("margin", "0.25rem 0 0.75rem 1.25rem")
+      .style("margin", "0.125rem 0 0.75rem 1.25rem")
 
     this.input
       .append("input")

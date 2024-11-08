@@ -53,6 +53,8 @@
                   <option value="Firm Size">Firm Size</option>
                   <option value="Age">Age</option>
                   <option value="Years of Experience">Years of Experience</option>
+                  <option value="Licensed">Licensure</option>
+                  <option value="Gender">Licensure</option>
                 </select>
               </div>
             </div>
@@ -70,6 +72,7 @@
             <div id="searchUG" class="filter"></div>
             <div id="searchGrad" class="filter"></div>
 
+            <div id="controlfilterLicensed"></div>
             <div id="checkboxLicensed"></div>
             <div id="checkboxGender"></div>
             <div id="collapsibleLegend"></div>
@@ -221,6 +224,11 @@
       let searchGrad = d3.select("div#searchGrad")
       const gradSearchBar = new SearchBar(searchGrad, "Graduate School", filters, updateData);
 
+
+      //checkboxes
+      let controlLicensed = d3.select("#controlfilterLicensed");
+      const licensedSlider = new ClickableHistogramSlider(data, controlLicensed, "Licensed", "Licensed", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: ["Yes", "No"] });
+
       let checkboxLicensed = d3.select("div#checkboxLicensed")
       const licensedCheckbox = new Checkboxes(checkboxLicensed, "Licensed",
         [{
@@ -258,7 +266,8 @@
         "Firm Type": firmtypeSlider.colorScale,
         "Firm Size": firmsizeSlider.colorScale,
         "Age": ageSlider.colorScale,
-        "Years of Experience": yearsOfExperienceSlider.colorScale
+        "Years of Experience": yearsOfExperienceSlider.colorScale,
+        "Licensed": licensedSlider.colorScale,
       }
 
       //default coloring is by Job Satisfaction
@@ -266,7 +275,7 @@
       const individualMap = new IndividualMap("canvasContainer", data, salaryScale, colorScales, filters);
 
       //listener for color scale change
-      const sliders = [timeSlider, satisfactionSlider, firmtypeSlider, firmsizeSlider, ageSlider, yearsOfExperienceSlider];
+      const sliders = [timeSlider, satisfactionSlider, firmtypeSlider, firmsizeSlider, ageSlider, yearsOfExperienceSlider, licensedSlider];
 
       //set up the legends in all the sliders
       sliders.forEach(slider => {

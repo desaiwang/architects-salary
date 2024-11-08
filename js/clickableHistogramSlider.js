@@ -19,6 +19,7 @@ class ClickableHistogramSlider {
       colorScheme: d3.schemeCategory10,
       sortOrder: 'key',
       ascending: true,
+      //height reserved for tooltip on hover
       yBetweenLabelAndHist: 15,
       rotateAxisLabels: false,
       fontsize: '0.6rem'
@@ -263,7 +264,7 @@ class ClickableHistogramSlider {
     this.tooltip = this.svg.append("text")
       .attr("class", "tooltip")
       .style("visibility", "hidden") // Hidden initially
-      .style("font-size", "12px")
+      // .style("font-size", "12px")
       .attr("fill", "black");
 
     // Render rectangles
@@ -280,7 +281,7 @@ class ClickableHistogramSlider {
       .on('mouseover', (event, d) => {
         this.tooltip
           .attr("x", this.xScale(d.key) + this.xScale.bandwidth() / 2)
-          .attr("y", this.yScale(d.count) - 10)
+          .attr("y", this.yScale(d.count) - 8)
           .attr("text-anchor", "middle") // Center the text horizontally
           .attr("dy", "0.35em") // Center the text vertically
           .text(`${d.count}`)
