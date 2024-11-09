@@ -170,8 +170,8 @@ class CurveSlider {
       .curve(d3.curveNatural);
 
     this.path = this.areaLayer.append("path").datum(this.counts)
-      .attr("class", "area")
-      .attr("fill", "#9dbbed")
+      .attr("class", "curveSlider area")
+      .attr("fill", "grey")
       .attr("d", this.area);
 
     this.filters[this.attribute] = d => true;  // Default filter

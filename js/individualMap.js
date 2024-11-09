@@ -1,6 +1,8 @@
 class IndividualMap {
-  constructor(divId, data, salaryScale, colorScales, filters) {
+  constructor(divId, width, height, data, salaryScale, colorScales, filters) {
     this.divId = divId;
+    this.width = width;
+    this.height = height;
     this.data = data;
     this.salaryScale = salaryScale;
     this.colorScales = colorScales;

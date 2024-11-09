@@ -27,7 +27,7 @@
 
     <div id="container" style="display: flex;">
       <div class="aside" style="overflow-y:scroll; overflow-x: hidden;">
-        <div style="position:sticky; top:0; background-color:white; z-index: 20">
+        <div id="sidebarCollapseDiv" style="position:sticky; top:0; z-index: 20">
           <div style="padding-top:1rem">
             <button data-resize-btn id="sidebarcollapse" class="collapse">
               <i class="bx bx-chevron-right"></i>
@@ -92,24 +92,9 @@
         <div style="display: flex; margin-left:2rem">
           <h2 id="summaryText"></h2>
         </div>
-        <div id="canvasContainer" style="width:1100px; height:1100px; position:relative; margin: 0 auto">
+        <div id="canvasContainer" style="position:relative; margin: 0 auto">
         </div>
-        <!-- <div id="vizContainer" style="background-color: brown;">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dictum, leo quis consequat semper, sem quam
-          dapibus elit, vel auctor arcu ante ut purus. Cras luctus leo rhoncus ipsum luctus, non vestibulum turpis
-          tempus.
-          Etiam luctus suscipit tristique. Phasellus in viverra nulla. Suspendisse suscipit dignissim nulla, vitae
-          sagittis est. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
-          Nam
-          tellus augue, auctor eu justo vel, rutrum euismod eros. Proin lorem dolor, vehicula ac laoreet vitae,
-          malesuada
-          a leo. Suspendisse potenti. Curabitur sed vehicula eros. Ut suscipit neque ut vehicula fringilla. Nam auctor
-          neque urna, dapibus aliquam mauris fermentum ut. Nam convallis nibh urna, sed efficitur velit convallis ut.
-        </div> -->
-
-
       </div>
-
     </div>
   </div>
   </div>
@@ -145,6 +130,7 @@
 
 
     const loadIndividuals = async function () {
+
       let data = await d3.csv("data/241102_archinect_salaries_fulltime.csv", d3.autoType);
       console.log(data);
       data.forEach(d => {
@@ -187,7 +173,7 @@
       });
 
       let controlTime = d3.select("#controlfilterTime");
-      const timeSlider = new ClickableHistogramSlider(data, controlTime, "Survey Year", "Year", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolateGreys, colorInterpolationType: "sequential discrete", fontsize: '0.5rem' });
+      const timeSlider = new ClickableHistogramSlider(data, controlTime, "Survey Year", "Year", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolateGreys, colorInterpolationType: "sequential discrete", fontsize: '0.5rem', initiateCollapsed: true });
 
       let controlSatisfaction = d3.select("#controlfilterSatisfaction");
       const BuOrColorInterpolator = d3.piecewise(d3.interpolateRgb, ['#0a1869', '#a9c9e7', "#ffe3a8", '#fc6f03']);
@@ -253,7 +239,15 @@
 
       //default coloring is by Job Satisfaction
       satisfactionSlider.updateColor(true);
-      const individualMap = new IndividualMap("canvasContainer", data, salaryScale, colorScales, filters);
+
+      const individualMap = new IndividualMap("canvasContainer", window.innerWidth - 350 - 20, window.innerHeight - 20, data, salaryScale, colorScales, filters);
+
+      window.addEventListener('resize', resizeCanvas);
+
+      function resizeCanvas() {
+        console.log("window resized", window.innerWidth - 350 - 20, window.innerHeight - 20)
+        individualMap.updateWidth(window.innerWidth - 350 - 20, window.innerHeight - 20);
+      }
 
       //listener for color scale change
       const sliders = [timeSlider, satisfactionSlider, firmtypeSlider, firmsizeSlider, ageSlider, yearsOfExperienceSlider, licensedSlider, genderSlider];
