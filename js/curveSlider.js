@@ -171,7 +171,7 @@ class CurveSlider {
 
     this.path = this.areaLayer.append("path").datum(this.counts)
       .attr("class", "curveSlider area")
-      .attr("fill", "grey")
+      .attr("fill", "#9dbbed")
       .attr("d", this.area);
 
     this.filters[this.attribute] = d => true;  // Default filter

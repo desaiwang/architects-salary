@@ -37,9 +37,9 @@
 
         </div>
 
-        <div class="sidebar" style="display: flex; flex-direction: column; margin-left:1rem">
-          <div id="filters">
-            <div id="colorScaleDropdown" style="display:flex; 
+        <div class="sidebar" style="display: flex; flex-direction: column; margin-left:1rem;">
+          <div id="filters" style="padding-bottom:16px">
+            <div id=" colorScaleDropdown" style="display:flex; 
             flex-direction:column;">
               <button class="collapse" id="colorBy">
                 <i class="bx bx-chevron-right" style="rotate: 90deg;"></i>
@@ -78,12 +78,11 @@
 
 
             <div id="collapsibleLegend"></div>
-            <div id="bottomBuffer" style="margin-bottom:2rem"></div>
           </div>
         </div>
       </div>
 
-      <div class="main">
+      <div class="main" style="padding-bottom:16px">
         <div id="header">
           <!-- style="margin-left:-100px" -->
           <h2 style="text-align: center"> Visualizing Architect's Salary in the US</h2>
@@ -92,15 +91,10 @@
         <div style="display: flex; margin-left:2rem">
           <h2 id="summaryText"></h2>
         </div>
-        <div id="canvasContainer" style="position:relative; margin: 0 auto">
+        <div id="canvasContainer" style="position:relative">
         </div>
       </div>
     </div>
-  </div>
-  </div>
-
-  </div>
-  <div style="margin-bottom:100"></div>
   </div>
 
   <script type="module">
@@ -237,17 +231,77 @@
         "Gender": genderSlider.colorScale
       }
 
-      //default coloring is by Job Satisfaction
-      satisfactionSlider.updateColor(true);
+      //individual map
+      //setting up params and functions to handle canvas resizing
+      //TODO: need to apply to hexBin as well
+      let collapsed = false;
+      const collapsedSidebarWidth = 30;
+      const expandedSidebarWidth = 350;
+      const buffer = 50; //rem
+      function calcCanvasWidth() {
+        return window.innerWidth - buffer - (collapsed ? collapsedSidebarWidth : expandedSidebarWidth);
+      }
 
-      const individualMap = new IndividualMap("canvasContainer", window.innerWidth - 350 - 20, window.innerHeight - 20, data, salaryScale, colorScales, filters);
+      const individualMap = new IndividualMap("canvasContainer", calcCanvasWidth(), data, salaryScale, colorScales, filters);
+      d3.select("div#canvasContainer")
+        .style("width", individualMap.width)
+        .style("height", individualMap.height);
+      //add resizing function
+      function resizeCanvas() {
+        individualMap.updateWidth(calcCanvasWidth());
+        d3.select("div#canvasContainer")
+          .style("width", individualMap.width)
+          .style("height", individualMap.height);
 
+      }
       window.addEventListener('resize', resizeCanvas);
 
-      function resizeCanvas() {
-        console.log("window resized", window.innerWidth - 350 - 20, window.innerHeight - 20)
-        individualMap.updateWidth(window.innerWidth - 350 - 20, window.innerHeight - 20);
-      }
+      //set up the div width and button for sidebar collapse
+      d3.select("div.aside").style("width", expandedSidebarWidth);
+      d3.select("button#sidebarcollapse")
+        .on("click", (event) => {
+          collapsed = !collapsed;
+
+          if (collapsed) {
+            //change sidebar width
+            d3.select("div.aside").style("width", collapsedSidebarWidth)
+              .style("overflow", "hidden");
+
+            //change toggle properties
+            d3.select("div.aside button span")
+              .style("opacity", 0)
+              .style("visibility", "hidden");
+
+            //change filters visibility
+            d3.select("div#filters")
+              .style("opacity", 0)
+              .style("visibility", "hidden");
+
+            d3.select("div.aside.bx.bx-chevron-right").style("rotate", "180deg")
+
+            resizeCanvas();
+          } else {
+            //change sidebar width
+            d3.select("div.aside").style("width", expandedSidebarWidth)
+              .style("overflow-y", "scroll");
+
+            //change toggle properties
+            d3.select("div.aside button span")
+              .style("opacity", 1)
+              .style("visibility", "visible");
+
+            //change filters visibility
+            d3.select("div#filters")
+              .style("opacity", 1)
+              .style("visibility", "visible");
+            d3.select("div.aside.bx.bx-chevron-right").style("rotate", "0deg")
+
+            resizeCanvas();
+          }
+        });
+
+      //default coloring is by Job Satisfaction
+      satisfactionSlider.updateColor(true);
 
       //listener for color scale change
       const sliders = [timeSlider, satisfactionSlider, firmtypeSlider, firmsizeSlider, ageSlider, yearsOfExperienceSlider, licensedSlider, genderSlider];
@@ -331,48 +385,6 @@
 
 
 
-      let collapsed = false;
-      d3.select("button#sidebarcollapse")
-        .on("click", (event) => {
-          collapsed = !collapsed;
-
-          if (collapsed) {
-            //change sidebar width
-            d3.select("div.aside").style("width", "2rem")
-              .style("overflow", "hidden");
-
-            //change toggle properties
-            d3.select("div.aside button span")
-              .style("opacity", 0)
-              .style("visibility", "hidden");
-
-            //change filters visibility
-            d3.select("div#filters")
-              .style("opacity", 0)
-              .style("visibility", "hidden");
-
-            d3.select("div.aside.bx.bx-chevron-right").style("rotate", "180deg")
-
-            individualMap.updateWidth(1300, 1000);
-          } else {
-            //change sidebar width
-            d3.select("div.aside").style("width", "21rem")
-              .style("overflow-y", "scroll");
-
-            //change toggle properties
-            d3.select("div.aside button span")
-              .style("opacity", 1)
-              .style("visibility", "visible");
-
-            //change filters visibility
-            d3.select("div#filters")
-              .style("opacity", 1)
-              .style("visibility", "visible");
-            d3.select("div.aside.bx.bx-chevron-right").style("rotate", "0deg")
-
-            individualMap.updateWidth(1100, 1100);
-          }
-        });
 
     }
 

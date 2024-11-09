@@ -1,8 +1,8 @@
 class IndividualMap {
-  constructor(divId, width, height, data, salaryScale, colorScales, filters) {
+  constructor(divId, width, data, salaryScale, colorScales, filters) {
     this.divId = divId;
     this.width = width;
-    this.height = height;
+    this.height = 0;
     this.data = data;
     this.salaryScale = salaryScale;
     this.colorScales = colorScales;
@@ -10,7 +10,7 @@ class IndividualMap {
     this.currentTarget = -1;
 
     this.initialize();
-    this.positionData();
+    this.positionData(); //vizHeight is also set here, after height is determined
     this.setupCanvas();
     this.createDelaunayVoronoi();
     this.addInteraction();
@@ -23,9 +23,6 @@ class IndividualMap {
   initialize() {
     this.vizIndividualsContainer = d3.select(`div#${this.divId}`);
 
-    this.width = Number(this.vizIndividualsContainer.style("width").replace("px", ""));
-    this.height = Number(this.vizIndividualsContainer.style("height").replace("px", ""));
-
     this.margins = {
       top: 20,
       bottom: 20,
@@ -34,7 +31,6 @@ class IndividualMap {
     }
 
     this.vizWidth = this.width - this.margins.left - this.margins.right;
-    this.vizHeight = this.height - this.margins.top - this.margins.bottom;
   };
 
 
@@ -105,35 +101,34 @@ class IndividualMap {
   }
 
   positionData() {
+    console.log("width", this.width)
     const medianSalaryOverall = d3.median(this.data, d => d['Salary']);
     this.maxD = Math.ceil(this.salaryScale(medianSalaryOverall) * 2 + 2);
     this.numPointsPerRow = Math.floor(this.vizWidth / this.maxD);
     this.xOffset = this.maxD / 2 + this.margins.left;
     this.yOffset = this.maxD / 2 + this.margins.top;
 
-    console.log("maxD", this.maxD, "numPointsPerRow", this.numPointsPerRow, "xOffset", this.xOffset, "yOffset", this.yOffset);
     this.data.forEach((d, i) => {
       d.cx = this.cxCalc(i, this.numPointsPerRow, this.maxD, this.xOffset);
       d.cy = this.cyCalc(i, this.numPointsPerRow, this.maxD, this.yOffset);
       d.passesFilter = true;
     });
+
+    //also set the height of the svg (with a buffer of maxD at the end)
+    this.height = this.cyCalc(this.data.length - 1, this.numPointsPerRow, this.maxD, this.yOffset) + this.maxD;
+    this.vizHeight = this.height - this.margins.top - this.margins.bottom;
   }
 
-  updateWidth(width, height) {
+  updateWidth(width) {
     this.width = width;
-    this.height = height;
-
     this.vizWidth = this.width - this.margins.left - this.margins.right;
-    this.vizHeight = this.height - this.margins.top - this.margins.bottom;
 
     this.vizIndividualsContainer.selectAll("*").remove();
 
-    this.positionData();
+    this.positionData(); //height and vizHeight are set here
     this.setupCanvas();
     this.createDelaunayVoronoi();
     this.addInteraction();
-    //default to job satisfaction
-    // this.setColors("Job Satisfaction");
     this.render();
   }
 
