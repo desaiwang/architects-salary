@@ -1,6 +1,6 @@
 import { Legend } from './legend.js';
-
-class CollapsibleLegend {
+//renamed
+class LegendCollapsible {
   constructor(div, initialcolorAttribute, initialLegendNode, salaryScale, options = {}) {
 
     // Default options
