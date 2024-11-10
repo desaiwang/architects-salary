@@ -19,9 +19,11 @@ class ClickableHistogramSlider {
       colorScheme: d3.schemeCategory10,
       sortOrder: 'key',
       ascending: true,
+      //height reserved for tooltip on hover
       yBetweenLabelAndHist: 15,
       rotateAxisLabels: false,
-      fontsize: '0.6rem'
+      fontsize: '0.6rem',
+      initatiateCollapsed: false
     };
 
     // Merge user-provided options with defaults
@@ -72,11 +74,12 @@ class ClickableHistogramSlider {
       }
     }
 
+    this.colors = this.uniqueKeys.map(d => this.colorScale(d));
     this.valueList = this.uniqueKeys;
     // console.log("valueList upon initiation", this.valueList)
 
     this.groupCounts.forEach(d =>
-      d.color = this.colorScale ? this.colorScale(d.key) : "grey"
+      d.color = this.colorScale ? this.colorScale(d.key) : ClickableHistogramSlider.greyFill
     );
 
     this.setupScales();
@@ -87,14 +90,16 @@ class ClickableHistogramSlider {
 
   setupScales() {
     this.xScale = d3.scaleBand().domain(this.uniqueKeys).range([0, this.sliderWidth]).padding(0.12);
-    this.yScale = d3.scaleLinear().domain([0, d3.max(this.groupCounts, d => d.count)]).nice().range([this.sliderHeight, this.options.yBetweenLabelAndHist]);
+    this.yScale = d3.scaleLinear().domain([0, d3.max(this.groupCounts, d => d.count)]).nice().range([this.sliderHeight - 4, this.options.yBetweenLabelAndHist]);
   }
 
 
 
   //default colors for bars
-  static greyedoutColor = "grey";
-  static selectedColor = "black";
+  static greyedoutColor = "#717680"; //grey-500 in style.css
+  static selectedColor = "#414651"; //grey-700
+  static greyFill = "#A4A7AE"; //grey-400
+  static whiteFill = "#FDFDFD"; //grey-25
   setupSvg() {
     // Create wrapper and SVG elements
     let wrapper = this.container.append("div").attr("class", "controls");
@@ -102,17 +107,28 @@ class ClickableHistogramSlider {
       append("button").attr("class", "collapse");
     this.chevron = button.append("i")
       .attr("class", "bx bx-chevron-right")
-      .style("rotate", "90deg")
+      .style("rotate", this.options.initiateCollapsed ? "0deg" : "90deg")
       ;
     button.append("span").text(this.label)
 
     this.svg = wrapper.append("svg").attr("class", "filter").style("margin-left", "1.25rem")
       .attr("width", this.sliderWidth)
-      .attr("height", this.sliderHeight + (this.options.rotateAxisLabels ? 60 : 30))
-      .attr("attribute", this.attribute);
+      .attr("height", this.sliderHeight + (this.options.rotateAxisLabels ? 60 : 30));
+
+    if (this.options.initiateCollapsed) {
+      this.svg.style("opacity", 0)
+        .style("visibility", "hidden")
+        .style("display", "none");
+    }
+    else {
+      this.svg
+        .style("display", "block")
+        .style("opacity", 1)
+        .style("visibility", "visible")
+    };
 
     //add control to button
-    this.collapsed = false;
+    this.collapsed = this.options.initiateCollapsed;
     button.on("click", async () => {
       this.collapsed = !this.collapsed;
 
@@ -147,9 +163,9 @@ class ClickableHistogramSlider {
   }
 
   //function for determining color of bars
-  colorRect = (d) => d.clicked ? (this.showColors ? d.color : "grey") : "white"
+  colorRect = (d) => d.clicked ? (this.showColors ? d.color : ClickableHistogramSlider.greyFill) : ClickableHistogramSlider.whiteFill
 
-  colorBorder = (d) => d.clicked ? (this.showColors ? d3.lab(d.color).darker() : d3.lab("grey").darker()) : ClickableHistogramSlider.greyedoutColor
+  colorBorder = (d) => d.clicked ? (this.showColors ? d3.lab(d.color).darker() : d3.lab(ClickableHistogramSlider.greyFill).darker()) : ClickableHistogramSlider.greyedoutColor
 
   setupBrush() {
     //set up brush
@@ -195,8 +211,54 @@ class ClickableHistogramSlider {
     this.brushRegion.call(brush);
   }
 
+  setupLegend(legendWidth, legendHeight, fontSize = this.options.fontsize) {
+
+    const legendSvg = d3.create("svg")
+      .attr("width", legendWidth)
+      .attr("height", legendHeight + (this.options.rotateAxisLabels ? 45 : 15));
+
+
+    let xScaleLegend = d3.scaleBand().domain(this.uniqueKeys).range([1, legendWidth]).padding(0.12);
+    let gXAxis = legendSvg.append("g").attr("transform", `translate(${this.options.rotateAxisLabels ? 4 : 0},${this.options.rotateAxisLabels ? legendHeight + 2 : legendHeight + 4})`).call(
+      d3.axisBottom(xScaleLegend)
+        .tickSize(0)
+        .tickFormat(this.options.scaleFormatter || (d => d))
+    )
+      .call(g => g.select(".domain").remove())//remove horizontal line
+      ;
+
+    if (this.options.rotateAxisLabels) {
+      gXAxis.selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-60)")
+        .style("font-size", fontSize);
+    } else {
+      gXAxis.selectAll("text")
+        .style("font-size", fontSize);
+    }
+
+    // Render rectangles
+    legendSvg.append("g").selectAll("rect").data(this.groupCounts).join("rect")
+      .attr("x", d => xScaleLegend(d.key))
+      .attr("y", 1)
+      .attr("width", xScaleLegend.bandwidth())
+      .attr("height", legendHeight + 1)
+      .attr("fill", d => d.color)
+      .attr("stroke", d => d3.lab(d.color).darker())
+      .attr("stroke-width", "1")
+      .style("rx", "2")
+
+    this.legendNode = legendSvg.node();
+  }
+
+  getLegendNode() {
+    return this.legendNode;
+  }
+
   setupHistogram() {
-    let gXAxis = this.svg.append("g").attr("transform", `translate(0,${this.sliderHeight + 8})`).call(
+    let gXAxis = this.svg.append("g").attr("transform", `translate(0,${this.sliderHeight + 4})`).call(
       d3.axisBottom(this.xScale).tickSizeOuter(0).tickFormat(this.options.scaleFormatter || (d => d))
     );
 
@@ -216,7 +278,7 @@ class ClickableHistogramSlider {
     this.tooltip = this.svg.append("text")
       .attr("class", "tooltip")
       .style("visibility", "hidden") // Hidden initially
-      .style("font-size", "12px")
+      // .style("font-size", "12px")
       .attr("fill", "black");
 
     // Render rectangles
@@ -233,7 +295,7 @@ class ClickableHistogramSlider {
       .on('mouseover', (event, d) => {
         this.tooltip
           .attr("x", this.xScale(d.key) + this.xScale.bandwidth() / 2)
-          .attr("y", this.yScale(d.count) - 10)
+          .attr("y", this.yScale(d.count) - 8)
           .attr("text-anchor", "middle") // Center the text horizontally
           .attr("dy", "0.35em") // Center the text vertically
           .text(`${d.count}`)
@@ -260,13 +322,13 @@ class ClickableHistogramSlider {
 
           if (d.clicked) {
             d3.select(event.target) //TODO: probably not going to work
-              .attr("fill", d => this.showColors ? d.color : "grey")
+              .attr("fill", d => this.showColors ? d.color : ClickableHistogramSlider.greyFill)
               .style('stroke', this.colorBorder(d));
 
             this.valueList.push(d.key);
           } else {
             d3.select(event.target)
-              .attr("fill", "white")
+              .attr("fill", ClickableHistogramSlider.whiteFill)
               .style('stroke', this.colorBorder(d));
 
             this.valueList = this.valueList.filter(rating => rating != d.key)

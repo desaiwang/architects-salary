@@ -1,6 +1,8 @@
 class IndividualMap {
-  constructor(divId, data, salaryScale, colorScales, filters) {
+  constructor(divId, width, data, salaryScale, colorScales, filters) {
     this.divId = divId;
+    this.width = width;
+    this.height = 0;
     this.data = data;
     this.salaryScale = salaryScale;
     this.colorScales = colorScales;
@@ -8,7 +10,7 @@ class IndividualMap {
     this.currentTarget = -1;
 
     this.initialize();
-    this.positionData();
+    this.positionData(); //vizHeight is also set here, after height is determined
     this.setupCanvas();
     this.createDelaunayVoronoi();
     this.addInteraction();
@@ -17,12 +19,8 @@ class IndividualMap {
     this.render();
   };
 
-
   initialize() {
     this.vizIndividualsContainer = d3.select(`div#${this.divId}`);
-
-    this.width = Number(this.vizIndividualsContainer.style("width").replace("px", ""));
-    this.height = Number(this.vizIndividualsContainer.style("height").replace("px", ""));
 
     this.margins = {
       top: 20,
@@ -32,7 +30,6 @@ class IndividualMap {
     }
 
     this.vizWidth = this.width - this.margins.left - this.margins.right;
-    this.vizHeight = this.height - this.margins.top - this.margins.bottom;
   };
 
 
@@ -57,7 +54,7 @@ class IndividualMap {
       if (!d.passesFilter) {
         this.context.beginPath();
         this.context.arc(d.cx, d.cy, this.salaryScale(d['Salary']), 0, 2 * Math.PI);
-        this.context.fillStyle = "lightgray";
+        this.context.fillStyle = "lightgrey"; //grey200 to pseudo create 100 due to opacity
         this.context.fill();
       }
     });
@@ -103,35 +100,34 @@ class IndividualMap {
   }
 
   positionData() {
+    console.log("width", this.width)
     const medianSalaryOverall = d3.median(this.data, d => d['Salary']);
     this.maxD = Math.ceil(this.salaryScale(medianSalaryOverall) * 2 + 2);
     this.numPointsPerRow = Math.floor(this.vizWidth / this.maxD);
     this.xOffset = this.maxD / 2 + this.margins.left;
     this.yOffset = this.maxD / 2 + this.margins.top;
 
-    console.log("maxD", this.maxD, "numPointsPerRow", this.numPointsPerRow, "xOffset", this.xOffset, "yOffset", this.yOffset);
     this.data.forEach((d, i) => {
       d.cx = this.cxCalc(i, this.numPointsPerRow, this.maxD, this.xOffset);
       d.cy = this.cyCalc(i, this.numPointsPerRow, this.maxD, this.yOffset);
       d.passesFilter = true;
     });
+
+    //also set the height of the svg (with a buffer of maxD at the end)
+    this.height = this.cyCalc(this.data.length - 1, this.numPointsPerRow, this.maxD, this.yOffset) + this.maxD;
+    this.vizHeight = this.height - this.margins.top - this.margins.bottom;
   }
 
-  updateWidth(width, height) {
+  updateWidth(width) {
     this.width = width;
-    this.height = height;
-
     this.vizWidth = this.width - this.margins.left - this.margins.right;
-    this.vizHeight = this.height - this.margins.top - this.margins.bottom;
 
     this.vizIndividualsContainer.selectAll("*").remove();
 
-    this.positionData();
+    this.positionData(); //height and vizHeight are set here
     this.setupCanvas();
     this.createDelaunayVoronoi();
     this.addInteraction();
-    //default to job satisfaction
-    // this.setColors("Job Satisfaction");
     this.render();
   }
 
@@ -169,7 +165,7 @@ class IndividualMap {
       .style("position", "absolute")
       .style("background", "white")
       .style("padding", "18px")
-      .style("border", "2px solid black")
+      .style("border", "2px solid #181D27")
       .style("border-radius", "5px")
       .style("pointer-events", "none");
 
@@ -180,7 +176,7 @@ class IndividualMap {
     this.delaunay = d3.Delaunay.from(this.data, d => d.cx, d => d.cy);
     this.voronoi = this.delaunay.voronoi([0, 0, this.width, this.height]);
     // Uncomment to see Voronoi diagram
-    // this.interactiveArea.append("path").attr("stroke", "black").attr("fill", "none").attr("d", this.voronoi.render());
+    // this.interactiveArea.append("path").attr("stroke", "#181D27").attr("fill", "none").attr("d", this.voronoi.render());
   }
 
   addInteraction() {
@@ -222,7 +218,7 @@ class IndividualMap {
         .attr("class", "highlight")
         .attr("cx", d.cx)
         .attr("cy", d.cy)
-        .attr("stroke", "black")
+        .attr("stroke", "#181D27")
         .attr("stroke-width", 2)
         .attr("fill", "none")
         .attr("pointer-events", "none")
@@ -265,7 +261,7 @@ class IndividualMap {
         }</p>
               <p class="tooltip light" >${d['Years of Experience']} years of experience</p>
               <p class="tooltip light" >${d['Age']} years old</p>
-              <p class="tooltip light" >${d['Gender']}, ${d['Licensed'] == "Licensed" ? "Licensed" : "Not Licensed"}</p>
+              <p class="tooltip light" >${d['Gender']}, ${d['Licensed'] == "Yes" ? "Licensed" : "Not Licensed"}</p>
 
             </div>   
           </div>

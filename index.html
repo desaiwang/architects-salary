@@ -15,7 +15,7 @@
 
 </head>
 
-<body style="background-color: rgb(255, 255, 255);">
+<body>
   <div style="margin-top:30px">
   </div>
 
@@ -27,47 +27,62 @@
 
     <div id="container" style="display: flex;">
       <div class="aside" style="overflow-y:scroll; overflow-x: hidden;">
-        <div class="sidebar" style="display: flex; flex-direction: column;">
+        <div id="sidebarCollapseDiv" style="position:sticky; top:0; z-index: 20">
+          <div style="padding-top:1rem">
+            <button data-resize-btn id="sidebarcollapse" class="collapse">
+              <i class="bx bx-chevron-right"></i>
+              <span style="font-weight:600;">Collapse</span>
+            </button>
+          </div>
 
-          <button data-resize-btn id="sidebarcollapse" class="collapse">
-            <i class="bx bx-chevron-right"></i>
-            <span style="font-weight:600;">Collapse</span>
-          </button>
+        </div>
 
-          <div id="filters">
-            <div id="colorScaleDropdown" style="display:flex; 
+        <div class="sidebar" style="display: flex; flex-direction: column; margin-left:1rem;">
+          <div id="filters" style="padding-bottom:16px">
+            <div id=" colorScaleDropdown" style="display:flex; 
             flex-direction:column;">
-              <div style="margin-bottom:10px">Color by: &nbsp</div>
-              <select id="colorScaleSelect">
-                <option value="Year">Year</option>
-                <option value="Job Satisfaction" selected>Job Satisfaction</option>
-                <option value="Firm Type">Firm Type</option>
-                <option value="Firm Size">Firm Size</option>
-                <option value="Age">Age</option>
-                <option value="Years of Experience">Years of Experience</option>
-              </select>
+              <button class="collapse" id="colorBy">
+                <i class="bx bx-chevron-right" style="rotate: 90deg;"></i>
+                <span>Color by:</span>
+              </button>
+              <div style="margin-left:1.25rem">
+                <select id="colorScaleSelect">
+                  <option value="Year">Year</option>
+                  <option value="Job Satisfaction" selected>Job Satisfaction</option>
+                  <option value="Firm Type">Firm Type</option>
+                  <option value="Firm Size">Firm Size</option>
+                  <option value="Age">Age</option>
+                  <option value="Years of Experience">Years of Experience</option>
+                  <option value="Licensed">Licensed</option>
+                  <option value="Gender">Gender</option>
+                </select>
+              </div>
             </div>
 
-            <div id="controlfilterTime" class="filter"></div>
+
             <div id="controlfilterSalary" class="filter"></div>
             <div id="controlfilterSatisfaction" class="filter"></div>
-            <div id="controlfilterFirmType" class="filter"></div>
-            <div id="controlfilterFirmSize" class="filter"></div>
             <div id="controlfilterAge" class="filter"></div>
             <div id="controlfilterYearsOfExperience" class="filter"></div>
-            <!-- <div id="controlfilterAnnualBonus"></div>
-            <div id="controlfilterVacationDays"></div> -->
+            <div id="controlfilterGender"></div>
+
+            <div id="controlfilterLicensed"></div>
+            <div id="controlfilterFirmType" class="filter"></div>
+            <div id="controlfilterFirmSize" class="filter"></div>
+
+            <div id="controlfilterTime" class="filter"></div>
+            <div id="searchJobTitle"></div>
             <div id="searchLocation" class="filter"></div>
             <div id="searchUG" class="filter"></div>
             <div id="searchGrad" class="filter"></div>
 
-            <div id="checkboxLicensed"></div>
-            <div id="checkboxGender"></div>
+
+            <div id="collapsibleLegend"></div>
           </div>
         </div>
       </div>
 
-      <div class="main">
+      <div class="main" style="padding-bottom:16px">
         <div id="header">
           <!-- style="margin-left:-100px" -->
           <h2 style="text-align: center"> Visualizing Architect's Salary in the US</h2>
@@ -76,30 +91,10 @@
         <div style="display: flex; margin-left:2rem">
           <h2 id="summaryText"></h2>
         </div>
-        <div id="canvasContainer" style="width:1100px; height:1100px; position:relative; margin: 0 auto">
+        <div id="canvasContainer" style="position:relative">
         </div>
-        <!-- <div id="vizContainer" style="background-color: brown;">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dictum, leo quis consequat semper, sem quam
-          dapibus elit, vel auctor arcu ante ut purus. Cras luctus leo rhoncus ipsum luctus, non vestibulum turpis
-          tempus.
-          Etiam luctus suscipit tristique. Phasellus in viverra nulla. Suspendisse suscipit dignissim nulla, vitae
-          sagittis est. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
-          Nam
-          tellus augue, auctor eu justo vel, rutrum euismod eros. Proin lorem dolor, vehicula ac laoreet vitae,
-          malesuada
-          a leo. Suspendisse potenti. Curabitur sed vehicula eros. Ut suscipit neque ut vehicula fringilla. Nam auctor
-          neque urna, dapibus aliquam mauris fermentum ut. Nam convallis nibh urna, sed efficitur velit convallis ut.
-        </div> -->
-
-
       </div>
-
     </div>
-  </div>
-  </div>
-
-  </div>
-  <div style="margin-bottom:100"></div>
   </div>
 
   <script type="module">
@@ -111,6 +106,7 @@
     import IndividualMap from './js/individualMap.js';
     import SearchBar from './js/searchBar.js';
     import Checkboxes from './js/checkboxes.js';
+    import CollapsibleLegend from './js/collapsibleLegend.js';
 
 
     //set up for map
@@ -128,6 +124,7 @@
 
 
     const loadIndividuals = async function () {
+
       let data = await d3.csv("data/241102_archinect_salaries_fulltime.csv", d3.autoType);
       console.log(data);
       data.forEach(d => {
@@ -169,24 +166,18 @@
         //getButtonData: getButtonDataSalary 
       });
 
-      // let controlAnnualBonus = d3.select("#controlfilterAnnualBonus");
-      // let annualBonusSlider = new CurveSlider(data, controlAnnualBonus, "Annual Bonus", "Annual Bonus", controlWidth, controlHeight, updateData, filters, { maxLimit: 50000, scaleFormatter: d => d === 0 ? "$0" : d3.format("$.2s")(d) });
-
-      // let controlVacationDays = d3.select("#controlfilterVacationDays");
-      // let vacationDaysSlider = new CurveSlider(data, controlVacationDays, "Vacation Days", "Vacation Days", controlWidth, controlHeight, updateData, filters, { maxLimit: 40 });
-
       let controlTime = d3.select("#controlfilterTime");
-      const timeSlider = new ClickableHistogramSlider(data, controlTime, "Survey Year", "Year", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolateGreys, colorInterpolationType: "sequential discrete", fontsize: '0.5rem' });
+      const timeSlider = new ClickableHistogramSlider(data, controlTime, "Survey Year", "Year", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolateGreys, colorInterpolationType: "sequential discrete", fontsize: '0.5rem', initiateCollapsed: true });
 
       let controlSatisfaction = d3.select("#controlfilterSatisfaction");
       const BuOrColorInterpolator = d3.piecewise(d3.interpolateRgb, ['#0a1869', '#a9c9e7', "#ffe3a8", '#fc6f03']);
       const satisfactionSlider = new ClickableHistogramSlider(data, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", controlWidth, controlHeight, updateData, filters, { colorInterpolator: BuOrColorInterpolator, colorInterpolationType: "sequential continuous" });
 
       let controlFirmType = d3.select("#controlfilterFirmType");
-      const firmtypeSlider = new ClickableHistogramSlider(data, controlFirmType, "Firm Type", "Firm Type", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: ["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"], fontsize: '0.5rem' });
+      const firmtypeSlider = new ClickableHistogramSlider(data, controlFirmType, "Firm Type", "Firm Type", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: ["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"], fontsize: '0.5rem', initiateCollapsed: true });
 
       let controlFirmSize = d3.select("#controlfilterFirmSize");
-      const firmsizeSlider = new ClickableHistogramSlider(data, controlFirmSize, "Firm Size", "Firm Size", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolateGnBu, colorInterpolationType: "sequential discrete", sortOrder: [1, "2-5", "6-10", "11-15", "16-30", "31-50", "51-100", "101-200", "201-500", "501+"], rotateAxisLabels: true });
+      const firmsizeSlider = new ClickableHistogramSlider(data, controlFirmSize, "Firm Size", "Firm Size", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolateGnBu, colorInterpolationType: "sequential discrete", sortOrder: [1, "2-5", "6-10", "11-15", "16-30", "31-50", "51-100", "101-200", "201-500", "501+"], rotateAxisLabels: true, initiateCollapsed: true });
 
 
       let controlAge = d3.select("#controlfilterAge");
@@ -203,40 +194,26 @@
       const firmTypeScale = d3.scaleOrdinal().domain(["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"]).range(d3.schemeTableau10);
 
       //search bars
+      let searchJobTitle = d3.select("div#searchJobTitle")
+      const jobTitleSearchBar = new SearchBar(searchJobTitle, "Job Title", filters, updateData, { placeholderText: "eg. Designer", initiateCollapsed: true });
+
       let searchLocation = d3.select("div#searchLocation")
-      const locationSearchBar = new SearchBar(searchLocation, "Location", filters, updateData);
+      const locationSearchBar = new SearchBar(searchLocation, "Location", filters, updateData, { placeholderText: "eg. New York, NY", initiateCollapsed: true });
 
       let searchUG = d3.select("div#searchUG")
-      const ugSearchBar = new SearchBar(searchUG, "Undergraduate School", filters, updateData);
+      const ugSearchBar = new SearchBar(searchUG, "Undergraduate School", filters, updateData, { placeholderText: "eg. Cornell University", initiateCollapsed: true });
 
       let searchGrad = d3.select("div#searchGrad")
-      const gradSearchBar = new SearchBar(searchGrad, "Graduate School", filters, updateData);
+      const gradSearchBar = new SearchBar(searchGrad, "Graduate School", filters, updateData, { placeholderText: "eg. University of Washington", initiateCollapsed: true });
 
-      let checkboxLicensed = d3.select("div#checkboxLicensed")
-      const licensedCheckbox = new Checkboxes(checkboxLicensed, "Licensed",
-        [{
-          "label": "Yes",
-          "attributeVal": "Licensed"
-        }, {
-          "label": "No",
-          "attributeVal": "No"
-        }],
-        filters, updateData);
 
-      let checkboxGender = d3.select("div#checkboxGender")
-      const genderCheckbox = new Checkboxes(checkboxGender, "Gender",
-        [{
-          "label": "Female",
-          "attributeVal": "Female"
-        }, {
-          "label": "Male",
-          "attributeVal": "Male"
-        },
-        {
-          "label": "Other",
-          "attributeVal": "Other"
-        }],
-        filters, updateData);
+      //checkboxes
+      let controlLicensed = d3.select("#controlfilterLicensed");
+      const licensedSlider = new ClickableHistogramSlider(data, controlLicensed, "Licensed", "Licensed", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: ["Yes", "No"] });
+
+      let controlGender = d3.select("#controlfilterGender");
+      const genderSlider = new ClickableHistogramSlider(data, controlGender, "Gender", "Gender", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: ["Female", "Male", "Other"] });
+
 
       //scales
       const salaryExtent = d3.extent(data, d => d['Salary'])
@@ -249,22 +226,115 @@
         "Firm Type": firmtypeSlider.colorScale,
         "Firm Size": firmsizeSlider.colorScale,
         "Age": ageSlider.colorScale,
-        "Years of Experience": yearsOfExperienceSlider.colorScale
+        "Years of Experience": yearsOfExperienceSlider.colorScale,
+        "Licensed": licensedSlider.colorScale,
+        "Gender": genderSlider.colorScale
       }
+
+      //individual map
+      //setting up params and functions to handle canvas resizing
+      //TODO: need to apply to hexBin as well
+      let collapsed = false;
+      const collapsedSidebarWidth = 30;
+      const expandedSidebarWidth = 330;
+      const buffer = 50; //rem
+      function calcCanvasWidth() {
+
+        console.log("window.innerWidth", window.screenWidth)
+        //if it's too small then 
+        if (window.innerWidth < 600) {
+          return window.innerWidth - buffer;
+        }
+
+        return window.innerWidth - buffer - (collapsed ? collapsedSidebarWidth : expandedSidebarWidth);
+      }
+
+      const individualMap = new IndividualMap("canvasContainer", calcCanvasWidth(), data, salaryScale, colorScales, filters);
+      d3.select("div#canvasContainer")
+        .style("width", individualMap.width)
+        .style("height", individualMap.height);
+      //add resizing function
+      function resizeCanvas() {
+        if (calcCanvasWidth() == individualMap.width) {
+          return; //return if no change
+        }
+        individualMap.updateWidth(calcCanvasWidth());
+        d3.select("div#canvasContainer")
+          .style("width", individualMap.width)
+          .style("height", individualMap.height);
+
+      }
+      window.addEventListener('resize', resizeCanvas);
+
+      //set up the div width and button for sidebar collapse
+      d3.select("div.aside").style("width", expandedSidebarWidth);
+      d3.select("button#sidebarcollapse")
+        .on("click", (event) => {
+          collapsed = !collapsed;
+
+          if (collapsed) {
+            //change sidebar width
+            d3.select("div.aside").style("width", collapsedSidebarWidth)
+              .style("overflow", "hidden");
+
+            //change toggle properties
+            d3.select("div.aside button span")
+              .style("opacity", 0)
+              .style("visibility", "hidden");
+
+            //change filters visibility
+            d3.select("div#filters")
+              .style("opacity", 0)
+              .style("visibility", "hidden");
+
+            d3.select("div.aside.bx.bx-chevron-right").style("rotate", "180deg")
+
+            resizeCanvas();
+          } else {
+            //change sidebar width
+            d3.select("div.aside").style("width", expandedSidebarWidth)
+              .style("overflow-y", "scroll");
+
+            //change toggle properties
+            d3.select("div.aside button span")
+              .style("opacity", 1)
+              .style("visibility", "visible");
+
+            //change filters visibility
+            d3.select("div#filters")
+              .style("opacity", 1)
+              .style("visibility", "visible");
+            d3.select("div.aside.bx.bx-chevron-right").style("rotate", "0deg")
+
+            resizeCanvas();
+          }
+        });
 
       //default coloring is by Job Satisfaction
       satisfactionSlider.updateColor(true);
-      const individualMap = new IndividualMap("canvasContainer", data, salaryScale, colorScales, filters);
 
       //listener for color scale change
-      const sliders = [timeSlider, satisfactionSlider, firmtypeSlider, firmsizeSlider, ageSlider, yearsOfExperienceSlider];
+      const sliders = [timeSlider, satisfactionSlider, firmtypeSlider, firmsizeSlider, ageSlider, yearsOfExperienceSlider, licensedSlider, genderSlider];
+
+      //set up the legends in all the sliders
+      sliders.forEach(slider => {
+        slider.setupLegend(controlWidth - 25, 8);
+      });
+
+      //legend
+      let collapsibleLegend = d3.select("div#collapsibleLegend")
+      const legend = new CollapsibleLegend(collapsibleLegend, "Job Satisfaction", satisfactionSlider.getLegendNode(), salaryScale);
+
+      //color scale dropdown
       d3.select("select#colorScaleSelect")
         .on("change", function () {
           individualMap.updateColors(this.value);
+
           sliders.forEach(slider => {
             if (slider.attribute == this.value) {
               slider.updateColor(true)
               slider.changeCollapsed(false); //open it up
+              legend.updateColorScale(this.value, slider.getLegendNode());
             }
             else { slider.updateColor(false) };
           });
@@ -288,7 +358,6 @@
       // //set up the layer used for hexBin rendering
       // let hexBinLayer = mapArea.append("g");
 
-
       function updateData() {
         //filter for passing data
         const passingData = data.filter(pointPassesFilters);
@@ -306,6 +375,8 @@
         firmsizeSlider.update();
         ageSlider.update();
         yearsOfExperienceSlider.update();
+        licensedSlider.update();
+        genderSlider.update();
 
 
 
@@ -324,46 +395,6 @@
 
 
 
-      let collapsed = false;
-      d3.select("button#sidebarcollapse")
-        .on("click", (event) => {
-          collapsed = !collapsed;
-
-          if (collapsed) {
-            //change sidebar width
-            d3.select("div.aside").style("width", "5rem");
-
-            //change toggle properties
-            d3.select("div.sidebar button span")
-              .style("opacity", 0)
-              .style("visibility", "hidden");
-
-            //change filters visibility
-            d3.select("div#filters")
-              .style("opacity", 0)
-              .style("visibility", "hidden");
-
-            d3.select(".bx.bx-chevron-right").style("rotate", "180deg")
-
-            individualMap.updateWidth(1300, 1000);
-          } else {
-            //change sidebar width
-            d3.select("div.aside").style("width", "350px");
-
-            //change toggle properties
-            d3.select("div.sidebar button span")
-              .style("opacity", 1)
-              .style("visibility", "visible");
-
-            //change filters visibility
-            d3.select("div#filters")
-              .style("opacity", 1)
-              .style("visibility", "visible");
-            d3.select(".bx.bx-chevron-right").style("rotate", "0deg")
-
-            individualMap.updateWidth(1100, 1100);
-          }
-        });
 
     }
 
