@@ -19,7 +19,6 @@ class IndividualMap {
     this.render();
   };
 
-
   initialize() {
     this.vizIndividualsContainer = d3.select(`div#${this.divId}`);
 
@@ -55,7 +54,7 @@ class IndividualMap {
       if (!d.passesFilter) {
         this.context.beginPath();
         this.context.arc(d.cx, d.cy, this.salaryScale(d['Salary']), 0, 2 * Math.PI);
-        this.context.fillStyle = "lightgray";
+        this.context.fillStyle = "lightgrey"; //grey200 to pseudo create 100 due to opacity
         this.context.fill();
       }
     });
@@ -166,7 +165,7 @@ class IndividualMap {
       .style("position", "absolute")
       .style("background", "white")
       .style("padding", "18px")
-      .style("border", "2px solid black")
+      .style("border", "2px solid #181D27")
       .style("border-radius", "5px")
       .style("pointer-events", "none");
 
@@ -177,7 +176,7 @@ class IndividualMap {
     this.delaunay = d3.Delaunay.from(this.data, d => d.cx, d => d.cy);
     this.voronoi = this.delaunay.voronoi([0, 0, this.width, this.height]);
     // Uncomment to see Voronoi diagram
-    // this.interactiveArea.append("path").attr("stroke", "black").attr("fill", "none").attr("d", this.voronoi.render());
+    // this.interactiveArea.append("path").attr("stroke", "#181D27").attr("fill", "none").attr("d", this.voronoi.render());
   }
 
   addInteraction() {
@@ -219,7 +218,7 @@ class IndividualMap {
         .attr("class", "highlight")
         .attr("cx", d.cx)
         .attr("cy", d.cy)
-        .attr("stroke", "black")
+        .attr("stroke", "#181D27")
         .attr("stroke-width", 2)
         .attr("fill", "none")
         .attr("pointer-events", "none")

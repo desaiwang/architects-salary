@@ -236,9 +236,16 @@
       //TODO: need to apply to hexBin as well
       let collapsed = false;
       const collapsedSidebarWidth = 30;
-      const expandedSidebarWidth = 350;
+      const expandedSidebarWidth = 330;
       const buffer = 50; //rem
       function calcCanvasWidth() {
+
+        console.log("window.innerWidth", window.screenWidth)
+        //if it's too small then 
+        if (window.innerWidth < 600) {
+          return window.innerWidth - buffer;
+        }
+
         return window.innerWidth - buffer - (collapsed ? collapsedSidebarWidth : expandedSidebarWidth);
       }
 
@@ -248,6 +255,9 @@
         .style("height", individualMap.height);
       //add resizing function
       function resizeCanvas() {
+        if (calcCanvasWidth() == individualMap.width) {
+          return; //return if no change
+        }
         individualMap.updateWidth(calcCanvasWidth());
         d3.select("div#canvasContainer")
           .style("width", individualMap.width)

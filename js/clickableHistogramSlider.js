@@ -79,7 +79,7 @@ class ClickableHistogramSlider {
     // console.log("valueList upon initiation", this.valueList)
 
     this.groupCounts.forEach(d =>
-      d.color = this.colorScale ? this.colorScale(d.key) : "grey"
+      d.color = this.colorScale ? this.colorScale(d.key) : ClickableHistogramSlider.greyFill
     );
 
     this.setupScales();
@@ -96,8 +96,10 @@ class ClickableHistogramSlider {
 
 
   //default colors for bars
-  static greyedoutColor = "grey";
-  static selectedColor = "black";
+  static greyedoutColor = "#717680"; //grey-500 in style.css
+  static selectedColor = "#414651"; //grey-700
+  static greyFill = "#A4A7AE"; //grey-400
+  static whiteFill = "#FDFDFD"; //grey-25
   setupSvg() {
     // Create wrapper and SVG elements
     let wrapper = this.container.append("div").attr("class", "controls");
@@ -161,9 +163,9 @@ class ClickableHistogramSlider {
   }
 
   //function for determining color of bars
-  colorRect = (d) => d.clicked ? (this.showColors ? d.color : "grey") : "white"
+  colorRect = (d) => d.clicked ? (this.showColors ? d.color : ClickableHistogramSlider.greyFill) : ClickableHistogramSlider.whiteFill
 
-  colorBorder = (d) => d.clicked ? (this.showColors ? d3.lab(d.color).darker() : d3.lab("grey").darker()) : ClickableHistogramSlider.greyedoutColor
+  colorBorder = (d) => d.clicked ? (this.showColors ? d3.lab(d.color).darker() : d3.lab(ClickableHistogramSlider.greyFill).darker()) : ClickableHistogramSlider.greyedoutColor
 
   setupBrush() {
     //set up brush
@@ -320,13 +322,13 @@ class ClickableHistogramSlider {
 
           if (d.clicked) {
             d3.select(event.target) //TODO: probably not going to work
-              .attr("fill", d => this.showColors ? d.color : "grey")
+              .attr("fill", d => this.showColors ? d.color : ClickableHistogramSlider.greyFill)
               .style('stroke', this.colorBorder(d));
 
             this.valueList.push(d.key);
           } else {
             d3.select(event.target)
-              .attr("fill", "white")
+              .attr("fill", ClickableHistogramSlider.whiteFill)
               .style('stroke', this.colorBorder(d));
 
             this.valueList = this.valueList.filter(rating => rating != d.key)
