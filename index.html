@@ -47,12 +47,9 @@
             </button>
 
             <div class="customize" style="margin-left:1rem;">
-              <div id="colorScaleDropdown" style="display:flex; 
-              flex-direction:column;">
-                <button class="collapse colorScale">
-                  <i class="bx bx-chevron-right" style="rotate: 90deg;"></i>
-                  <span>Color by:</span>
-                </button>
+
+              <div style="display: flex; flex-direction:row; margin-left:0.5rem">
+                <span class="title">Color by:</span>
                 <div class="colorScale" style="margin-left:1.25rem">
                   <select class="colorScale">
                     <option value="Year">Year</option>
@@ -65,10 +62,10 @@
                     <option value="Gender">Gender</option>
                   </select>
                 </div>
-                <button class="collapse sortOrder">
-                  <i class="bx bx-chevron-right" style="rotate: 90deg;"></i>
-                  <span>Sort by:</span>
-                </button>
+              </div>
+
+              <div style="display: flex; flex-direction:row; margin-left:0.5rem">
+                <span class="title">Sort by:</span>
                 <div class="sortOrder" style="margin-left:1.25rem">
                   <select class="sortOrder">
                     <option value="Year" selected>Year</option>
@@ -83,6 +80,7 @@
                   </select>
                 </div>
               </div>
+
             </div>
           </div>
 
@@ -334,7 +332,6 @@
       //set up buttons that contain 
       let buttons = [
         { className: "customize", collapsed: false },
-        { className: "colorScale", collapsed: false },
         { className: "filters", collapsed: false }
       ];
       buttons.forEach(button => {
