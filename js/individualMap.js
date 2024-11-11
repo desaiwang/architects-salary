@@ -6,6 +6,8 @@ class IndividualMap {
     this.width = width;
     this.height = 0;
     this.data = data;
+    //store original order
+    data.forEach((d, i) => d.index = i);
     this.salaryScale = salaryScale;
     this.colorScales = colorScales;
     this.filters = filters;
@@ -108,7 +110,6 @@ class IndividualMap {
   }
 
   positionData() {
-    console.log("width", this.width)
     const medianSalaryOverall = d3.median(this.data, d => d['Salary']);
     this.maxD = Math.ceil(this.salaryScale(medianSalaryOverall) * 2 + 2.5);
     this.numPointsPerRow = Math.floor(this.vizWidth / this.maxD);
@@ -122,13 +123,32 @@ class IndividualMap {
     });
 
     //also set the height of the svg (with a buffer of maxD at the end)
-    this.height = this.cyCalc(this.data.length - 1, this.numPointsPerRow, this.maxD, this.yOffset) + this.maxD;
+    this.height = this.cyCalc(this.data.length - 1, this.numPointsPerRow, this.maxD, this.yOffset) + 15;
     this.vizHeight = this.height - this.margins.top - this.margins.bottom;
   }
 
   updateWidth(width) {
     this.width = width;
     this.vizWidth = this.width - this.margins.left - this.margins.right;
+
+    this.vizIndividualsContainer.selectAll("*").remove();
+
+    this.positionData(); //height and vizHeight are set here
+    this.setupCanvas();
+    this.createDelaunayVoronoi();
+    this.addInteraction();
+    this.update(); //update called instead of render because need to re-filter
+  }
+
+  updateSortOrder(attribute) {
+    if (attribute === "Year") {
+      console.log("this.originalOrder", this.originalOrder)
+      this.data = this.data.sort((a, b) => a.index - b.index);
+    } else {
+      this.data.sort((a, b) => b[attribute] - a[attribute]);
+    }
+
+
 
     this.vizIndividualsContainer.selectAll("*").remove();
 

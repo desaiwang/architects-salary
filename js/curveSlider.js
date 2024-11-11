@@ -53,7 +53,7 @@ class CurveSlider {
 
 
     // Create HTML elements
-    this.wrapper = this.container.append("div").attr("class", "controls").style("margin-top", "6px");
+    this.wrapper = this.container.append("div").attr("class", "controls");
 
     //append collapse button to wrapper
     let button = this.wrapper.append("div").
