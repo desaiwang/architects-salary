@@ -1,4 +1,5 @@
 import calculateBounds from "./bounds.js";
+import { sortOrders } from "./sortOrders.js";
 
 class IndividualMap {
   constructor(divId, width, data, salaryScale, colorScales, filters) {
@@ -141,9 +142,19 @@ class IndividualMap {
   }
 
   updateSortOrder(attribute) {
+    console.log("trying to get sort Order", sortOrders[attribute])
     if (attribute === "Year") {
       console.log("this.originalOrder", this.originalOrder)
       this.data = this.data.sort((a, b) => a.index - b.index);
+    } else if (sortOrders[attribute]) {
+      this.data.sort((a, b) => {
+        const indexA = sortOrders[attribute].indexOf(a[attribute]);
+        const indexB = sortOrders[attribute].indexOf(b[attribute]);
+        if (indexA === -1 && indexB === -1) return 0;
+        if (indexA === -1) return 1;
+        if (indexB === -1) return -1;
+        return indexA - indexB;
+      });
     } else {
       this.data.sort((a, b) => b[attribute] - a[attribute]);
     }

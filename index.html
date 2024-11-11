@@ -71,7 +71,8 @@
                 </button>
                 <div class="sortOrder" style="margin-left:1.25rem">
                   <select class="sortOrder">
-                    <option value="Year">Year</option>
+                    <option value="Year" selected>Year</option>
+                    <option value="Salary">Salary</option>
                     <option value="Job Satisfaction">Job Satisfaction</option>
                     <option value="Firm Type">Firm Type</option>
                     <option value="Firm Size">Firm Size</option>
@@ -139,6 +140,7 @@
     import SearchBar from './js/searchBar.js';
     import Checkboxes from './js/checkboxes.js';
     import CollapsibleLegend from './js/CollapsibleLegend.js';
+    import { sortOrders } from './js/sortOrders.js';
 
 
     //set up for map
@@ -197,28 +199,26 @@
       const satisfactionSlider = new ClickableHistogramSlider(data, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", controlWidth, controlHeight, updateData, filters, { colorInterpolator: BuOrColorInterpolator, colorInterpolationType: "sequential continuous" });
 
       let controlFirmType = d3.select("#controlfilterFirmType");
-      const firmtypeSlider = new ClickableHistogramSlider(data, controlFirmType, "Firm Type", "Firm Type", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: ["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"], fontsize: '0.5rem', initiateCollapsed: true });
+      const firmtypeSlider = new ClickableHistogramSlider(data, controlFirmType, "Firm Type", "Firm Type", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: sortOrders["Firm Type"], fontsize: '0.5rem', initiateCollapsed: true });
 
       let controlFirmSize = d3.select("#controlfilterFirmSize");
-      const firmsizeSlider = new ClickableHistogramSlider(data, controlFirmSize, "Firm Size", "Firm Size", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolateGnBu, colorInterpolationType: "sequential discrete", sortOrder: [1, "2-5", "6-10", "11-15", "16-30", "31-50", "51-100", "101-200", "201-500", "501+"], rotateAxisLabels: true, initiateCollapsed: true });
+      const firmsizeSlider = new ClickableHistogramSlider(data, controlFirmSize, "Firm Size", "Firm Size", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolateGnBu, colorInterpolationType: "sequential discrete", sortOrder: sortOrders["Firm Size"], rotateAxisLabels: true, initiateCollapsed: true });
 
       let controlAge = d3.select("#controlfilterAge");
-      const ageSlider = new ClickableHistogramSlider(data, controlAge, "Age", "Age", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolatePuRd, colorInterpolationType: "sequential discrete", sortOrder: ["18-20", "21-25", "26-30", "31-35", "36-40", "41-45", "46-50", "51-55", "56-60", "61-65", "66-70", "71-103"], rotateAxisLabels: true });
+      const ageSlider = new ClickableHistogramSlider(data, controlAge, "Age", "Age", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolatePuRd, colorInterpolationType: "sequential discrete", sortOrder: sortOrders["Age"], rotateAxisLabels: true });
 
       let controlYearsOfExperience = d3.select("#controlfilterYearsOfExperience");
       const yearsOfExperienceSlider = new ClickableHistogramSlider(data, controlYearsOfExperience, "Years of Experience", "Years of Experience", controlWidth, controlHeight, updateData, filters, {
-        colorInterpolator: d3.interpolatePuRd, colorInterpolationType: "sequential discrete", sortOrder: ["< 1", 1, 2, 3, "3-5", "6-7", "8-10", "11-15", "16-20", "21-25", "26-30", "31-40",
-          "> 40"
-        ], rotateAxisLabels: true
+        colorInterpolator: d3.interpolatePuRd, colorInterpolationType: "sequential discrete", sortOrder: sortOrders["Years of Experience"], rotateAxisLabels: true
       });
 
       const firmTypeScale = d3.scaleOrdinal().domain(["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"]).range(d3.schemeTableau10);
 
       let controlLicensed = d3.select("#controlfilterLicensed");
-      const licensedSlider = new ClickableHistogramSlider(data, controlLicensed, "Licensed", "Licensed", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: ["Yes", "No"] });
+      const licensedSlider = new ClickableHistogramSlider(data, controlLicensed, "Licensed", "Licensed", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: sortOrders["Licensed"] });
 
       let controlGender = d3.select("#controlfilterGender");
-      const genderSlider = new ClickableHistogramSlider(data, controlGender, "Gender", "Gender", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: ["Female", "Male", "Other"] });
+      const genderSlider = new ClickableHistogramSlider(data, controlGender, "Gender", "Gender", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: sortOrders["Gender"] });
 
       //search bars
       let searchJobTitle = d3.select("div#searchJobTitle")
