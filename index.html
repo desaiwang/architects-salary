@@ -1,4 +1,5 @@
 <html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <head>
   <title>Architect's Salary</title>
@@ -26,7 +27,7 @@
     </div> -->
 
     <div id="container" style="display: flex;">
-      <div class="aside" style="overflow-y:scroll; overflow-x: hidden;">
+      <div class="aside" style="overflow-y:scroll; overflow-x: hidden; z-index: 10">
         <div id="sidebarCollapseDiv" style="position:sticky; top:0; z-index: 20">
           <div style="padding-top:1rem">
             <button data-resize-btn id="sidebarcollapse" class="collapse">
@@ -240,9 +241,11 @@
       const buffer = 50; //rem
       function calcCanvasWidth() {
 
-        console.log("window.innerWidth", window.screenWidth)
+        console.log("window.innerWidth", window.innerWidth)
+        console.log("screen.width", screen.width)
         //if it's too small then 
-        if (window.innerWidth < 600) {
+        if (screen.width < 750) {
+          console.log("phone: individuanl map width", window.innerWidth - buffer)
           return window.innerWidth - buffer;
         }
 
