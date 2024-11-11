@@ -1,3 +1,5 @@
+import calculateBounds from "./bounds.js";
+
 class IndividualMap {
   constructor(divId, width, data, salaryScale, colorScales, filters) {
     this.divId = divId;
@@ -36,6 +38,7 @@ class IndividualMap {
   setColors(attribute) {
     this.data.forEach(d => {
       d.color = (this.colorScales[attribute])(d[attribute]);
+      d.colorDarker = d3.lab(d.color).darker();
     });
   }
 
@@ -54,7 +57,7 @@ class IndividualMap {
       if (!d.passesFilter) {
         this.context.beginPath();
         this.context.arc(d.cx, d.cy, this.salaryScale(d['Salary']), 0, 2 * Math.PI);
-        this.context.fillStyle = "lightgrey"; //grey200 to pseudo create 100 due to opacity
+        this.context.fillStyle = "#F5F5F5"; //grey200 to pseudo create 100 due to opacity
         this.context.fill();
       }
     });
@@ -66,6 +69,11 @@ class IndividualMap {
         this.context.arc(d.cx, d.cy, this.salaryScale(d['Salary']), 0, 2 * Math.PI);
         this.context.fillStyle = d.color;
         this.context.fill();
+
+        //add a darker border to highlight the points
+        this.context.strokeStyle = d.colorDarker;
+        this.context.stroke();
+
       }
     });
   }
@@ -102,7 +110,7 @@ class IndividualMap {
   positionData() {
     console.log("width", this.width)
     const medianSalaryOverall = d3.median(this.data, d => d['Salary']);
-    this.maxD = Math.ceil(this.salaryScale(medianSalaryOverall) * 2 + 2);
+    this.maxD = Math.ceil(this.salaryScale(medianSalaryOverall) * 2 + 2.5);
     this.numPointsPerRow = Math.floor(this.vizWidth / this.maxD);
     this.xOffset = this.maxD / 2 + this.margins.left;
     this.yOffset = this.maxD / 2 + this.margins.top;
@@ -128,7 +136,7 @@ class IndividualMap {
     this.setupCanvas();
     this.createDelaunayVoronoi();
     this.addInteraction();
-    this.render();
+    this.update(); //update called instead of render because need to re-filter
   }
 
   setupCanvas() {
@@ -218,7 +226,7 @@ class IndividualMap {
         .attr("class", "highlight")
         .attr("cx", d.cx)
         .attr("cy", d.cy)
-        .attr("stroke", "#181D27")
+        .attr("stroke", "#181D27") //grey-900 for outlines
         .attr("stroke-width", 2)
         .attr("fill", "none")
         .attr("pointer-events", "none")
@@ -269,8 +277,12 @@ class IndividualMap {
           <p style="margin-bottom:-10px; align-self: flex-end; text-align: right;" class="tooltip mini">${new Date(d['Date']).toLocaleString('default', { month: 'short', year: 'numeric' })}</p>
       </div>
         `)
-        .style("left", `${d.cx + 15}px`)
-        .style("top", `${d.cy + 15}px`)
+
+      //calculate positions (with wrapping)
+      const tooltipRect = this.tooltipDiv.node().getBoundingClientRect();
+      const bounds = calculateBounds(this.width, this.height, tooltipRect.width, tooltipRect.height, d.cx, d.cy);
+      this.tooltipDiv.style("left", `${bounds.x}px`)
+        .style("top", `${bounds.y}px`)
         .style("visibility", "visible");
     }
   }
