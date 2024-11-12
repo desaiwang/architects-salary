@@ -112,7 +112,7 @@ class IndividualMap {
 
   positionData() {
     const medianSalaryOverall = d3.median(this.data, d => d['Salary']);
-    this.maxD = Math.ceil(this.salaryScale(medianSalaryOverall) * 2 + 2.5);
+    this.maxD = Math.ceil(this.salaryScale(medianSalaryOverall) * 2 + 3);
     this.numPointsPerRow = Math.floor(this.vizWidth / this.maxD);
     this.xOffset = this.maxD / 2 + this.margins.left;
     this.yOffset = this.maxD / 2 + this.margins.top;
