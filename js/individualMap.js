@@ -159,8 +159,6 @@ class IndividualMap {
       this.data.sort((a, b) => b[attribute] - a[attribute]);
     }
 
-
-
     this.vizIndividualsContainer.selectAll("*").remove();
 
     this.positionData(); //height and vizHeight are set here
@@ -207,8 +205,6 @@ class IndividualMap {
       .style("border", "2px solid #181D27")
       .style("border-radius", "5px")
       .style("pointer-events", "none");
-
-
   }
 
   createDelaunayVoronoi() {
@@ -250,6 +246,8 @@ class IndividualMap {
         .attr("class", "highlight")
         .attr("opacity", 1)
         .attr("fill", d.color)
+        .attr("stroke", d.colorDarker)
+        .attr("stroke-width", 1)
         .attr("pointer-events", "none")
         .attr("r", this.salaryScale(d['Salary']));
 
