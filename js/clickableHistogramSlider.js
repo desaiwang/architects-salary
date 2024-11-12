@@ -76,7 +76,6 @@ class ClickableHistogramSlider {
 
     this.colors = this.uniqueKeys.map(d => this.colorScale(d));
     this.valueList = this.uniqueKeys;
-    // console.log("valueList upon initiation", this.valueList)
 
     this.groupCounts.forEach(d =>
       d.color = this.colorScale ? this.colorScale(d.key) : ClickableHistogramSlider.greyFill
@@ -103,7 +102,10 @@ class ClickableHistogramSlider {
   setupSvg() {
     // Create wrapper and SVG elements
     let wrapper = this.container.append("div").attr("class", "controls");
-    let button = wrapper.append("div").
+    let buttons = wrapper.append("div").attr("class", "buttons")
+      .style("display", "flex")
+      .style("justify-content", "space-between");
+    let button = buttons.
       append("button").attr("class", "collapse");
     this.chevron = button.append("i")
       .attr("class", "bx bx-chevron-right")
@@ -131,10 +133,28 @@ class ClickableHistogramSlider {
     this.collapsed = this.options.initiateCollapsed;
     button.on("click", async () => {
       this.collapsed = !this.collapsed;
-
       this.onCollapsedChange();
     });
 
+    //button for clearing filters
+    this.buttonClearFilters = buttons.append("div").attr("style", "padding: 0.625rem 0 0.125rem 0").
+      append("button").attr("class", "clear-filters").style("visibility", "hidden");
+    this.buttonClearFilters.append("i")
+      .attr("class", "bx bx-x");
+    this.buttonClearFilters.append("span").text("clear");
+
+    this.buttonClearFilters.on("click", () => { this.clearFilters(); });
+
+  }
+
+  clearFilters() {
+    this.groupCounts.forEach(item => item.clicked = true);
+    this.histRects
+      .attr("fill", d => this.colorRect(d))
+      .style('stroke', d => this.colorBorder(d));
+    this.filters[this.attribute] = (d) => true;
+
+    this.updateData();
   }
 
   changeCollapsed(bool) {
@@ -167,6 +187,15 @@ class ClickableHistogramSlider {
 
   colorBorder = (d) => d.clicked ? (this.showColors ? d3.lab(d.color).darker() : d3.lab(ClickableHistogramSlider.greyFill).darker()) : ClickableHistogramSlider.greyedoutColor
 
+  //check if there are filters, and if yes, makes buttonClearFilters visible
+  updateButtonClearFilters() {
+    if (this.valueList.length != this.uniqueKeys.length) {
+      this.buttonClearFilters.style("visibility", "visible");
+    } else {
+      this.buttonClearFilters.style("visibility", "hidden");
+    }
+  }
+
   setupBrush() {
     //set up brush
     var brush = d3.brushX().extent([[0, 0],
@@ -187,6 +216,7 @@ class ClickableHistogramSlider {
 
         // Add uniqueKeys within the brush selection to a new list
         this.valueList = this.uniqueKeys.slice(start, end);
+        this.updateButtonClearFilters();
 
         //select only the bars in brush selection
         this.groupCounts.forEach(item => item.clicked = (this.valueList.includes(item.key)));
@@ -333,6 +363,7 @@ class ClickableHistogramSlider {
 
             this.valueList = this.valueList.filter(rating => rating != d.key)
           }
+          this.updateButtonClearFilters();
           this.filters[this.attribute] = (d) => this.valueList.includes(d[this.attribute]);
           this.updateData()
         }, 200);
@@ -348,7 +379,7 @@ class ClickableHistogramSlider {
 
         // Update valueList and filter to only include the double-clicked value
         this.valueList = [d.key];
-        console.log(this.valueList)
+        this.updateButtonClearFilters();
 
         this.filters[this.attribute] = (item) => item[this.attribute] === d.key;
 
