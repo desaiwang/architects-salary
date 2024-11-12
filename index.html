@@ -31,7 +31,7 @@
     <div id="container" style="display: flex;">
       <div class="aside" style="overflow-y:scroll; overflow-x: hidden; z-index: 10">
         <div id="sidebarCollapseDiv" style="position:sticky; top:0; z-index: 20">
-          <div style="padding-top:1rem">
+          <div style="padding:0.5rem 0">
             <button id="sidebarcollapse" class="collapse title">
               <i class="bx bx-chevron-right"></i>
               <span>Collapse</span>
@@ -42,53 +42,8 @@
 
         <div class="sidebar" style="display: flex; flex-direction: column;">
 
-          <div id="customizeContainer">
-            <button class="collapse customize title">
-              <i class="bx bx-chevron-right"></i>
-              <span>Customize</span>
-            </button>
-
-            <div class="customize"
-              style="display:flex; flex-direction:column; row-gap: 0.25rem; margin:0.25rem 0 0.25rem 1rem">
-              <div style="display: flex; flex-direction:row; margin-left:0.5rem; justify-content: space-between;">
-                <span class="title">color by:</span>
-                <div class="colorScale" style="margin-left:1.25rem">
-                  <select class="colorScale" style="width:200;">
-                    <option value="Year">Year</option>
-                    <option value="Job Satisfaction" selected>Job Satisfaction</option>
-                    <option value="Firm Type">Firm Type</option>
-                    <option value="Firm Size">Firm Size</option>
-                    <option value="Age">Age</option>
-                    <option value="Years of Experience">Years of Experience</option>
-                    <option value="Licensed">Licensed</option>
-                    <option value="Gender">Gender</option>
-                  </select>
-                </div>
-              </div>
-
-              <div style="display: flex; flex-direction:row; margin-left:0.5rem; justify-content: space-between;">
-                <span class="title">sort by:</span>
-                <div class="sortOrder" style="margin-left:1.25rem">
-                  <select class="sortOrder" style="width:200">
-                    <option value="Year" selected>Year</option>
-                    <option value="Salary">Salary</option>
-                    <option value="Job Satisfaction">Job Satisfaction</option>
-                    <option value="Firm Type">Firm Type</option>
-                    <option value="Firm Size">Firm Size</option>
-                    <option value="Age">Age</option>
-                    <option value="Years of Experience">Years of Experience</option>
-                    <option value="Licensed">Licensed</option>
-                    <option value="Gender">Gender</option>
-                  </select>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-
           <div id="filtersContainer">
-            <button class="collapse filters title">
+            <button class="collapse filters title" style="padding-top:0.25rem">
               <i class="bx bx-chevron-right"></i>
               <span>Filter</span>
             </button>
@@ -108,6 +63,50 @@
               <div id="searchLocation" class="filter"></div>
               <div id="searchUG" class="filter"></div>
               <div id="searchGrad" class="filter"></div>
+            </div>
+          </div>
+
+          <div id="customizeContainer">
+            <button class="collapse customize title">
+              <i class="bx bx-chevron-right"></i>
+              <span>Customize</span>
+            </button>
+
+            <div class="customize"
+              style="display:flex; flex-direction:column; row-gap: 0.5rem; margin:0.5rem 0 0.25rem 1rem; width:270">
+              <div style="display: flex; flex-direction:row; margin-left:0.5rem; justify-content: space-between;">
+                <span class="title" style="font-size:0.8rem">color by:</span>
+                <div class="colorScale" style="margin-left:1.25rem">
+                  <select class="colorScale" style="width:180;">
+                    <option value="Year">Year</option>
+                    <option value="Job Satisfaction" selected>Job Satisfaction</option>
+                    <option value="Firm Type">Firm Type</option>
+                    <option value="Firm Size">Firm Size</option>
+                    <option value="Age">Age</option>
+                    <option value="Years of Experience">Years of Experience</option>
+                    <option value="Licensed">Licensed</option>
+                    <option value="Gender">Gender</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction:row; margin-left:0.5rem; justify-content: space-between;">
+                <span class="title" style="font-size:0.8rem">sort by:</span>
+                <div class="sortOrder" style="margin-left:1.25rem">
+                  <select class="sortOrder" style="width:180;">
+                    <option value="Year" selected>Year</option>
+                    <option value="Salary">Salary</option>
+                    <option value="Job Satisfaction">Job Satisfaction</option>
+                    <option value="Firm Type">Firm Type</option>
+                    <option value="Firm Size">Firm Size</option>
+                    <option value="Age">Age</option>
+                    <option value="Years of Experience">Years of Experience</option>
+                    <option value="Licensed">Licensed</option>
+                    <option value="Gender">Gender</option>
+                  </select>
+                </div>
+              </div>
+
             </div>
           </div>
 
@@ -356,7 +355,7 @@
 
       //set up the legends in all the sliders
       sliders.forEach(slider => {
-        slider.setupLegend(controlWidth - 25, 8);
+        slider.setupLegend(controlWidth - 15, 8);
       });
 
       //legend
