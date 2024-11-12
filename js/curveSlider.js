@@ -191,7 +191,6 @@ class CurveSlider {
   setupBrush() {
     this.brush = d3.brushX().extent([[10, 0], [this.sliderWidth - 10, this.sliderHeight]])
       .on("brush end", (event) => {
-        console.log("event", event)
         this.brushMoved(event)
       });
 

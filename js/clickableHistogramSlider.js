@@ -154,6 +154,8 @@ class ClickableHistogramSlider {
       .style('stroke', d => this.colorBorder(d));
     this.filters[this.attribute] = (d) => true;
 
+    this.buttonClearFilters.style("visibility", "hidden");
+
     this.updateData();
   }
 
