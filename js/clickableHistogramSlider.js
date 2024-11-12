@@ -152,7 +152,7 @@ class ClickableHistogramSlider {
     this.histRects
       .attr("fill", d => this.colorRect(d))
       .style('stroke', d => this.colorBorder(d));
-    this.filters[this.attribute] = (d) => true;
+    this.filters[this.attribute] = d => true;
 
     this.buttonClearFilters.style("visibility", "hidden");
 

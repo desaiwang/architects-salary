@@ -61,8 +61,7 @@ class SearchBar {
         if (query === "") {
           this.buttonClearFilters.style("visibility", "hidden");
 
-          this.filters[this.attribute] = d =>
-            true;
+          this.filters[this.attribute] = d => true;
         }
         else {
 
@@ -124,7 +123,7 @@ class SearchBar {
 
     //clear input field
     this.input.select("input").property("value", "");
-    this.filters[this.attribute] = (d) => true;
+    this.filters[this.attribute] = d => true;
     this.buttonClearFilters.style("visibility", "hidden");
 
     this.updateData();
