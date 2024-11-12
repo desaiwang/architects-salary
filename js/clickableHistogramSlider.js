@@ -113,7 +113,7 @@ class ClickableHistogramSlider {
 
     this.svg = wrapper.append("svg").attr("class", "filter").style("margin-left", "1.25rem")
       .attr("width", this.sliderWidth)
-      .attr("height", this.sliderHeight + (this.options.rotateAxisLabels ? 60 : 30));
+      .attr("height", this.sliderHeight + (this.options.rotateAxisLabels ? 50 : 30));
 
     if (this.options.initiateCollapsed) {
       this.svg.style("opacity", 0)
