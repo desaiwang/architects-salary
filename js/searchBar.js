@@ -14,13 +14,25 @@ class SearchBar {
 
   initialize() {
 
-    let button = this.div.append("div").
+    let buttons = this.div.append("div").attr("class", "buttons")
+      .style("display", "flex")
+      .style("justify-content", "space-between");
+    let button = buttons.
       append("button").attr("class", "collapse");
     this.chevron = button.append("i")
       .attr("class", "bx bx-chevron-right")
       .style("rotate", this.initiateCollapsed ? "0deg" : "90deg")
       ;
     button.append("span").text(this.attribute)
+
+    //button for clearing filters
+    this.buttonClearFilters = buttons.append("div").attr("style", "padding: 0.625rem 0 0.125rem 0").
+      append("button").attr("class", "clear-filters").style("visibility", "hidden");
+    this.buttonClearFilters.append("i")
+      .attr("class", "bx bx-x");
+    this.buttonClearFilters.append("span").text("clear");
+
+    this.buttonClearFilters.on("click", () => { this.clearFilters(); });
 
 
     this.input = this.div.append("div")
@@ -47,22 +59,30 @@ class SearchBar {
       .on("input", (event) => {
         const query = event.target.value;
         if (query === "") {
+          this.buttonClearFilters.style("visibility", "hidden");
+
           this.filters[this.attribute] = d =>
             true;
         }
-        else if (query === "any") {
-          this.filters[this.attribute] = d =>
-            d[this.attribute];
-        }
-        else if (query === "none") {
-          this.filters[this.attribute] = d =>
-            !d[this.attribute];
-        }
         else {
-          this.filters[this.attribute] = d =>
-            d[this.attribute] &&
-            d[this.attribute].toLowerCase().includes(query.toLowerCase());
+
+          this.buttonClearFilters.style("visibility", "visible");
+
+          if (query === "any") {
+            this.filters[this.attribute] = d =>
+              d[this.attribute];
+          }
+          else if (query === "none") {
+            this.filters[this.attribute] = d =>
+              !d[this.attribute];
+          }
+          else {
+            this.filters[this.attribute] = d =>
+              d[this.attribute] &&
+              d[this.attribute].toLowerCase().includes(query.toLowerCase());
+          }
         }
+
 
         this.updateData();
       });
@@ -84,7 +104,6 @@ class SearchBar {
     this.chevron.transition()
       .style("rotate", this.collapsed ? "0deg" : "90deg")
 
-
     if (this.collapsed) {
       this.input
         .transition()
@@ -99,6 +118,18 @@ class SearchBar {
         .style("visibility", "visible")
     }
   }
+
+
+  clearFilters() {
+
+    //clear input field
+    this.input.select("input").property("value", "");
+    this.filters[this.attribute] = (d) => true;
+    this.buttonClearFilters.style("visibility", "hidden");
+
+    this.updateData();
+  }
+
 
 }
 
