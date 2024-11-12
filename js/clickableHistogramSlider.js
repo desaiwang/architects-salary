@@ -137,7 +137,7 @@ class ClickableHistogramSlider {
     });
 
     //button for clearing filters
-    this.buttonClearFilters = buttons.append("div").attr("style", "padding: 0.625rem 0 0.125rem 0").
+    this.buttonClearFilters = buttons.append("div").attr("class", "clear-filters").
       append("button").attr("class", "clear-filters").style("visibility", "hidden");
     this.buttonClearFilters.append("i")
       .attr("class", "bx bx-x");
@@ -152,7 +152,7 @@ class ClickableHistogramSlider {
     this.histRects
       .attr("fill", d => this.colorRect(d))
       .style('stroke', d => this.colorBorder(d));
-    this.filters[this.attribute] = (d) => true;
+    this.filters[this.attribute] = d => true;
 
     this.buttonClearFilters.style("visibility", "hidden");
 

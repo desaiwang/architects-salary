@@ -43,10 +43,21 @@
         <div class="sidebar" style="display: flex; flex-direction: column; width:305">
 
           <div id="filtersContainer">
-            <button class="collapse filters title" style="padding-top:0.25rem">
-              <i class="bx bx-chevron-right"></i>
-              <span>Filter</span>
-            </button>
+            <div style="display: flex; justify-content: space-between;">
+              <button class="collapse filters title" style="padding-top:0.25rem">
+                <i class="bx bx-chevron-right"></i>
+                <span>Filter</span>
+              </button>
+              <div style="padding: 0.625rem 0 0.125rem 0">
+                <button class="clear-all-filters" style="visibility:hidden
+                ">
+                  <i class="bx bx-x"></i>
+                  <span>clear all filters</span>
+                </button>
+              </div>
+            </div>
+
+
             <div class="filters" style="margin-left:1rem;">
               <div id="controlfilterSalary" class="filter"></div>
               <div id="controlfilterSatisfaction" class="filter"></div>
@@ -238,16 +249,34 @@
       const salaryScale = d3.scaleSqrt().domain(salaryExtent).range([0.5, 15])
 
       const satisfactionScale = satisfactionSlider.colorScale;
-      const colorScales = {
-        "Year": timeSlider.colorScale,
-        "Job Satisfaction": satisfactionSlider.colorScale,
-        "Firm Type": firmtypeSlider.colorScale,
-        "Firm Size": firmsizeSlider.colorScale,
-        "Age": ageSlider.colorScale,
-        "Years of Experience": yearsOfExperienceSlider.colorScale,
-        "Licensed": licensedSlider.colorScale,
-        "Gender": genderSlider.colorScale
+      const attributeToSlider = {
+        "Year": timeSlider,
+        "Salary": salarySlider, //this is a curveSlider
+        "Job Satisfaction": satisfactionSlider,
+        "Firm Type": firmtypeSlider,
+        "Firm Size": firmsizeSlider,
+        "Age": ageSlider,
+        "Years of Experience": yearsOfExperienceSlider,
+        "Licensed": licensedSlider,
+        "Gender": genderSlider,
+        //below are searchBar objects
+        "Job Title": jobTitleSearchBar,
+        "Location": locationSearchBar,
+        "Undergraduate School": ugSearchBar,
+        "Graduate School": gradSearchBar
       }
+
+
+      const colorScales = {};
+      const histogramSliders = [];
+
+      Object.keys(attributeToSlider).forEach(key => {
+        const slider = attributeToSlider[key];
+        if (slider instanceof ClickableHistogramSlider) {
+          colorScales[key] = slider.colorScale;
+          histogramSliders.push(slider);
+        }
+      });
 
       //individual map
       //setting up params and functions to handle canvas resizing
@@ -258,8 +287,9 @@
       const buffer = 50; //rem
       function calcCanvasWidth() {
 
-        console.log("window.innerWidth", window.innerWidth)
-        console.log("screen.width", screen.width)
+        // console.log("window.innerWidth", window.innerWidth)
+        // console.log("screen.width", screen.width)
+
         //if it's too small then 
         if (screen.width < 750) {
           console.log("phone: individuanl map width", window.innerWidth - buffer)
@@ -345,16 +375,24 @@
       });
 
 
-
-
       //default coloring is by Job Satisfaction
       satisfactionSlider.updateColor(true);
 
-      //listener for color scale change
-      const sliders = [timeSlider, satisfactionSlider, firmtypeSlider, firmsizeSlider, ageSlider, yearsOfExperienceSlider, licensedSlider, genderSlider];
+      //set up clear all button
+      let clearAllButton = d3.select("button.clear-all-filters")
+
+      clearAllButton.on("click", (event) => {
+
+        Object.keys(filters).forEach(key => { if (filters[key] !== 'd => true') { attributeToSlider[key].clearFilters() } });
+
+        //hide this clear all button
+        clearAllButton.style("visibility", "hidden");
+
+      });
+
 
       //set up the legends in all the sliders
-      sliders.forEach(slider => {
+      histogramSliders.forEach(slider => {
         slider.setupLegend(controlWidth - 15, 8);
       });
 
@@ -367,7 +405,7 @@
         .on("change", function () {
           individualMap.updateColors(this.value);
 
-          sliders.forEach(slider => {
+          histogramSliders.forEach(slider => {
             if (slider.attribute == this.value) {
               slider.updateColor(true)
               slider.changeCollapsed(false); //open it up
@@ -408,20 +446,15 @@
         //console.log("passingDataSize", passingDataSize)
 
         //update sliders
-        timeSlider.update();
-        // annualBonusSlider.update();
-        // vacationDaysSlider.update();
-
         salarySlider.update();
-        satisfactionSlider.update();
-        firmtypeSlider.update();
-        firmsizeSlider.update();
-        ageSlider.update();
-        yearsOfExperienceSlider.update();
-        licensedSlider.update();
-        genderSlider.update();
+        histogramSliders.forEach(slider => {
+          slider.update();
+        });
 
-
+        // Check if there are non-identity functions in filters, if yes then show clear all button
+        //TODO: this is a super naive way, requires all identify function to be named "d => true"
+        const hasNonIdentityFilters = Object.values(filters).some(filterFunc => filterFunc.toString() !== 'd => true');
+        clearAllButton.style("visibility", hasNonIdentityFilters ? "visible" : "hidden");
 
         //hexbinMap(projection, passingData, "satisfaction", "length", hexBinLayer, widthMap, heightMap);
 
