@@ -1,5 +1,4 @@
 import { Legend } from './legend.js';
-//renamed
 class CollapsibleLegend {
   constructor(div, initialcolorAttribute, initialLegendNode, salaryScale, options = {}) {
 
@@ -23,7 +22,7 @@ class CollapsibleLegend {
   initialize() {
 
     let button = this.div.append("div").
-      append("button").attr("class", "collapse");
+      append("button").attr("class", "collapse title");
     this.chevron = button.append("i")
       .attr("class", "bx bx-chevron-right")
       .style("rotate", "90deg")
@@ -31,10 +30,10 @@ class CollapsibleLegend {
     button.append("span").text("Legend")
 
     //this.input stores everthing that can be toggled
-    this.input = this.div.append("div").attr("id", "wrapper");
-    this.colorLegend = this.input.append("div").attr("id", "colorLegend").style("padding", "0.75rem 1.5rem");
+    this.input = this.div.append("div").attr("id", "wrapper").style("padding-left", "1.5rem");
+    this.colorLegend = this.input.append("div").attr("id", "colorLegend").style("padding", "0.5rem 0rem");
 
-    this.sizeLegend = this.input.append("div").attr("id", "sizeLegend").style("padding", "0rem 1.5rem");
+    this.sizeLegend = this.input.append("div").attr("id", "sizeLegend").style("padding", "0.5rem 0rem");
     //add control to button
     this.collapsed = false;
     button.on("click", () => {

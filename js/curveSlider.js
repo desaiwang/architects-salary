@@ -53,31 +53,42 @@ class CurveSlider {
 
 
     // Create HTML elements
-    this.wrapper = this.container.append("div").attr("class", "controls").style("margin-top", "6px");
+    this.wrapper = this.container.append("div").attr("class", "controls");
 
     //append collapse button to wrapper
-    let button = this.wrapper.append("div").
+    let buttons = this.wrapper.append("div").attr("class", "buttons")
+      .style("display", "flex")
+      .style("justify-content", "space-between");
+    let button = buttons.
       append("button").attr("class", "collapse");
     let chevron = button.append("i")
       .attr("class", "bx bx-chevron-right")
-      .style("rotate", "90deg")
-      ;
+      .style("rotate", "90deg");
     button.append("span").text(this.label)
 
+    //button for clearing filters
+    this.buttonClearFilters = buttons.append("div").attr("style", "padding: 0.625rem 0 0.125rem 0").
+      append("button").attr("class", "clear-filters").style("visibility", "hidden");
+    this.buttonClearFilters.append("i")
+      .attr("class", "bx bx-x");
+    this.buttonClearFilters.append("span").text("clear");
 
+    this.buttonClearFilters.on("click", () => { this.clearFilters(); });
+
+    //continue setting up canvas
+    //brush area and path element
     this.rowwrapper = this.wrapper.append("div")
       .style("display", "flex")
       .style("flex-direction", "column")
       .style("margin-left", "1.25rem")
-    //.style("align-items", "center");
-    this.canvas = this.rowwrapper.append("svg").attr("width", this.sliderWidth).attr("height", this.sliderHeight + 30).attr("attribute", this.attribute);
-    this.canvas.append("g").attr("transform", `translate(0,${this.sliderHeight})`).call(this.xAxis);
 
     // Buttons
     this.buttons = this.rowwrapper.append("div").style("display", "flex").style("flex-direction", "row").style("justify-content", "center");
     if (this.getButtonData) this.setupButtons();
 
-    //collapse button
+    this.canvas = this.rowwrapper.append("svg").attr("width", this.sliderWidth).attr("height", this.sliderHeight + 30).attr("attribute", this.attribute);
+    this.canvas.append("g").attr("transform", `translate(0,${this.sliderHeight})`).call(this.xAxis);
+
     //add control to button
     this.collapsed = false;
     button.on("click", async () => {
@@ -179,7 +190,9 @@ class CurveSlider {
 
   setupBrush() {
     this.brush = d3.brushX().extent([[10, 0], [this.sliderWidth - 10, this.sliderHeight]])
-      .on("brush end", (event) => this.brushMoved(event));
+      .on("brush end", (event) => {
+        this.brushMoved(event)
+      });
 
     this.brushRegion = this.canvas.append("g").attr("class", "brush");
     this.brushRegion.call(this.brush);
@@ -187,17 +200,26 @@ class CurveSlider {
 
   brushMoved(event) {
     if (event.selection !== null) {
+      //if there's a selection then filter is visible
+      this.buttonClearFilters.style("visibility", "visible");
+
       let [start, end] = event.selection.map(x => this.xScale.invert(x));
       if (this.maxLimit !== 0 && end > this.maxLimit - Math.floor(this.maxLimit * 0.001)) end = Infinity;
 
       this.filters[this.attribute] = d => d[this.attribute] >= start && d[this.attribute] <= end;
     } else {
+      this.buttonClearFilters.style("visibility", "hidden");
+
       this.filters[this.attribute] = d => true;
     }
 
     this.updateData();
   }
 
+  clearFilters() {
+    this.brushMoved({ "selection": null })
+    d3.selectAll("rect.selection").style("display", "none");
+  }
 }
 
 export default CurveSlider;

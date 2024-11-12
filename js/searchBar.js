@@ -24,7 +24,7 @@ class SearchBar {
 
 
     this.input = this.div.append("div")
-      .style("margin", "0.125rem 0 0.75rem 1.25rem")
+      .style("margin", "0.25rem 0 0.5rem 1.25rem")
 
     if (this.initiateCollapsed) {
       this.input.style("opacity", 0)
@@ -40,11 +40,10 @@ class SearchBar {
 
     this.input
       .append("input")
+      .style("width", "200")
       .attr("id", this.attribute)
       .attr("type", "text")
       .attr("placeholder", this.placeholderText)
-      .style("border", "1px solid lightgray")
-      .style("border-radius", "2px")
       .on("input", (event) => {
         const query = event.target.value;
         if (query === "") {
