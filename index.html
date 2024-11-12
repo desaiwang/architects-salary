@@ -43,10 +43,21 @@
         <div class="sidebar" style="display: flex; flex-direction: column; width:305">
 
           <div id="filtersContainer">
-            <button class="collapse filters title" style="padding-top:0.25rem">
-              <i class="bx bx-chevron-right"></i>
-              <span>Filter</span>
-            </button>
+            <div style="display: flex; justify-content: space-between;">
+              <button class="collapse filters title" style="padding-top:0.25rem">
+                <i class="bx bx-chevron-right"></i>
+                <span>Filter</span>
+              </button>
+              <div style="padding: 0.625rem 0 0.125rem 0">
+                <button class="clear-all-filters" style="visibility:visible
+                ">
+                  <i class="bx bx-x"></i>
+                  <span>clear all</span>
+                </button>
+              </div>
+            </div>
+
+
             <div class="filters" style="margin-left:1rem;">
               <div id="controlfilterSalary" class="filter"></div>
               <div id="controlfilterSatisfaction" class="filter"></div>
