@@ -211,8 +211,17 @@
       let controlFirmType = d3.select("#controlfilterFirmType");
       const firmtypeSlider = new ClickableHistogramSlider(data, controlFirmType, "Firm Type", "Firm Type", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: sortOrders["Firm Type"], fontsize: '0.5rem', initiateCollapsed: true });
 
+      // console.log(d3.schemeBlues)
+      // let controlFirmSize = d3.select("#controlfilterFirmSize");
+      // const firmsizeSlider = new ClickableHistogramSlider(data, controlFirmSize, "Firm Size", "Firm Size", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolateBlues, colorInterpolationType: "sequential discrete", sortOrder: sortOrders["Firm Size"], rotateAxisLabels: true, initiateCollapsed: true });
+
+
+      //  blues = ['#f7fbff', '#deebf7', '#c6dbef', '#9ecae1', '#6baed6', '#4292c6', '#2171b5', '#08519c', '#08306b']
+      console.log("schemeBlues", d3.schemeBlues)
       let controlFirmSize = d3.select("#controlfilterFirmSize");
-      const firmsizeSlider = new ClickableHistogramSlider(data, controlFirmSize, "Firm Size", "Firm Size", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolateBlues, colorInterpolationType: "sequential discrete", sortOrder: sortOrders["Firm Size"], rotateAxisLabels: true, initiateCollapsed: true });
+      const BuColorInterpolator = d3.interpolateHsl('#deebf7', '#08306b');
+      const firmsizeSlider = new ClickableHistogramSlider(data, controlFirmSize, "Firm Size", "Firm Size", controlWidth, controlHeight, updateData, filters, {colorInterpolator: BuColorInterpolator, colorInterpolationType: "sequential discrete", sortOrder: sortOrders["Firm Size"], rotateAxisLabels: true, initiateCollapsed: true });
+
 
       let controlAge = d3.select("#controlfilterAge");
       const ageSlider = new ClickableHistogramSlider(data, controlAge, "Age", "Age", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolatePuRd, colorInterpolationType: "sequential discrete", sortOrder: sortOrders["Age"], rotateAxisLabels: true });
