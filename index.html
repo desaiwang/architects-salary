@@ -212,7 +212,7 @@
       const firmtypeSlider = new ClickableHistogramSlider(data, controlFirmType, "Firm Type", "Firm Type", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: sortOrders["Firm Type"], fontsize: '0.5rem', initiateCollapsed: true });
 
       let controlFirmSize = d3.select("#controlfilterFirmSize");
-      const firmsizeSlider = new ClickableHistogramSlider(data, controlFirmSize, "Firm Size", "Firm Size", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolateGnBu, colorInterpolationType: "sequential discrete", sortOrder: sortOrders["Firm Size"], rotateAxisLabels: true, initiateCollapsed: true });
+      const firmsizeSlider = new ClickableHistogramSlider(data, controlFirmSize, "Firm Size", "Firm Size", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolateBlues, colorInterpolationType: "sequential discrete", sortOrder: sortOrders["Firm Size"], rotateAxisLabels: true, initiateCollapsed: true });
 
       let controlAge = d3.select("#controlfilterAge");
       const ageSlider = new ClickableHistogramSlider(data, controlAge, "Age", "Age", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolatePuRd, colorInterpolationType: "sequential discrete", sortOrder: sortOrders["Age"], rotateAxisLabels: true });
@@ -225,7 +225,7 @@
       const firmTypeScale = d3.scaleOrdinal().domain(["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"]).range(d3.schemeTableau10);
 
       let controlLicensed = d3.select("#controlfilterLicensed");
-      const licensedSlider = new ClickableHistogramSlider(data, controlLicensed, "Licensed", "Licensed", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: sortOrders["Licensed"] });
+      const licensedSlider = new ClickableHistogramSlider(data, controlLicensed, "Licensed", "Licensed", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#4269d0', '#97bbf5'], sortOrder: sortOrders["Licensed"] });
 
       let controlGender = d3.select("#controlfilterGender");
       const genderSlider = new ClickableHistogramSlider(data, controlGender, "Gender", "Gender", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: sortOrders["Gender"] });
