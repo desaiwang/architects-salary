@@ -208,8 +208,12 @@
       const BuOrColorInterpolator = d3.piecewise(d3.interpolateRgb, ['#0a1869', '#a9c9e7', "#ffe3a8", '#fc6f03']);
       const satisfactionSlider = new ClickableHistogramSlider(data, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", controlWidth, controlHeight, updateData, filters, { colorInterpolator: BuOrColorInterpolator, colorInterpolationType: "sequential continuous" });
 
+      let antiqueColors = ['#428ED9','#A5B845',  '#E5594B', '#F7AB3B','#EABDD1', '#625252']
+      let observable10 = ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0']
       let controlFirmType = d3.select("#controlfilterFirmType");
-      const firmtypeSlider = new ClickableHistogramSlider(data, controlFirmType, "Firm Type", "Firm Type", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: sortOrders["Firm Type"], fontsize: '0.5rem', initiateCollapsed: true });
+      const firmtypeSlider = new ClickableHistogramSlider(data, controlFirmType, "Firm Type", "Firm Type", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: observable10, sortOrder: sortOrders["Firm Type"], fontsize: '0.5rem', initiateCollapsed: true });
+
+
 
       // console.log(d3.schemeBlues)
       // let controlFirmSize = d3.select("#controlfilterFirmSize");
@@ -217,14 +221,16 @@
 
 
       //  blues = ['#f7fbff', '#deebf7', '#c6dbef', '#9ecae1', '#6baed6', '#4292c6', '#2171b5', '#08519c', '#08306b']
-      console.log("schemeBlues", d3.schemeBlues)
       let controlFirmSize = d3.select("#controlfilterFirmSize");
       const BuColorInterpolator = d3.interpolateHsl('#deebf7', '#08306b');
       const firmsizeSlider = new ClickableHistogramSlider(data, controlFirmSize, "Firm Size", "Firm Size", controlWidth, controlHeight, updateData, filters, {colorInterpolator: BuColorInterpolator, colorInterpolationType: "sequential discrete", sortOrder: sortOrders["Firm Size"], rotateAxisLabels: true, initiateCollapsed: true });
 
 
+      console.log("schemeGreens", d3.schemeGreens)
+      // let purples = ['#fcfbfd', '#efedf5', '#dadaeb', '#bcbddc', '#9e9ac8', '#807dba', '#6a51a3', '#54278f', '#3f007d']
+      const PuColorInterpolator = d3.interpolateHsl('#efedf5', '#3f007d');
       let controlAge = d3.select("#controlfilterAge");
-      const ageSlider = new ClickableHistogramSlider(data, controlAge, "Age", "Age", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolatePuRd, colorInterpolationType: "sequential discrete", sortOrder: sortOrders["Age"], rotateAxisLabels: true });
+      const ageSlider = new ClickableHistogramSlider(data, controlAge, "Age", "Age", controlWidth, controlHeight, updateData, filters, { colorInterpolator: PuColorInterpolator, colorInterpolationType: "sequential discrete", sortOrder: sortOrders["Age"], rotateAxisLabels: true });
 
       let controlYearsOfExperience = d3.select("#controlfilterYearsOfExperience");
       const yearsOfExperienceSlider = new ClickableHistogramSlider(data, controlYearsOfExperience, "Years of Experience", "Years of Experience", controlWidth, controlHeight, updateData, filters, {
@@ -402,7 +408,7 @@
 
       //set up the legends in all the sliders
       histogramSliders.forEach(slider => {
-        slider.setupLegend(controlWidth - 15, 8);
+        slider.setupLegend(controlWidth, 8);
       });
 
       //legend
