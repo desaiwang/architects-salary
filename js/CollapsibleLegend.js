@@ -58,7 +58,7 @@ class CollapsibleLegend {
       .selectAll()
       .data(salaryPoints)
       .join("g")
-      .style("transform", (d, i) => `translate(${25 + i * 50 - 0.5 * salaryScale(d)}px, 18px)`)
+      .style("transform", (d, i) => `translate(${35 + i * 50 - 0.5 * salaryScale(d)}px, 18px)`)
 
     circles
       .append("circle")
@@ -91,7 +91,8 @@ class CollapsibleLegend {
       .text(`${colorAttribute.toLowerCase()} (circle color)`);
 
     // Append the new legend node
-    this.colorLegend.node().appendChild(legendNode);
+    this.colorLegend.append("div").style("margin-left", "0.5rem")
+    .node().appendChild(legendNode);
   }
 
   changeCollapsed(bool) {
