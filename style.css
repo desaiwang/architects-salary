@@ -241,17 +241,17 @@ div.suggestionsContainer{
 
   width: 270px;
   scrollbar-width: none;
-  max-height: 100px;      /* Limit height */
-  overflow-y: scroll;       /* Enable scrolling if content exceeds max-height */
+  max-height: 100px;
+  overflow-y: scroll;
 }
 
 div.suggestion {
   padding: 4px 8px;
-  transition: background-color 0.2s; /* Smooth transition for hover */
+  transition: background-color 0.2s;
 }
 
 div.suggestion:hover {
-  background-color: var(--grey-200); /* Change background on hover */
+  background-color: var(--grey-200);
 }
 
 .input{
