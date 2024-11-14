@@ -1,11 +1,13 @@
 class SearchBar {
-  constructor(div, attribute, filters, updateData, options = {}) {
+  constructor(div, attribute, data, filters, updateData, options = {}) {
 
     const { placeholderText = "type to search...", initiateCollapsed = false } = options;
     this.div = div;
     this.attribute = attribute;
     this.filters = filters;
     this.updateData = updateData;
+    this.attributeData = [...new Set(data.map(d => d[attribute]))];
+    console.log("possible inputs", attribute, this.attributeData)
 
     this.placeholderText = placeholderText
     this.initiateCollapsed = initiateCollapsed;
@@ -81,10 +83,11 @@ class SearchBar {
               d[this.attribute].toLowerCase().includes(query.toLowerCase());
           }
         }
-
-
         this.updateData();
       });
+
+    this.input.append("div").attr("class", "suggestions")
+    .style("position", "absolute")
 
     //add control to button
     this.collapsed = this.initiateCollapsed;

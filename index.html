@@ -15,6 +15,8 @@
   <script src="https://d3js.org/topojson.v2.min.js"></script>
   <!-- <script src="https://cdn.jsdelivr.net/npm/d3-tile@1"></script> -->
   <script src="https://cdn.jsdelivr.net/npm/d3-hexbin@0.2"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
 </head>
 
@@ -76,6 +78,9 @@
               <div id="searchGrad" class="filter"></div>
 
               <div id="controlfilterTime" class="filter"></div>
+              <div id="testJQuery">
+                <input id="GraduateSchoolInput" type="text" placeholder="eg. University of Washington" style="width: 200px;">
+              </div>
 
             </div>
           </div>
@@ -168,8 +173,6 @@
       .attr("style", "max-width: 100%; height: auto;");
     const mapArea = svgMap.append("g");
 
-
-
     const loadIndividuals = async function () {
 
       let data = await d3.csv("data/241102_archinect_salaries_fulltime.csv", d3.autoType);
@@ -179,6 +182,19 @@
           d['Firm Type'] = "N/A";
         }
       });
+
+      const uniqueGraduateSchools = [...new Set(data.map(d => d['Graduate School']))];
+      console.log(uniqueGraduateSchools);
+      $("#GraduateSchoolInput").autocomplete({
+            source: function(request, response) {
+                const results = $.ui.autocomplete.filter(uniqueGraduateSchools, request.term);
+                response(results.slice(0, 10)); // Limit to 10 results for performance
+            },
+            minLength: 0 // Show all options when the input is clicked
+        }).focus(function() {
+            // Trigger the search on focus to show all options
+            $(this).autocomplete("search", "");
+        });
 
       //filter used for updates
       var filters = {};
@@ -245,16 +261,16 @@
 
       //search bars
       let searchJobTitle = d3.select("div#searchJobTitle")
-      const jobTitleSearchBar = new SearchBar(searchJobTitle, "Job Title", filters, updateData, { placeholderText: "eg. Designer", initiateCollapsed: true });
+      const jobTitleSearchBar = new SearchBar(searchJobTitle, "Job Title", data, filters, updateData, { placeholderText: "eg. Designer", initiateCollapsed: true });
 
       let searchLocation = d3.select("div#searchLocation")
-      const locationSearchBar = new SearchBar(searchLocation, "Location", filters, updateData, { placeholderText: "eg. New York, NY", initiateCollapsed: true });
+      const locationSearchBar = new SearchBar(searchLocation, "Location", data, filters, updateData, { placeholderText: "eg. New York, NY", initiateCollapsed: true });
 
       let searchUG = d3.select("div#searchUG")
-      const ugSearchBar = new SearchBar(searchUG, "Undergraduate School", filters, updateData, { placeholderText: "eg. Cornell University", initiateCollapsed: true });
+      const ugSearchBar = new SearchBar(searchUG, "Undergraduate School", data, filters, updateData, { placeholderText: "eg. Cornell University", initiateCollapsed: true });
 
       let searchGrad = d3.select("div#searchGrad")
-      const gradSearchBar = new SearchBar(searchGrad, "Graduate School", filters, updateData, { placeholderText: "eg. University of Washington", initiateCollapsed: true });
+      const gradSearchBar = new SearchBar(searchGrad, "Graduate School", data, filters, updateData, { placeholderText: "eg. University of Washington", initiateCollapsed: true });
 
 
       //scales
