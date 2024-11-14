@@ -15,9 +15,6 @@
   <script src="https://d3js.org/topojson.v2.min.js"></script>
   <!-- <script src="https://cdn.jsdelivr.net/npm/d3-tile@1"></script> -->
   <script src="https://cdn.jsdelivr.net/npm/d3-hexbin@0.2"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-
 </head>
 
 <body>
@@ -78,10 +75,6 @@
               <div id="searchGrad" class="filter"></div>
 
               <div id="controlfilterTime" class="filter"></div>
-              <div id="testJQuery">
-                <input id="GraduateSchoolInput" type="text" placeholder="eg. University of Washington" style="width: 200px;">
-              </div>
-
             </div>
           </div>
 
@@ -182,19 +175,6 @@
           d['Firm Type'] = "N/A";
         }
       });
-
-      const uniqueGraduateSchools = [...new Set(data.map(d => d['Graduate School']))];
-      console.log(uniqueGraduateSchools);
-      $("#GraduateSchoolInput").autocomplete({
-            source: function(request, response) {
-                const results = $.ui.autocomplete.filter(uniqueGraduateSchools, request.term);
-                response(results.slice(0, 10)); // Limit to 10 results for performance
-            },
-            minLength: 0 // Show all options when the input is clicked
-        }).focus(function() {
-            // Trigger the search on focus to show all options
-            $(this).autocomplete("search", "");
-        });
 
       //filter used for updates
       var filters = {};

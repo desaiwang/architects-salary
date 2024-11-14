@@ -28,9 +28,6 @@ body {
   background-color: var(--grey-25);
 }
 
-
-
-
 h1,
 h2,
 h3,
@@ -86,7 +83,8 @@ div.aside {
   /* transition: width 0.5s ease-in-out; */
 }
 
-div.aside::-webkit-scrollbar {
+div.aside::-webkit-scrollbar 
+div.suggestionContainer::-webkit-scrollbar {
   display: none;
   /*Hide Scrollbar for Chrome */
 }
@@ -233,6 +231,32 @@ input {
   -webkit-box-sizing: border-box;
 }
 
+div.suggestionsContainer{
+  background-color: var(--grey-50);
+  border: 1px solid var(--grey-200);
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.7rem;
+
+  width: 270px;
+  scrollbar-width: none;
+  max-height: 100px;      /* Limit height */
+  overflow-y: scroll;       /* Enable scrolling if content exceeds max-height */
+}
+
+div.suggestion {
+  padding: 4px 8px;
+  transition: background-color 0.2s; /* Smooth transition for hover */
+}
+
+div.suggestion:hover {
+  background-color: var(--grey-200); /* Change background on hover */
+}
+
+.input{
+  display:flex
+}
 text.tooltip {
   font-size: 0.6rem
 }

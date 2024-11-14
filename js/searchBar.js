@@ -6,8 +6,14 @@ class SearchBar {
     this.attribute = attribute;
     this.filters = filters;
     this.updateData = updateData;
-    this.attributeData = [...new Set(data.map(d => d[attribute]))];
-    console.log("possible inputs", attribute, this.attributeData)
+
+    let groupedCounts = d3.groups(data, d => d[this.attribute])
+    .map(([key, values]) => ({
+      key: key,
+      count: values.length,
+    })).filter(({key}) => key !== null && key !== "N/A")
+    .sort((a, b) => b.count - a.count); //sort descending
+    this.attributeData = groupedCounts.map(d => d.key);
 
     this.placeholderText = placeholderText
     this.initiateCollapsed = initiateCollapsed;
@@ -15,7 +21,6 @@ class SearchBar {
   }
 
   initialize() {
-
     let buttons = this.div.append("div").attr("class", "buttons")
       .style("display", "flex")
       .style("justify-content", "space-between");
@@ -52,42 +57,38 @@ class SearchBar {
         .style("visibility", "visible")
     }
 
-    this.input
+    this.inputElement = this.input
       .append("input")
-      .style("width", "200")
+      .style("width", "270px")
       .attr("id", this.attribute)
       .attr("type", "text")
       .attr("placeholder", this.placeholderText)
+    this.inputElement.on("focus", (event) => {
+        if (event.target.value === "") {
+        this.displaySuggestions(this.attributeData); 
+        }else{
+          this.displaySuggestions( this.attributeData.filter(option => option.toLowerCase().includes(event.target.value.toLowerCase())).slice(0, 10));
+        }
+      })
       .on("input", (event) => {
         const query = event.target.value;
-        if (query === "") {
-          this.buttonClearFilters.style("visibility", "hidden");
 
-          this.filters[this.attribute] = d => true;
-        }
-        else {
+        const queryLowercase = query.toLowerCase();
+        const filteredOptions = this.attributeData.filter(option => option.toLowerCase().includes(queryLowercase)).slice(0, 10);
+        this.displaySuggestions(filteredOptions);
 
-          this.buttonClearFilters.style("visibility", "visible");
-
-          if (query === "any") {
-            this.filters[this.attribute] = d =>
-              d[this.attribute];
-          }
-          else if (query === "none") {
-            this.filters[this.attribute] = d =>
-              !d[this.attribute];
-          }
-          else {
-            this.filters[this.attribute] = d =>
-              d[this.attribute] &&
-              d[this.attribute].toLowerCase().includes(query.toLowerCase());
-          }
-        }
-        this.updateData();
+        this.inputValChanged(query);
       });
 
-    this.input.append("div").attr("class", "suggestions")
-    .style("position", "absolute")
+      //hide suggestions when clicked outside
+      document.addEventListener("click", (event) =>{
+       if (this.inputElement.node() !== event.target) {
+          this.suggestionsContainer.style("display", "none");
+        }
+    });
+
+    this.suggestionsContainer = this.input.append("div")
+    .attr("class", "suggestionsContainer"); //styling in .css
 
     //add control to button
     this.collapsed = this.initiateCollapsed;
@@ -95,6 +96,56 @@ class SearchBar {
       this.collapsed = !this.collapsed;
       this.onCollapsedChange();
     });
+  }
+
+  //formats possible values and adds to below search bar
+  displaySuggestions(suggestions){
+    if (suggestions.length === 0) {
+      this.suggestionsContainer.style("display", "none");
+        return;
+    }
+    
+    this.suggestionsContainer
+    .style("display", "flex")
+    .selectAll("div")
+    .data(suggestions)
+    .join("div")
+    .attr("class", "suggestion")
+    .text(d => d)
+    .style("cursor", "pointer")
+    .on("click", (event, d) => {
+      this.buttonClearFilters.style("visibility", "visible");
+      this.input.select("input").property("value", d);
+      this.suggestionsContainer.style("display", "none");
+      this.inputValChanged(d);
+    });
+  }
+
+  inputValChanged(query){
+    console.log("inputValChanged", query)
+    if (query === "") {
+      this.buttonClearFilters.style("visibility", "hidden");
+      this.filters[this.attribute] = d => true;
+    }
+    else {
+
+      this.buttonClearFilters.style("visibility", "visible");
+
+      if (query === "any") {
+        this.filters[this.attribute] = d =>
+          d[this.attribute];
+      }
+      else if (query === "none") {
+        this.filters[this.attribute] = d =>
+          !d[this.attribute];
+      }
+      else {
+        this.filters[this.attribute] = d =>
+          d[this.attribute] &&
+          d[this.attribute].toLowerCase().includes(query.toLowerCase());
+      }
+    }
+    this.updateData();
   }
 
   changeCollapsed(bool) {
