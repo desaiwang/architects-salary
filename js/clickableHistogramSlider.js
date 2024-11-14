@@ -247,7 +247,7 @@ class ClickableHistogramSlider {
 
     const legendSvg = d3.create("svg")
       .attr("width", legendWidth)
-      .attr("height", legendHeight + (this.options.rotateAxisLabels ? 45 : 15));
+      .attr("height", legendHeight + (this.options.rotateAxisLabels ? 35 : 15));
 
 
     let xScaleLegend = d3.scaleBand().domain(this.uniqueKeys).range([1, legendWidth]).padding(0.12);

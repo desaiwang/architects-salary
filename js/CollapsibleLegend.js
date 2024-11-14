@@ -31,9 +31,8 @@ class CollapsibleLegend {
 
     //this.input stores everthing that can be toggled
     this.input = this.div.append("div").attr("id", "wrapper").style("padding-left", "1.5rem");
-    this.colorLegend = this.input.append("div").attr("id", "colorLegend").style("padding", "0.5rem 0rem");
-
     this.sizeLegend = this.input.append("div").attr("id", "sizeLegend").style("padding", "0.5rem 0rem");
+    this.colorLegend = this.input.append("div").attr("id", "colorLegend").style("padding", "0rem 0rem 0.5rem");
     //add control to button
     this.collapsed = false;
     button.on("click", () => {
@@ -58,15 +57,15 @@ class CollapsibleLegend {
       .selectAll()
       .data(salaryPoints)
       .join("g")
-      .style("transform", (d, i) => `translate(${25 + i * 50 - 0.5 * salaryScale(d)}px, 18px)`)
+      .style("transform", (d, i) => `translate(${35 + i * 50 - 0.5 * salaryScale(d)}px, 18px)`)
 
     circles
       .append("circle")
       .attr("r", d => salaryScale(d))
       // .attr("y", d => -0.5 * salaryScale(d))
       .style("transform", (d, i) => `translate(0px,${-1 * salaryScale(d)}px)`)
-      .attr("stroke", "black")
-      .attr("stroke-width", 1)
+      .attr("stroke", "#414651") //grey-700
+      .attr("stroke-width", 0.8)
       .attr("fill", "none")
 
     circles.append("text")
@@ -91,7 +90,8 @@ class CollapsibleLegend {
       .text(`${colorAttribute.toLowerCase()} (circle color)`);
 
     // Append the new legend node
-    this.colorLegend.node().appendChild(legendNode);
+    this.colorLegend.append("div").style("margin-left", "0.5rem")
+    .node().appendChild(legendNode);
   }
 
   changeCollapsed(bool) {

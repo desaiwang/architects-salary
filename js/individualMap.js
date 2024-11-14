@@ -60,7 +60,7 @@ class IndividualMap {
       if (!d.passesFilter) {
         this.context.beginPath();
         this.context.arc(d.cx, d.cy, this.salaryScale(d['Salary']), 0, 2 * Math.PI);
-        this.context.fillStyle = "#F5F5F5"; //grey200 to pseudo create 100 due to opacity
+        this.context.fillStyle = "#EFF0F0"; //grey200 to pseudo create 100 due to opacity
         this.context.fill();
       }
     });

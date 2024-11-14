@@ -15,7 +15,6 @@
   <script src="https://d3js.org/topojson.v2.min.js"></script>
   <!-- <script src="https://cdn.jsdelivr.net/npm/d3-tile@1"></script> -->
   <script src="https://cdn.jsdelivr.net/npm/d3-hexbin@0.2"></script>
-
 </head>
 
 <body>
@@ -61,19 +60,21 @@
             <div class="filters" style="margin-left:1rem;">
               <div id="controlfilterSalary" class="filter"></div>
               <div id="controlfilterSatisfaction" class="filter"></div>
-              <div id="controlfilterAge" class="filter"></div>
-              <div id="controlfilterYearsOfExperience" class="filter"></div>
+              <div id="searchLocation" class="filter"></div>
               <div id="controlfilterGender"></div>
 
+              <div id="controlfilterAge" class="filter"></div>
+              <div id="controlfilterYearsOfExperience" class="filter"></div>
               <div id="controlfilterLicensed"></div>
+
               <div id="controlfilterFirmType" class="filter"></div>
               <div id="controlfilterFirmSize" class="filter"></div>
-
-              <div id="controlfilterTime" class="filter"></div>
               <div id="searchJobTitle"></div>
-              <div id="searchLocation" class="filter"></div>
+
               <div id="searchUG" class="filter"></div>
               <div id="searchGrad" class="filter"></div>
+
+              <div id="controlfilterTime" class="filter"></div>
             </div>
           </div>
 
@@ -84,19 +85,20 @@
             </button>
 
             <div class="customize"
-              style="display:flex; flex-direction:column; row-gap: 0.5rem; margin:0.5rem 0 0.25rem 1rem; width:270">
+              style="display:flex; flex-direction:column; row-gap: 0.5rem; margin:0.5rem 0 0.25rem 1rem; display:none">
               <div style="display: flex; flex-direction:row; margin-left:0.5rem; justify-content: space-between;">
                 <span class="title" style="font-size:0.8rem">color by:</span>
                 <div class="colorScale" style="margin-left:1.25rem">
                   <select class="colorScale" style="width:180;">
-                    <option value="Year">Year</option>
+
                     <option value="Job Satisfaction" selected>Job Satisfaction</option>
-                    <option value="Firm Type">Firm Type</option>
-                    <option value="Firm Size">Firm Size</option>
                     <option value="Age">Age</option>
                     <option value="Years of Experience">Years of Experience</option>
-                    <option value="Licensed">Licensed</option>
                     <option value="Gender">Gender</option>
+                    <option value="Licensed">Licensed</option>
+                    <option value="Firm Type">Firm Type</option>
+                    <option value="Firm Size">Firm Size</option>
+                    <option value="Year">Year</option>
                   </select>
                 </div>
               </div>
@@ -108,12 +110,12 @@
                     <option value="Year" selected>Year</option>
                     <option value="Salary">Salary</option>
                     <option value="Job Satisfaction">Job Satisfaction</option>
-                    <option value="Firm Type">Firm Type</option>
-                    <option value="Firm Size">Firm Size</option>
+                    <option value="Gender">Gender</option>
                     <option value="Age">Age</option>
                     <option value="Years of Experience">Years of Experience</option>
                     <option value="Licensed">Licensed</option>
-                    <option value="Gender">Gender</option>
+                    <option value="Firm Type">Firm Type</option>
+                    <option value="Firm Size">Firm Size</option>
                   </select>
                 </div>
               </div>
@@ -165,8 +167,6 @@
       .attr("style", "max-width: 100%; height: auto;");
     const mapArea = svgMap.append("g");
 
-
-
     const loadIndividuals = async function () {
 
       let data = await d3.csv("data/241102_archinect_salaries_fulltime.csv", d3.autoType);
@@ -201,47 +201,57 @@
         maxLimit: 200000, scaleFormatter: d => d === 0 ? "$0" : d3.format("$.2s")(d),
       });
 
+      // let greens = ['#f7fcf5', '#e5f5e0', '#c7e9c0', '#a1d99b', '#74c476', '#41ab5d', '#238b45', '#006d2c', '#00441b']
+      const GnColorInterpolator = d3.interpolateRgb('#e5f5e0', '#00441b');
       let controlTime = d3.select("#controlfilterTime");
-      const timeSlider = new ClickableHistogramSlider(data, controlTime, "Survey Year", "Year", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolateGreys, colorInterpolationType: "sequential discrete", fontsize: '0.5rem', initiateCollapsed: true });
+      const timeSlider = new ClickableHistogramSlider(data, controlTime, "Survey Year", "Year", controlWidth, controlHeight, updateData, filters, { colorInterpolator: GnColorInterpolator, colorInterpolationType: "sequential discrete", fontsize: '0.5rem', initiateCollapsed: true });
 
       let controlSatisfaction = d3.select("#controlfilterSatisfaction");
       const BuOrColorInterpolator = d3.piecewise(d3.interpolateRgb, ['#0a1869', '#a9c9e7', "#ffe3a8", '#fc6f03']);
       const satisfactionSlider = new ClickableHistogramSlider(data, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", controlWidth, controlHeight, updateData, filters, { colorInterpolator: BuOrColorInterpolator, colorInterpolationType: "sequential continuous" });
 
+      // let antiqueColors = ['#428ED9','#A5B845',  '#E5594B', '#F7AB3B','#EABDD1', '#625252']
+      let observable10 = ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0']
       let controlFirmType = d3.select("#controlfilterFirmType");
-      const firmtypeSlider = new ClickableHistogramSlider(data, controlFirmType, "Firm Type", "Firm Type", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: sortOrders["Firm Type"], fontsize: '0.5rem', initiateCollapsed: true });
+      const firmtypeSlider = new ClickableHistogramSlider(data, controlFirmType, "Firm Type", "Firm Type", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: observable10, sortOrder: sortOrders["Firm Type"], fontsize: '0.5rem', initiateCollapsed: true });
 
+
+      //let blues = ['#f7fbff', '#deebf7', '#c6dbef', '#9ecae1', '#6baed6', '#4292c6', '#2171b5', '#08519c', '#08306b']
       let controlFirmSize = d3.select("#controlfilterFirmSize");
-      const firmsizeSlider = new ClickableHistogramSlider(data, controlFirmSize, "Firm Size", "Firm Size", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolateGnBu, colorInterpolationType: "sequential discrete", sortOrder: sortOrders["Firm Size"], rotateAxisLabels: true, initiateCollapsed: true });
+      const BuColorInterpolator = d3.interpolateRgb('#deebf7', '#08306b');
+      const firmsizeSlider = new ClickableHistogramSlider(data, controlFirmSize, "Firm Size", "Firm Size", controlWidth, controlHeight, updateData, filters, {colorInterpolator: BuColorInterpolator, colorInterpolationType: "sequential discrete", sortOrder: sortOrders["Firm Size"], rotateAxisLabels: true, initiateCollapsed: true });
 
+      // let purples = ['#fcfbfd', '#efedf5', '#dadaeb', '#bcbddc', '#9e9ac8', '#807dba', '#6a51a3', '#54278f', '#3f007d']
+      const PuColorInterpolator = d3.interpolateRgb('#efedf5', '#3f007d');
       let controlAge = d3.select("#controlfilterAge");
-      const ageSlider = new ClickableHistogramSlider(data, controlAge, "Age", "Age", controlWidth, controlHeight, updateData, filters, { colorInterpolator: d3.interpolatePuRd, colorInterpolationType: "sequential discrete", sortOrder: sortOrders["Age"], rotateAxisLabels: true });
+      const ageSlider = new ClickableHistogramSlider(data, controlAge, "Age", "Age", controlWidth, controlHeight, updateData, filters, { colorInterpolator: PuColorInterpolator, colorInterpolationType: "sequential discrete", sortOrder: sortOrders["Age"], rotateAxisLabels: true, initiateCollapsed: true });
 
       let controlYearsOfExperience = d3.select("#controlfilterYearsOfExperience");
       const yearsOfExperienceSlider = new ClickableHistogramSlider(data, controlYearsOfExperience, "Years of Experience", "Years of Experience", controlWidth, controlHeight, updateData, filters, {
-        colorInterpolator: d3.interpolatePuRd, colorInterpolationType: "sequential discrete", sortOrder: sortOrders["Years of Experience"], rotateAxisLabels: true
+        colorInterpolator: d3.interpolatePuRd, colorInterpolationType: "sequential discrete", sortOrder: sortOrders["Years of Experience"], rotateAxisLabels: true, initiateCollapsed: true
       });
 
       const firmTypeScale = d3.scaleOrdinal().domain(["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"]).range(d3.schemeTableau10);
 
       let controlLicensed = d3.select("#controlfilterLicensed");
-      const licensedSlider = new ClickableHistogramSlider(data, controlLicensed, "Licensed", "Licensed", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: sortOrders["Licensed"] });
+      const licensedSlider = new ClickableHistogramSlider(data, controlLicensed, "Licensed", "Licensed", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#4269d0', '#97bbf5'], sortOrder: sortOrders["Licensed"], initiateCollapsed: true });
 
       let controlGender = d3.select("#controlfilterGender");
-      const genderSlider = new ClickableHistogramSlider(data, controlGender, "Gender", "Gender", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0'], sortOrder: sortOrders["Gender"] });
+      const genderSlider = new ClickableHistogramSlider(data, controlGender, "Gender", "Gender", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: [
+      '#ff8ab7','#3ca951','#efb118'], sortOrder: sortOrders["Gender"], initiateCollapsed: true });
 
       //search bars
       let searchJobTitle = d3.select("div#searchJobTitle")
-      const jobTitleSearchBar = new SearchBar(searchJobTitle, "Job Title", filters, updateData, { placeholderText: "eg. Designer", initiateCollapsed: true });
+      const jobTitleSearchBar = new SearchBar(searchJobTitle, "Job Title", data, filters, updateData, { placeholderText: "eg. Designer", initiateCollapsed: true });
 
       let searchLocation = d3.select("div#searchLocation")
-      const locationSearchBar = new SearchBar(searchLocation, "Location", filters, updateData, { placeholderText: "eg. New York, NY", initiateCollapsed: true });
+      const locationSearchBar = new SearchBar(searchLocation, "Location", data, filters, updateData, { placeholderText: "eg. New York, NY", initiateCollapsed: true });
 
       let searchUG = d3.select("div#searchUG")
-      const ugSearchBar = new SearchBar(searchUG, "Undergraduate School", filters, updateData, { placeholderText: "eg. Cornell University", initiateCollapsed: true });
+      const ugSearchBar = new SearchBar(searchUG, "Undergraduate School", data, filters, updateData, { placeholderText: "eg. Cornell University", initiateCollapsed: true });
 
       let searchGrad = d3.select("div#searchGrad")
-      const gradSearchBar = new SearchBar(searchGrad, "Graduate School", filters, updateData, { placeholderText: "eg. University of Washington", initiateCollapsed: true });
+      const gradSearchBar = new SearchBar(searchGrad, "Graduate School", data, filters, updateData, { placeholderText: "eg. University of Washington", initiateCollapsed: true });
 
 
       //scales
@@ -362,15 +372,15 @@
 
       //set up buttons that contain 
       let buttons = [
-        { className: "customize", collapsed: false },
-        { className: "filters", collapsed: false }
+        { className: "customize", collapsed: true, display:"flex" },
+        { className: "filters", collapsed: false, display:"block" }
       ];
       buttons.forEach(button => {
         d3.select(`button.${button.className}`)
           .on("click", (event) => {
             button.collapsed = !button.collapsed;
             d3.select(`button.${button.className} i`).style("rotate", button.collapsed ? "0deg" : "90deg");
-            d3.selectAll(`div.${button.className}`).style("display", button.collapsed ? "none" : "block");
+            d3.selectAll(`div.${button.className}`).style("display", button.collapsed ? "none" : button.display);
           });
       });
 
@@ -393,7 +403,7 @@
 
       //set up the legends in all the sliders
       histogramSliders.forEach(slider => {
-        slider.setupLegend(controlWidth - 15, 8);
+        slider.setupLegend(controlWidth, 8);
       });
 
       //legend
