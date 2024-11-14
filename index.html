@@ -70,6 +70,7 @@
               <div id="controlfilterFirmType" class="filter"></div>
               <div id="controlfilterFirmSize" class="filter"></div>
               <div id="searchJobTitle"></div>
+              <div id="searchJobTitle"></div>
 
               <div id="searchUG" class="filter"></div>
               <div id="searchGrad" class="filter"></div>
@@ -169,7 +170,7 @@
 
     const loadIndividuals = async function () {
 
-      let data = await d3.csv("data/241102_archinect_salaries_fulltime.csv", d3.autoType);
+      let data = await d3.csv("data/241114_archinect_salaries_fulltime.csv", d3.autoType);
       console.log(data);
       data.forEach(d => {
         if (d['Firm Type'] == null) {
