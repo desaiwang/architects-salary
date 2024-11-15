@@ -69,7 +69,7 @@
        
         <div id="canvasContainer" style="position:relative"></div>
 
-        <!-- <div id="hexbinMap"></div> -->
+        <div id="hexbinMap"></div>
       </div>
       
       <div class="aside" style="overflow-y:scroll; overflow-x: hidden; z-index: 10">
@@ -483,16 +483,16 @@
 
       const projection = geoAlbersUsaPr().scale(4 / 3 * widthMap).translate([widthMap / 2, heightMap / 2]);
 
-      // // Append the state mesh.
-      // mapArea.append("path")
-      //   .datum(stateMesh)
-      //   .attr("fill", "none")
-      //   .attr("stroke", "#777")
-      //   .attr("stroke-width", 0.5)
-      //   .attr("stroke-linejoin", "round")
-      //   .attr("d", d3.geoPath(projection));
-      // //set up the layer used for hexBin rendering
-      // let hexBinLayer = mapArea.append("g");
+      // Append the state mesh.
+      mapArea.append("path")
+      .datum(stateMesh)
+      .attr("fill", "none")
+      .attr("stroke", "#777")
+      .attr("stroke-width", 0.5)
+      .attr("stroke-linejoin", "round")
+      .attr("d", d3.geoPath(projection));
+      //set up the layer used for hexBin rendering
+      let hexBinLayer = mapArea.append("g");
 
       function updateData() {
         //filter for passing data
@@ -511,7 +511,7 @@
         const hasNonIdentityFilters = Object.values(filters).some(filterFunc => filterFunc.toString() !== 'd => true');
         clearAllButton.style("visibility", hasNonIdentityFilters ? "visible" : "hidden");
 
-        //hexbinMap(projection, passingData, "satisfaction", "length", hexBinLayer, widthMap, heightMap);
+        hexbinMap(projection, passingData, "satisfaction", "length", hexBinLayer, widthMap, heightMap);
 
 
         const medianSalary = d3.median(passingData, d => d['Salary']);

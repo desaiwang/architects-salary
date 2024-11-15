@@ -20,7 +20,9 @@ export async function hexbinMap(projection, data, categoryColor, categoryRadius,
     data.filter(d => d.Location !== 'Barrigada, GU, US')
       .map(d => ({
         xy: projection([d.Longitude, d.Latitude]),
-        Salary: d.Salary, Satisfaction: d['Job Satisfaction']
+        Salary: d.Salary, 
+        Satisfaction: d['Job Satisfaction'],
+        Location: d['Location']
       }))
   )
     .map(d => (d.salary = d3.median(d, d => d.Salary), d))
