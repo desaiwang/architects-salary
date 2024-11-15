@@ -245,28 +245,15 @@
     </div>
 
     <script type="module">
-      import { hexbinMap } from "./js/hexbinMap.js";
       import { geoAlbersUsaPr } from "./js/geoAlbersUsaPr.js";
       import ClickableHistogramSlider from "./js/clickableHistogramSlider.js";
       import CurveSlider from "./js/curveSlider.js";
       import IndividualMap from "./js/individualMap.js";
+      import HexbinMap from "./js/hexbinMap.js";
       import SearchBar from "./js/searchBar.js";
       import Checkboxes from "./js/checkboxes.js";
       import CollapsibleLegend from "./js/CollapsibleLegend.js";
       import { sortOrders } from "./js/sortOrders.js";
-
-      //set up for map
-      const widthMap = 928;
-      const heightMap = 581;
-      // Create the container SVG for map
-      const svgMap = d3
-        .select("div#hexbinMap")
-        .append("svg")
-        .attr("viewBox", [0, 0, widthMap, heightMap])
-        // .attr("width", widthMap)
-        // .attr("height", heightMap)
-        .attr("style", "max-width: 100%; height: auto;");
-      const mapArea = svgMap.append("g");
 
       const loadIndividuals = async function () {
         let data = await d3.csv(
@@ -766,21 +753,7 @@
           states.objects.cb_2023_us_state_5m
         );
 
-        const projection = geoAlbersUsaPr()
-          .scale((4 / 3) * widthMap)
-          .translate([widthMap / 2, heightMap / 2]);
-
-        // Append the state mesh.
-        mapArea
-          .append("path")
-          .datum(stateMesh)
-          .attr("fill", "none")
-          .attr("stroke", "#777")
-          .attr("stroke-width", 0.5)
-          .attr("stroke-linejoin", "round")
-          .attr("d", d3.geoPath(projection));
-        //set up the layer used for hexBin rendering
-        let hexBinLayer = mapArea.append("g");
+        let hexbinMap = new HexbinMap("hexbinMap", stateMesh, colorScales);
 
         function updateData() {
           //filter for passing data
@@ -804,15 +777,7 @@
             hasNonIdentityFilters ? "visible" : "hidden"
           );
 
-          hexbinMap(
-            projection,
-            passingData,
-            "satisfaction",
-            "length",
-            hexBinLayer,
-            widthMap,
-            heightMap
-          );
+          hexbinMap.render(passingData, "Job Satisfaction", "length");
 
           const medianSalary = d3.median(passingData, (d) => d["Salary"]);
           const meanSatisfaction = d3.mean(
