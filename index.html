@@ -768,10 +768,12 @@
           });
 
           // Check if there are non-identity functions in filters, if yes then show clear all button
-          //TODO: this is a super naive way, requires all identify function to be named "d => true"
-          const hasNonIdentityFilters = Object.values(filters).some(
-            (filterFunc) => filterFunc.toString() !== "d => true"
-          );
+          const hasNonIdentityFilters = d3
+            .selectAll("button.clear-filters")
+            .nodes()
+            .some(
+              (button) => d3.select(button).style("visibility") === "visible"
+            );
           clearAllButton.style(
             "visibility",
             hasNonIdentityFilters ? "visible" : "hidden"
