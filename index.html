@@ -134,21 +134,22 @@
           <h2 style="text-align: center"> Visualizing Architect's Salary in the US</h2>
           <h5 style="text-align: center; margin-top: -65px; margin-bottom: 50px"> Desai Wang</h5>
         </div>
+        <div class="emptySummary" style="display:none; margin-left:1.5rem;">
+          <h2>No data selected.</h2>
+        </div>
         <div class="summaryAll" style="display: flex; column-gap: 2rem; margin-left:1.5rem; vertical-align:bottom;">
-          <div class="summary">
-            <h2>$78,000</h2>
+          <div class="summary" id="medianSalary">
+            <h2 id="medianSalary"></h2>
             <p>median salary</p>
           </div>
           <div class="summary">
-            <h2>6.5</h2>
+            <h2 id="meanSatisfaction"></h2>
             <p>mean satisfaction</p>
           </div>
           <div class="summary">
-            <h2>500</h2>
-            <p>/13,899 responses</p>
-            <p>(20%)</p>
+            <h2 id="numResponses"></h2>
+            <p id="numResponsesTotal"></p>
           </div>
-          <h2 id="summaryText"></h2>
         </div>
         <div id="canvasContainer" style="position:relative">
         </div>
@@ -327,6 +328,13 @@
       d3.select("div#canvasContainer")
         .style("width", individualMap.width)
         .style("height", individualMap.height);
+
+      //initiate texts
+      d3.select("h2#medianSalary").text(d3.format("$,")(d3.median(data, d => d['Salary'])));
+          d3.select("h2#meanSatisfaction").text(d3.format(".2f")(d3.mean(data, d => d['Job Satisfaction'])));
+          d3.select("h2#numResponses").text(d3.format(",")(data.length));
+          d3.select("p#numResponsesTotal").text(`/${d3.format(",")(data.length)} responses (100%)`);
+
       //add resizing function
       function resizeCanvas() {
         if (calcCanvasWidth() == individualMap.width) {
@@ -488,14 +496,24 @@
         const medianSalary = d3.median(passingData, d => d['Salary']);
         const meanSatisfaction = d3.mean(passingData, d => d['Job Satisfaction']);
 
-        //TODO: uncomment when summaryText is added
-        // d3.select("h2#summaryText")
-        //   .text(passingDataSize > 0 ? `Showing ${d3.format(",")(passingDataSize)} out of ${d3.format(",")(data.length)} individuals. Median Salary: ${d3.format("$,")(medianSalary)}, Mean Satisfaction: ${d3.format(".2f")(meanSatisfaction)}/10` : "No data selected")
+          if (passingDataSize >0){
+            //show summary
+            d3.select("div.emptySummary").style("display", "none");
+          d3.select("div.summaryAll").style("display", "flex");
+            d3.select("h2#medianSalary").text(d3.format("$,")(medianSalary));
+          d3.select("h2#meanSatisfaction").text(d3.format(".2f")(meanSatisfaction));
+          d3.select("h2#numResponses").text(d3.format(",")(passingDataSize));
+          d3.select("p#numResponsesTotal").text(`/${d3.format(",")(data.length)} responses (${d3.format(".0%")(passingDataSize / data.length)})`);
+          }else{
+            d3.select("div.summaryAll").style("display", "none");
+            d3.select("div.emptySummary").style("display", "block");
+          }
+
 
         individualMap.update();
       }
 
-
+      updateData();
 
 
     }

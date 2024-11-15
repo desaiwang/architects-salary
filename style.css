@@ -276,13 +276,15 @@ div.summary{
   row-gap:0.25rem
 }
 
- div.summary h2{
+ div.summary h2,
+ div.emptySummary h2{
   font-size:2rem;
   font-weight: 400;
   color: var(--grey-700);
   background-color: var(--grey-25);
   margin-block:0
 }
+
 div.summary p{
   font-weight: 300;
   margin-block:0;

@@ -21,7 +21,7 @@ class IndividualMap {
     this.addInteraction();
     //default to job satisfaction
     this.setColors("Job Satisfaction");
-    this.render();
+    // this.render(); //don't render upon initialization, wait for update
   };
 
   initialize() {
