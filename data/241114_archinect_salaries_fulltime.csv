@@ -1,7 +1,7 @@
 id,Job Satisfaction,Salary,Salary Unit,Location,Job Title,Firm Type,Firm Size,Health Insurance,Overtime,Vacation Days,Annual Bonus,Work Status,Years of Experience,Age,Gender,Licensed,Undergraduate School,Graduate School,Post-Graduate School,Date,Year,Latitude,Longitude
 20182,5,68000,year,"Albany, NY, US",Designer,Corporate,11-15,Yes,Unpaid Overtime,12.0,,Full-time,3-5,26-30,Female,No,University of Oregon,University of Oregon,,2024-11-01,2024,42.6511674,-73.754968
 20181,7,100000,year,"Philadelphia, PA, US",Project Architect,Starchitect,31-50,Yes,No Overtime,10.0,,Full-time,11-15,36-40,Female,Yes,,,,2024-11-01,2024,39.9527237,-75.1635262
-20180,6,100000,year,"Steamboat Springs, CO, US",Project Architect,Boutique,11-15,Yes,Unpaid Overtime,21.0,2000.0,Full-time,8-10,31-35,Female,Yes,University of Colorado at Boulder,,,2024-11-01,2024,,
+20180,6,100000,year,"Steamboat Springs, CO, US",Project Architect,Boutique,11-15,Yes,Unpaid Overtime,21.0,2000.0,Full-time,8-10,31-35,Female,Yes,University of Colorado at Boulder,,,2024-11-01,2024,40.4848003,-106.831735
 20178,7,74000,year,"New York, NY, US",Intermediate Designer,Corporate,501+,Yes,No Overtime,10.0,,Full-time,2,26-30,Female,No,,,,2024-11-01,2024,40.7127281,-74.0060152
 20176,7,102000,year,"Los Angeles, CA, US",Project Manager,Boutique,31-50,Yes,Unpaid Overtime,20.0,5000.0,Full-time,11-15,36-40,Male,No,"University of California, Los Angeles (UCLA)",,,2024-11-01,2024,34.0536909,-118.242766
 20172,7,72000,year,"Chicago, IL, US",Designer,Corporate,501+,Yes,Unpaid Overtime,10.0,2000.0,Full-time,3-5,26-30,Male,No,,,,2024-11-01,2024,41.8755616,-87.6244212
@@ -27,9 +27,9 @@ id,Job Satisfaction,Salary,Salary Unit,Location,Job Title,Firm Type,Firm Size,He
 20147,7,80000,year,"Dallas, TX, US",Junior Designer,Corporate,501+,Yes,Unpaid Overtime,20.0,8000.0,Full-time,3-5,31-35,Female,No,North Dakota State University,North Dakota State University,,2024-10-01,2024,32.7762719,-96.7968559
 20146,8,130000,year,"Los Angeles, CA, US",Project Architect,Corporate,501+,Yes,Paid Overtime,15.0,,Full-time,8-10,31-35,Female,Yes,University of Southern California (USC),,,2024-10-01,2024,34.0536909,-118.242766
 20145,8,85000,year,"New York, NY, US",Technical Architect,Corporate,501+,Yes,No Overtime,22.0,4000.0,Full-time,3,31-35,Male,No,New York City College of Technology,Boston Architectural College (BAC),,2024-10-01,2024,40.7127281,-74.0060152
-20144,7,55000,year,"South Lake Tahoe, CA, US",Designer,,1,,No Overtime,25.0,,Freelance,8-10,41-45,Female,No,Unitec Institute of Technology,,,2024-10-01,2024,,
+20144,7,55000,year,"South Lake Tahoe, CA, US",Designer,,1,,No Overtime,25.0,,Freelance,8-10,41-45,Female,No,Unitec Institute of Technology,,,2024-10-01,2024,38.9332411,-119.9843482
 20143,7,109000,year,"Los Angeles, CA, US",Associate,Corporate,51-100,Yes,Unpaid Overtime,15.0,4000.0,Full-time,8-10,31-35,Female,Yes,"California Polytechnic State University, San Luis Obispo",,,2024-10-01,2024,34.0536909,-118.242766
-20142,8,70000,year,"Steamboat Springs, CO, US",Junior Architect,Boutique,11-15,Yes,No Overtime,28.0,500.0,Full-time,2,26-30,Male,No,Texas A&M University,Texas A&M University,,2024-10-01,2024,,
+20142,8,70000,year,"Steamboat Springs, CO, US",Junior Architect,Boutique,11-15,Yes,No Overtime,28.0,500.0,Full-time,2,26-30,Male,No,Texas A&M University,Texas A&M University,,2024-10-01,2024,40.4848003,-106.831735
 20141,5,68000,year,"Brooklyn, NY, US",Junior Designer,Boutique,2-5,,No Overtime,13.0,,Full-time,< 1,26-30,Female,No,Cornell University,Yale University,,2024-10-01,2024,40.6526006,-73.9497211
 20139,8,63000,year,"Milwaukee, WI, US",Senior Designer,Corporate,51-100,Yes,Unpaid Overtime,,7000.0,Full-time,6-7,26-30,Female,No,,,,2024-10-01,2024,43.0386475,-87.9090751
 20138,10,645000,year,"Honolulu, HI, US",Partner,Corporate,16-30,,Unpaid Overtime,,120000.0,Full-time,> 40,66-70,Male,Yes,University of Colorado at Boulder,Loyola University New Orleans,Loyola University New Orleans,2024-10-01,2024,21.304547,-157.855676
@@ -5959,7 +5959,7 @@ id,Job Satisfaction,Salary,Salary Unit,Location,Job Title,Firm Type,Firm Size,He
 11382,10,48000,year,"Sydney, ND, US",Interior Architect,Other,1,Yes,Paid Overtime,20.0,,Full-time,1,18-20,Male,Yes,,,,2017-08-01,2017,46.731338,-98.7682161
 11381,6,44000,year,"Philadelphia, PA, US",Intern,Individual,2-5,Yes,Unpaid Overtime,15.0,,Full-time,2,21-25,Male,No,University at Buffalo,Carleton University,,2017-08-01,2017,39.9527237,-75.1635262
 11379,7,95000,year,"San Francisco, CA, US",Project Manager,,11-15,,,,,,8-10,31-35,Male,No,,,,2017-08-01,2017,37.7792588,-122.4193286
-11376,9,16888,year,"California, US",BIM Specialist,,2-5,,,,,,2,21-25,Male,No,,,,2017-08-01,2017,36.7014631,-118.755997
+11376,9,23456,year,"California, US",BIM Specialist,,2-5,,,,,,2,21-25,Male,No,,,,2017-08-01,2017,36.7014631,-118.755997
 11372,9,75000,year,"Abilene, TX, US",Project Manager,Corporate,201-500,Yes,Paid Overtime,21.0,10000.0,Full-time,21-25,56-60,Male,No,Texas Tech University,,,2017-08-01,2017,32.44645,-99.7475905
 11371,4,81000,year,"New York, NY, US",Intermediate Architect,Corporate,101-200,Yes,Unpaid Overtime,10.0,3500.0,Full-time,6-7,31-35,Female,No,University of Puerto Rico,Pratt Institute,Polytechnic University of Barcelona,2017-08-01,2017,40.7127281,-74.0060152
 11370,3,40000,year,"Brooklyn, NY, US",Designer,Individual,6-10,,Unpaid Overtime,5.0,,Full-time,< 1,21-25,Female,No,,,,2017-08-01,2017,40.6526006,-73.9497211
@@ -8746,7 +8746,7 @@ id,Job Satisfaction,Salary,Salary Unit,Location,Job Title,Firm Type,Firm Size,He
 7203,10,83000,year,"Boston, MA, US",Project Manager,,16-30,Yes,Unpaid Overtime,15.0,5000.0,Full-time,8-10,31-35,Female,Yes,Rhode Island School of Design (RISD),,,2015-04-01,2015,42.3554334,-71.060511
 7202,2,44000,year,"Washington, DC, US",Intermediate Architect,Boutique,2-5,,Unpaid Overtime,10.0,,Full-time,3-5,36-40,Female,No,,,,2015-04-01,2015,38.8950368,-77.0365427
 7201,6,45000,year,"Cedar Rapids, IA, US",Junior Designer,,101-200,Yes,,,5000.0,,2,21-25,Male,No,,,,2015-04-01,2015,41.9758872,-91.6704053
-7199,7,32400,year,"Winnipeg, MO, US",Intern,Boutique,2-5,,Unpaid Overtime,10.0,,Full-time,3,26-30,Male,No,University of Manitoba,University of Manitoba,,2015-04-01,2015,37.6044889,-92.30222
+7199,7,45000,year,"Winnipeg, MO, US",Intern,Boutique,2-5,,Unpaid Overtime,10.0,,Full-time,3,26-30,Male,No,University of Manitoba,University of Manitoba,,2015-04-01,2015,37.6044889,-92.30222
 7198,8,45550,year,"Dallas, TX, US",Intern,Corporate,201-500,Yes,Unpaid Overtime,15.0,1500.0,Full-time,< 1,21-25,Male,No,,,,2015-04-01,2015,32.7762719,-96.7968559
 7197,9,70000,year,"New York, NY, US",Construction Administrator,Other,51-100,Yes,Unpaid Overtime,15.0,5000.0,Full-time,< 1,26-30,Male,No,New York Institute of Technology (NYIT),,,2015-04-01,2015,40.7127281,-74.0060152
 7196,5,80000,year,"New Haven, CT, US",Project Architect,Boutique,11-15,Yes,Unpaid Overtime,10.0,4000.0,Full-time,16-20,41-45,Male,Yes,Syracuse University,,,2015-04-01,2015,41.3082138,-72.9250518
@@ -11225,6 +11225,7 @@ id,Job Satisfaction,Salary,Salary Unit,Location,Job Title,Firm Type,Firm Size,He
 3626,7,60000,year,"Dallas, TX, US",Junior Architect,Corporate,51-100,Yes,Unpaid Overtime,10.0,,Full-time,11-15,31-35,Female,No,Texas A&M University,,,2013-10-01,2013,32.7762719,-96.7968559
 3625,6,40000,year,"Detroit, MI, US",Project Manager,Other,6-10,,No Overtime,,,Full-time,11-15,31-35,Male,No,University of Detroit Mercy,University of Detroit Mercy,,2013-10-01,2013,42.3315509,-83.0466403
 3624,8,90000,year,"Providence, RI, US",Associate,Other,51-100,Yes,Unpaid Overtime,15.0,,Full-time,26-30,56-60,Female,No,,,,2013-10-01,2013,41.8239891,-71.4128343
+3616,7,24000,CHFyear,"Neuchatel, KS, US",Intern,Individual,2-5,,Paid Overtime,14.0,,Full-time,2,26-30,Female,Yes,CEPT University,ETH Zürich,,2013-10-01,2013,39.568052,-96.201946
 3614,9,50000,year,"Portland, OR, US",Project Architect,Other,11-15,Yes,Unpaid Overtime,10.0,,Full-time,3-5,26-30,Female,No,,,,2013-10-01,2013,45.5202471,-122.674194
 3612,6,31200,hour,"San Francisco, CA, US",Junior Designer,Individual,2-5,,,,,Full-time,1,21-25,Female,No,University of Florida,"University of California, Berkeley",,2013-10-01,2013,37.7792588,-122.4193286
 3610,8,59000,year,"Atlanta, GA, US",Associate,Corporate,501+,Yes,Unpaid Overtime,21.0,2000.0,Full-time,6-7,26-30,Male,Yes,University of Florida,Georgia Institute of Technology,,2013-10-01,2013,33.7489924,-84.3902644
