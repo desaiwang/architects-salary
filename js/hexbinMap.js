@@ -18,10 +18,11 @@ class HexbinMap {
     this.svgMap = d3
       .select(`div#${this.divID}`)
       .append("svg")
-      .attr("viewBox", [0, 0, this.widthMap, this.heightMap]);
-    //.attr("style", "max-width: 100%; height: auto;");
+      .attr("viewBox", [0, 0, this.widthMap, this.heightMap])
+      .attr("style", "max-width: 90%; height: auto;");
 
     this.mapArea = this.svgMap.append("g");
+    console.log("mapArea", this.mapArea);
 
     this.projection = geoAlbersUsaPr()
       .scale((4 / 3) * this.widthMap)
@@ -71,19 +72,23 @@ class HexbinMap {
           Salary: d.Salary,
           Satisfaction: d["Job Satisfaction"],
           Licensed: d.Licensed,
+          Gender: d.Gender,
+          Location: d.Location,
+          FirmType: d["Firm Type"],
+          FirmSize: d["Firm Size"],
         }))
-    )
-      .map((d) => ((d.salary = d3.median(d, (d) => d.Salary)), d))
-      .map(
-        (d) => ((d["Job Satisfaction"] = d3.mean(d, (d) => d.Satisfaction)), d)
-      )
-      .map(
-        (d) => (
-          (d.percentageLicensed =
-            d.filter((d) => d.Licensed === "Yes").length / d.length),
-          d
-        )
-      );
+    ).map((d) => {
+      d.salary = d3.median(d, (d) => d.Salary);
+      d["Job Satisfaction"] = d3.mean(d, (d) => d.Satisfaction);
+      d.percentageLicensed =
+        d.filter((d) => d.Licensed === "Yes").length / d.length;
+      d.percentageFemale =
+        d.filter((d) => d.Gender === "Female").length / d.length;
+      d.locationMode = d3.mode(d.map((d) => d.Location));
+      d.firmTypeMode = d3.mode(d.map((d) => d.FirmType));
+      d.firmSizeMode = d3.mode(d.map((d) => d.FirmSize));
+      return d;
+    });
 
     // Create the color and radius scales.
     const BuOrColorInterpolator = d3.piecewise(d3.interpolateRgb, [
@@ -127,10 +132,42 @@ class HexbinMap {
         (d) =>
           `${d.length.toLocaleString()} survey responses\n${d3.format(".2f")(
             d["Job Satisfaction"]
-          )} mean satisfaction\n${d3.format("$.2s")(d.salary)} median salary\n${
+          )} mean satisfaction\n${d3.format("$.2s")(
+            d.salary
+          )} median salary\n${d3.format(".1%")(
             d.percentageLicensed
-          } licensed`
+          )} licensed\n${d3.format(".1%")(d.percentageFemale)} female\n${
+            d.locationMode
+          } as most common location\n${
+            d.firmTypeMode
+          } as most common firm type\n${d.firmSizeMode} as most common firm size
+          `
       );
+
+    let mapZoomed = ({ transform }) => {
+      // Transform the group object to reflect the zoom action
+      this.mapArea.attr("transform", transform.toString());
+      // Divide by scale to make sure strokes remain a consistent width during zooming
+      // mapArea.select(".state-outline")
+      //   .style("stroke-width", 2 / transform.k);
+      // mapArea.select(".county-outline")
+      //   .style("stroke-width", 1 / transform.k);
+      // mapArea.selectAll("circle")
+      //   .style("r", d => radius(d.length) / Math.sqrt(transform.k))
+    };
+    //zooming functions, uncommented out for now
+    var zoom = d3
+      .zoom()
+      .scaleExtent([1, 15])
+      .translateExtent([
+        [-50, -50],
+        [this.widthMap + 50, this.heightMap + 50],
+      ]) // to lock to edges
+      .on("zoom", mapZoomed);
+    console.log("this.mapArea", this.mapArea);
+    this.svgMap.call(zoom);
+    //manually call zoom interaction to activate any code that's in zoomed()
+    this.svgMap.call(zoom.transform, d3.zoomIdentity);
   }
 }
 
@@ -152,30 +189,6 @@ function hexbinMap(
   //   .attr("cy", 165)
   //   .attr("r", 2)
   //   .attr("fill", "black");
-  //zooming functions, uncommented out for now
-  // var zoom = d3.zoom()
-  //   .scaleExtent([1, 15])
-  //   .translateExtent([
-  //     [-50, -50],
-  //     [widthMap + 50, heightMap + 50]
-  //   ]) // to lock to edges
-  //   .on("zoom", mapZoomed);
-  // mapArea.call(zoom);
-  // //manually call zoom interaction to activate any code that's in zoomed()
-  // mapArea.call(zoom.transform, d3.zoomIdentity);
-  // function mapZoomed({
-  //   transform
-  // }) {
-  //   // Transform the group object to reflect the zoom action
-  //   mapArea.attr("transform", transform.toString());
-  //   // Divide by scale to make sure strokes remain a consistent width during zooming
-  //   // mapArea.select(".state-outline")
-  //   //   .style("stroke-width", 2 / transform.k);
-  //   // mapArea.select(".county-outline")
-  //   //   .style("stroke-width", 1 / transform.k);
-  //   // mapArea.selectAll("circle")
-  //   //   .style("r", d => radius(d.length) / Math.sqrt(transform.k))
-  // }
 }
 
 export default HexbinMap;
