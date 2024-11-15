@@ -77,7 +77,7 @@ div.aside {
   scrollbar-width: none;
   /*Hide Scrollbar for Firefox */
   background-color: var(--sidebar-color);
-  position: fixed;
+  position: relative;
   inset: 0 0 0 auto;
   padding: 0rem 1rem 1rem 1rem;
   /* width set in index.html */
@@ -268,6 +268,10 @@ select {
 }
 
 /* for summary text on top */
+div.summaryAll{
+  flex-wrap:wrap
+}
+
 div.summary{
   display: flex; 
   align-items:flex-end;
@@ -294,8 +298,72 @@ div.summary p{
 
 div.summaryContainer{
   position:sticky; 
-  top:0;
+  top:-1; 
   background-color: var(--grey-25);
   z-index:20;
   padding: 0.5rem 0;
+}
+
+/* styles for heading section*/
+div.heading{
+  padding:2.5rem 9.5rem;
+  min-height: 100vh;
+}
+
+div.header{
+  display:flex; 
+  justify-content: space-between;
+  font-size:30px;
+  font-weight: 400;
+}
+
+div.header a{
+  color:var(--grey900);
+  text-decoration:none;
+}
+
+div.header a:hover{
+  text-decoration:underline
+}
+
+div.headerLinks{
+  display:flex; 
+  flex-direction:row;
+  column-gap:3.5rem;
+}
+
+div.overview{
+  padding:5rem 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+div.overview h1,
+div.overview p{
+  font-size:2.5rem;
+  font-weight: 400;
+  color:var(--grey-900);
+}
+
+/* section navigation */
+html {
+  scroll-behavior: smooth; /* Enables smooth scrolling */
+}
+
+.heading .scroll-link {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  color: var(--grey-900); /* Button text color */
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.heading .scroll-link:hover {
+  background-color: var(--button-hover-color); /* Optional hover effect */
+}
+
+div.scrollArrow a{
+  display:flex;
+  align-items: center;
 }

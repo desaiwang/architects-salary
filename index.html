@@ -18,16 +18,58 @@
 </head>
 
 <body>
-  <div style="margin-top:30px">
-  </div>
-
-
-
   <div>
-    <!-- <div id="hexbinMap">
-    </div> -->
+    <div class="heading">
+      <div class="header">
+        <div><a href="https://desaiwang.github.io">Desai Wang</a></div>
+        <div class="headerLinks">
+          <a href="https://desaiwang.com">work</a>
+          <!-- TODO: update play link when section is created -->
+          <a href="https://desaiwang.github.io">play</a>
+          <a href="https://desaiwang.com/blog">blog</a>
+        </div>
+      </div>
 
-    <div id="container" style="display: flex;">
+      <div class="overview">
+        <div>
+          <h1>How much are architects really paid in the US?</h1>
+          <p>Using over 13,000 survey responses from Archinect.com, I visualized the relationships between pay, gender, location, licensure, and job satisfaction in architecture.</p>
+          <p>My hope is that by sharing this data, we can drive pay transparency and strive for a fairer future for architects.</p>
+        </div>
+        <div class="scrollArrow" style="align-self: flex-end; ">
+          <a href="#visualization" class="scroll-link"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" width="50" height="50">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25 12 21m0 0-3.75-3.75M12 21V3" />
+          </svg>
+          go to visualization</a>
+        </div>
+      </div>
+    </div>
+
+    <div id="visualization" style="display: flex;">
+      <div class="main" style="padding-bottom:16px">
+        <div class="summaryContainer">
+          <div class="emptySummary" style="display:none; margin-left:1.5rem;">
+            <h2>No data selected.</h2>
+          </div>
+          <div class="summaryAll" style="display: flex; column-gap: 2rem; margin-left:1.5rem; vertical-align:bottom;">
+            <div class="summary" id="medianSalary">
+              <h2 id="medianSalary"></h2>
+              <p>median salary</p>
+            </div>
+            <div class="summary">
+              <h2 id="meanSatisfaction"></h2>
+              <p>mean satisfaction</p>
+            </div>
+            <div class="summary">
+              <h2 id="numResponses"></h2>
+              <p id="numResponsesTotal"></p>
+            </div>
+          </div>
+        </div>
+       
+        <div id="canvasContainer" style="position:relative"></div>
+      </div>
+      
       <div class="aside" style="overflow-y:scroll; overflow-x: hidden; z-index: 10">
         <div id="sidebarCollapseDiv" style="position:sticky; top:0; z-index: 20">
           <div style="padding:0.5rem 0">
@@ -128,35 +170,9 @@
         </div>
       </div>
 
-      <div class="main" style="padding-bottom:16px">
-        <div id="header">
-          <!-- style="margin-left:-100px" -->
-          <h2 style="text-align: center"> Visualizing Architect's Salary in the US</h2>
-          <h5 style="text-align: center; margin-top: -65px; margin-bottom: 50px"> Desai Wang</h5>
-        </div>
-        <div class="summaryContainer">
-          <div class="emptySummary" style="display:none; margin-left:1.5rem;">
-            <h2>No data selected.</h2>
-          </div>
-          <div class="summaryAll" style="display: flex; column-gap: 2rem; margin-left:1.5rem; vertical-align:bottom;">
-            <div class="summary" id="medianSalary">
-              <h2 id="medianSalary"></h2>
-              <p>median salary</p>
-            </div>
-            <div class="summary">
-              <h2 id="meanSatisfaction"></h2>
-              <p>mean satisfaction</p>
-            </div>
-            <div class="summary">
-              <h2 id="numResponses"></h2>
-              <p id="numResponsesTotal"></p>
-            </div>
-          </div>
-        </div>
-       
-        <div id="canvasContainer" style="position:relative">
-        </div>
-      </div>
+
+
+      
     </div>
   </div>
 
@@ -210,7 +226,7 @@
       }
 
 
-      //sets up contols
+      //sets up controls
       let controlWidth = 270;
       let controlHeight = 60;
 
@@ -522,6 +538,22 @@
     }
 
     loadIndividuals();
+
+    //monitoring scroll position
+    document.addEventListener("scroll", () => {
+      const aside = document.querySelector("div.aside");
+      const headingBottom = document.querySelector("div.heading").getBoundingClientRect().bottom;
+
+      if (headingBottom <= 0) {
+        // If the heading is out of view, make aside sticky
+        aside.style.position = "fixed";
+        aside.style.top = "0";
+      } else {
+        // Reset aside to its original position
+        aside.style.position = "relative";
+        aside.style.top = "auto";
+      }
+    });
 
     //this is d3 stock example
     // d3.select("div#hexbinMap").node().appendChild(await hexbinMap());
