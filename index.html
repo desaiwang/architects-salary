@@ -1,385 +1,658 @@
 <html>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<head>
-  <title>Architect's Salary</title>
-  <link rel="icon" type="image/svg+xml" href="/desai_icon.svg" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-    rel="stylesheet">
-  <link href="./style.css" rel="stylesheet" type="text/css">
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script src="https://d3js.org/topojson.v2.min.js"></script>
-  <!-- <script src="https://cdn.jsdelivr.net/npm/d3-tile@1"></script> -->
-  <script src="https://cdn.jsdelivr.net/npm/d3-hexbin@0.2"></script>
-</head>
+  <head>
+    <title>Architect's Salary</title>
+    <link rel="icon" type="image/svg+xml" href="/desai_icon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link href="./style.css" rel="stylesheet" type="text/css" />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://d3js.org/topojson.v2.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/d3-tile@1"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/d3-hexbin@0.2"></script>
+  </head>
 
-<body>
-  <div>
-    <div class="heading">
-      <div class="header">
-        <div><a href="https://desaiwang.github.io">Desai Wang</a></div>
-        <div class="headerLinks">
-          <a href="https://desaiwang.com">work</a>
-          <!-- TODO: update play link when section is created -->
-          <a href="https://desaiwang.github.io">play</a>
-          <a href="https://desaiwang.com/blog">blog</a>
+  <body>
+    <div>
+      <div class="heading">
+        <div class="header">
+          <div><a href="https://desaiwang.github.io">Desai Wang</a></div>
+          <div class="headerLinks">
+            <a href="https://desaiwang.com">work</a>
+            <!-- TODO: update play link when section is created -->
+            <a href="https://desaiwang.github.io">play</a>
+            <a href="https://desaiwang.com/blog">blog</a>
+          </div>
+        </div>
+
+        <div class="overview">
+          <div>
+            <h1>How much are architects really paid in the US?</h1>
+            <p>
+              Using over 13,000 survey responses from Archinect.com, I
+              visualized the relationships between pay, gender, location,
+              licensure, and job satisfaction in architecture.
+            </p>
+            <p>
+              My hope is that by sharing this data, we can drive pay
+              transparency and strive for a fairer future for architects.
+            </p>
+          </div>
+          <div class="scrollArrow" style="align-self: flex-end">
+            <a href="#visualization" class="scroll-link"
+              ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1"
+                stroke="currentColor"
+                width="50"
+                height="50"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15.75 17.25 12 21m0 0-3.75-3.75M12 21V3"
+                />
+              </svg>
+              go to visualization</a
+            >
+          </div>
         </div>
       </div>
 
-      <div class="overview">
-        <div>
-          <h1>How much are architects really paid in the US?</h1>
-          <p>Using over 13,000 survey responses from Archinect.com, I visualized the relationships between pay, gender, location, licensure, and job satisfaction in architecture.</p>
-          <p>My hope is that by sharing this data, we can drive pay transparency and strive for a fairer future for architects.</p>
-        </div>
-        <div class="scrollArrow" style="align-self: flex-end; ">
-          <a href="#visualization" class="scroll-link"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" width="50" height="50">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25 12 21m0 0-3.75-3.75M12 21V3" />
-          </svg>
-          go to visualization</a>
-        </div>
-      </div>
-    </div>
-
-    <div id="visualization" style="display: flex;">
-      <div class="main" style="padding-bottom:16px">
-        <div class="summaryContainer">
-          <div class="emptySummary" style="display:none; margin-left:1.5rem;">
-            <h2>No data selected.</h2>
-          </div>
-          <div class="summaryAll" style="display: flex; column-gap: 2rem; margin-left:1.5rem; vertical-align:bottom;">
-            <div class="summary" id="medianSalary">
-              <h2 id="medianSalary"></h2>
-              <p>median salary</p>
+      <div id="visualization" style="display: flex">
+        <div class="main" style="padding-bottom: 16px">
+          <div class="summaryContainer">
+            <div
+              class="emptySummary"
+              style="display: none; margin-left: 1.5rem"
+            >
+              <h2>No data selected.</h2>
             </div>
-            <div class="summary">
-              <h2 id="meanSatisfaction"></h2>
-              <p>mean satisfaction</p>
-            </div>
-            <div class="summary">
-              <h2 id="numResponses"></h2>
-              <p id="numResponsesTotal"></p>
+            <div
+              class="summaryAll"
+              style="
+                display: flex;
+                column-gap: 2rem;
+                margin-left: 1.5rem;
+                vertical-align: bottom;
+              "
+            >
+              <div class="summary" id="medianSalary">
+                <h2 id="medianSalary"></h2>
+                <p>median salary</p>
+              </div>
+              <div class="summary">
+                <h2 id="meanSatisfaction"></h2>
+                <p>mean satisfaction</p>
+              </div>
+              <div class="summary">
+                <h2 id="numResponses"></h2>
+                <p id="numResponsesTotal"></p>
+              </div>
             </div>
           </div>
-        </div>
-       
-        <div id="canvasContainer" style="position:relative"></div>
 
-        <div id="hexbinMap"></div>
-      </div>
-      
-      <div class="aside" style="overflow-y:scroll; overflow-x: hidden; z-index: 10">
-        <div id="sidebarCollapseDiv" style="position:sticky; top:0; z-index: 20">
-          <div style="padding:0.5rem 0">
-            <button id="sidebarcollapse" class="collapse title">
-              <i class="bx bx-chevron-right"></i>
-              <span>Collapse</span>
-            </button>
-          </div>
+          <div id="canvasContainer" style="position: relative"></div>
 
+          <div id="hexbinMap"></div>
         </div>
 
-        <div class="sidebar" style="display: flex; flex-direction: column; width:305">
-
-          <div id="filtersContainer">
-            <div style="display: flex; justify-content: space-between;">
-              <button class="collapse filters title" style="padding-top:0.25rem">
+        <div
+          class="aside"
+          style="overflow-y: scroll; overflow-x: hidden; z-index: 10"
+        >
+          <div
+            id="sidebarCollapseDiv"
+            style="position: sticky; top: 0; z-index: 20"
+          >
+            <div style="padding: 0.5rem 0">
+              <button id="sidebarcollapse" class="collapse title">
                 <i class="bx bx-chevron-right"></i>
-                <span>Filter</span>
+                <span>Collapse</span>
               </button>
-              <div style="padding: 0.625rem 0 0.125rem 0">
-                <button class="clear-all-filters" style="visibility:hidden
-                ">
-                  <i class="bx bx-x"></i>
-                  <span>clear all filters</span>
+            </div>
+          </div>
+
+          <div
+            class="sidebar"
+            style="display: flex; flex-direction: column; width: 305"
+          >
+            <div id="filtersContainer">
+              <div style="display: flex; justify-content: space-between">
+                <button
+                  class="collapse filters title"
+                  style="padding-top: 0.25rem"
+                >
+                  <i class="bx bx-chevron-right"></i>
+                  <span>Filter</span>
                 </button>
-              </div>
-            </div>
-
-
-            <div class="filters" style="margin-left:1rem;">
-              <div id="controlfilterSalary" class="filter"></div>
-              <div id="controlfilterSatisfaction" class="filter"></div>
-              <div id="searchLocation" class="filter"></div>
-              <div id="controlfilterGender"></div>
-
-              <div id="controlfilterAge" class="filter"></div>
-              <div id="controlfilterYearsOfExperience" class="filter"></div>
-              <div id="controlfilterLicensed"></div>
-
-              <div id="controlfilterFirmType" class="filter"></div>
-              <div id="controlfilterFirmSize" class="filter"></div>
-              <div id="searchJobTitle"></div>
-              <div id="searchJobTitle"></div>
-
-              <div id="searchUG" class="filter"></div>
-              <div id="searchGrad" class="filter"></div>
-
-              <div id="controlfilterTime" class="filter"></div>
-            </div>
-          </div>
-
-          <div id="customizeContainer">
-            <button class="collapse customize title">
-              <i class="bx bx-chevron-right"></i>
-              <span>Customize</span>
-            </button>
-
-            <div class="customize"
-              style="display:flex; flex-direction:column; row-gap: 0.5rem; margin:0.5rem 0 0.25rem 1rem; display:none">
-              <div style="display: flex; flex-direction:row; margin-left:0.5rem; justify-content: space-between;">
-                <span class="title" style="font-size:0.8rem">color by:</span>
-                <div class="colorScale" style="margin-left:1.25rem">
-                  <select class="colorScale" style="width:180;">
-
-                    <option value="Job Satisfaction" selected>Job Satisfaction</option>
-                    <option value="Age">Age</option>
-                    <option value="Years of Experience">Years of Experience</option>
-                    <option value="Gender">Gender</option>
-                    <option value="Licensed">Licensed</option>
-                    <option value="Firm Type">Firm Type</option>
-                    <option value="Firm Size">Firm Size</option>
-                    <option value="Year">Year</option>
-                  </select>
+                <div style="padding: 0.625rem 0 0.125rem 0">
+                  <button class="clear-all-filters" style="visibility: hidden">
+                    <i class="bx bx-x"></i>
+                    <span>clear all filters</span>
+                  </button>
                 </div>
               </div>
 
-              <div style="display: flex; flex-direction:row; margin-left:0.5rem; justify-content: space-between;">
-                <span class="title" style="font-size:0.8rem">sort by:</span>
-                <div class="sortOrder" style="margin-left:1.25rem">
-                  <select class="sortOrder" style="width:180;">
-                    <option value="Year" selected>Year</option>
-                    <option value="Salary">Salary</option>
-                    <option value="Job Satisfaction">Job Satisfaction</option>
-                    <option value="Gender">Gender</option>
-                    <option value="Age">Age</option>
-                    <option value="Years of Experience">Years of Experience</option>
-                    <option value="Licensed">Licensed</option>
-                    <option value="Firm Type">Firm Type</option>
-                    <option value="Firm Size">Firm Size</option>
-                  </select>
+              <div class="filters" style="margin-left: 1rem">
+                <div id="controlfilterSalary" class="filter"></div>
+                <div id="controlfilterSatisfaction" class="filter"></div>
+                <div id="searchLocation" class="filter"></div>
+                <div id="controlfilterGender"></div>
+
+                <div id="controlfilterAge" class="filter"></div>
+                <div id="controlfilterYearsOfExperience" class="filter"></div>
+                <div id="controlfilterLicensed"></div>
+
+                <div id="controlfilterFirmType" class="filter"></div>
+                <div id="controlfilterFirmSize" class="filter"></div>
+                <div id="searchJobTitle"></div>
+                <div id="searchJobTitle"></div>
+
+                <div id="searchUG" class="filter"></div>
+                <div id="searchGrad" class="filter"></div>
+
+                <div id="controlfilterTime" class="filter"></div>
+              </div>
+            </div>
+
+            <div id="customizeContainer">
+              <button class="collapse customize title">
+                <i class="bx bx-chevron-right"></i>
+                <span>Customize</span>
+              </button>
+
+              <div
+                class="customize"
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  row-gap: 0.5rem;
+                  margin: 0.5rem 0 0.25rem 1rem;
+                  display: none;
+                "
+              >
+                <div
+                  style="
+                    display: flex;
+                    flex-direction: row;
+                    margin-left: 0.5rem;
+                    justify-content: space-between;
+                  "
+                >
+                  <span class="title" style="font-size: 0.8rem">color by:</span>
+                  <div class="colorScale" style="margin-left: 1.25rem">
+                    <select class="colorScale" style="width: 180">
+                      <option value="Job Satisfaction" selected>
+                        Job Satisfaction
+                      </option>
+                      <option value="Age">Age</option>
+                      <option value="Years of Experience">
+                        Years of Experience
+                      </option>
+                      <option value="Gender">Gender</option>
+                      <option value="Licensed">Licensed</option>
+                      <option value="Firm Type">Firm Type</option>
+                      <option value="Firm Size">Firm Size</option>
+                      <option value="Year">Year</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div
+                  style="
+                    display: flex;
+                    flex-direction: row;
+                    margin-left: 0.5rem;
+                    justify-content: space-between;
+                  "
+                >
+                  <span class="title" style="font-size: 0.8rem">sort by:</span>
+                  <div class="sortOrder" style="margin-left: 1.25rem">
+                    <select class="sortOrder" style="width: 180">
+                      <option value="Year" selected>Year</option>
+                      <option value="Salary">Salary</option>
+                      <option value="Job Satisfaction">Job Satisfaction</option>
+                      <option value="Gender">Gender</option>
+                      <option value="Age">Age</option>
+                      <option value="Years of Experience">
+                        Years of Experience
+                      </option>
+                      <option value="Licensed">Licensed</option>
+                      <option value="Firm Type">Firm Type</option>
+                      <option value="Firm Size">Firm Size</option>
+                    </select>
+                  </div>
                 </div>
               </div>
-
             </div>
-          </div>
 
-          <div id="collapsibleLegend" style="padding-bottom:16px"></div>
+            <div id="collapsibleLegend" style="padding-bottom: 16px"></div>
+          </div>
         </div>
       </div>
-
-
-
-      
     </div>
-  </div>
 
-  <script type="module">
+    <script type="module">
+      import { hexbinMap } from "./js/hexbinMap.js";
+      import { geoAlbersUsaPr } from "./js/geoAlbersUsaPr.js";
+      import ClickableHistogramSlider from "./js/clickableHistogramSlider.js";
+      import CurveSlider from "./js/curveSlider.js";
+      import IndividualMap from "./js/individualMap.js";
+      import SearchBar from "./js/searchBar.js";
+      import Checkboxes from "./js/checkboxes.js";
+      import CollapsibleLegend from "./js/CollapsibleLegend.js";
+      import { sortOrders } from "./js/sortOrders.js";
 
-    import { hexbinMap } from './js/hexbinMap.js';
-    import { geoAlbersUsaPr } from "./js/geoAlbersUsaPr.js";
-    import ClickableHistogramSlider from './js/clickableHistogramSlider.js';
-    import CurveSlider from './js/curveSlider.js';
-    import IndividualMap from './js/individualMap.js';
-    import SearchBar from './js/searchBar.js';
-    import Checkboxes from './js/checkboxes.js';
-    import CollapsibleLegend from './js/CollapsibleLegend.js';
-    import { sortOrders } from './js/sortOrders.js';
+      //set up for map
+      const widthMap = 928;
+      const heightMap = 581;
+      // Create the container SVG for map
+      const svgMap = d3
+        .select("div#hexbinMap")
+        .append("svg")
+        .attr("viewBox", [0, 0, widthMap, heightMap])
+        // .attr("width", widthMap)
+        // .attr("height", heightMap)
+        .attr("style", "max-width: 100%; height: auto;");
+      const mapArea = svgMap.append("g");
 
-
-    //set up for map
-    const widthMap = 928;
-    const heightMap = 581;
-    // Create the container SVG for map
-    const svgMap = d3.select("div#hexbinMap")
-      .append("svg")
-      .attr("viewBox", [0, 0, widthMap, heightMap])
-      .attr("width", widthMap)
-      .attr("height", heightMap)
-      .attr("style", "max-width: 100%; height: auto;");
-    const mapArea = svgMap.append("g");
-
-    const loadIndividuals = async function () {
-
-      let data = await d3.csv("data/241114_archinect_salaries_fulltime.csv", d3.autoType);
-      console.log(data);
-      data.forEach(d => {
-        if (d['Firm Type'] == null) {
-          d['Firm Type'] = "N/A";
-        }
-      });
-
-      //filter used for updates
-      var filters = {};
-
-      function pointPassesFilters(point) {
-
-        let stillPassed = true;
-
-        Object.values(filters).forEach(filterFunc => {
-          stillPassed = filterFunc(point) && stillPassed;
+      const loadIndividuals = async function () {
+        let data = await d3.csv(
+          "data/241114_archinect_salaries_fulltime.csv",
+          d3.autoType
+        );
+        console.log(data);
+        data.forEach((d) => {
+          if (d["Firm Type"] == null) {
+            d["Firm Type"] = "N/A";
+          }
         });
 
-        return stillPassed;
-      }
+        //filter used for updates
+        var filters = {};
 
+        function pointPassesFilters(point) {
+          let stillPassed = true;
 
-      //sets up controls
-      let controlWidth = 270;
-      let controlHeight = 60;
+          Object.values(filters).forEach((filterFunc) => {
+            stillPassed = filterFunc(point) && stillPassed;
+          });
 
-      let controlSalary = d3.select("#controlfilterSalary");
-      let salarySlider = new CurveSlider(data, controlSalary, "Salary", "Salary", controlWidth, controlHeight, updateData, filters, {
-        maxLimit: 200000, scaleFormatter: d => d === 0 ? "$0" : d3.format("$.2s")(d),
-      });
-
-      // let greens = ['#f7fcf5', '#e5f5e0', '#c7e9c0', '#a1d99b', '#74c476', '#41ab5d', '#238b45', '#006d2c', '#00441b']
-      const GnColorInterpolator = d3.interpolateRgb('#e5f5e0', '#00441b');
-      let controlTime = d3.select("#controlfilterTime");
-      const timeSlider = new ClickableHistogramSlider(data, controlTime, "Survey Year", "Year", controlWidth, controlHeight, updateData, filters, { colorInterpolator: GnColorInterpolator, colorInterpolationType: "sequential discrete", fontsize: '0.5rem', initiateCollapsed: true });
-
-      let controlSatisfaction = d3.select("#controlfilterSatisfaction");
-      const BuOrColorInterpolator = d3.piecewise(d3.interpolateRgb, ['#0a1869', '#a9c9e7', "#ffe3a8", '#fc6f03']);
-      const satisfactionSlider = new ClickableHistogramSlider(data, controlSatisfaction, "Job Satisfaction", "Job Satisfaction", controlWidth, controlHeight, updateData, filters, { colorInterpolator: BuOrColorInterpolator, colorInterpolationType: "sequential continuous" });
-
-      // let antiqueColors = ['#428ED9','#A5B845',  '#E5594B', '#F7AB3B','#EABDD1', '#625252']
-      let observable10 = ['#6cc5b0', '#4269d0', '#ff8ab7', '#efb118', '#3ca951', '#ff725c', '#a463f2', '#97bbf5', '#9c6b4e', '#9498a0']
-      let controlFirmType = d3.select("#controlfilterFirmType");
-      const firmtypeSlider = new ClickableHistogramSlider(data, controlFirmType, "Firm Type", "Firm Type", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: observable10, sortOrder: sortOrders["Firm Type"], fontsize: '0.5rem', initiateCollapsed: true });
-
-
-      //let blues = ['#f7fbff', '#deebf7', '#c6dbef', '#9ecae1', '#6baed6', '#4292c6', '#2171b5', '#08519c', '#08306b']
-      let controlFirmSize = d3.select("#controlfilterFirmSize");
-      const BuColorInterpolator = d3.interpolateRgb('#deebf7', '#08306b');
-      const firmsizeSlider = new ClickableHistogramSlider(data, controlFirmSize, "Firm Size", "Firm Size", controlWidth, controlHeight, updateData, filters, {colorInterpolator: BuColorInterpolator, colorInterpolationType: "sequential discrete", sortOrder: sortOrders["Firm Size"], rotateAxisLabels: true, initiateCollapsed: true });
-
-      // let purples = ['#fcfbfd', '#efedf5', '#dadaeb', '#bcbddc', '#9e9ac8', '#807dba', '#6a51a3', '#54278f', '#3f007d']
-      const PuColorInterpolator = d3.interpolateRgb('#efedf5', '#3f007d');
-      let controlAge = d3.select("#controlfilterAge");
-      const ageSlider = new ClickableHistogramSlider(data, controlAge, "Age", "Age", controlWidth, controlHeight, updateData, filters, { colorInterpolator: PuColorInterpolator, colorInterpolationType: "sequential discrete", sortOrder: sortOrders["Age"], rotateAxisLabels: true, initiateCollapsed: true });
-
-      let controlYearsOfExperience = d3.select("#controlfilterYearsOfExperience");
-      const yearsOfExperienceSlider = new ClickableHistogramSlider(data, controlYearsOfExperience, "Years of Experience", "Years of Experience", controlWidth, controlHeight, updateData, filters, {
-        colorInterpolator: d3.interpolatePuRd, colorInterpolationType: "sequential discrete", sortOrder: sortOrders["Years of Experience"], rotateAxisLabels: true, initiateCollapsed: true
-      });
-
-      const firmTypeScale = d3.scaleOrdinal().domain(["Boutique", "Corporate", "Individual", "Starchitect", "Other", "N/A"]).range(d3.schemeTableau10);
-
-      let controlLicensed = d3.select("#controlfilterLicensed");
-      const licensedSlider = new ClickableHistogramSlider(data, controlLicensed, "Licensed", "Licensed", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: ['#4269d0', '#97bbf5'], sortOrder: sortOrders["Licensed"], initiateCollapsed: true });
-
-      let controlGender = d3.select("#controlfilterGender");
-      const genderSlider = new ClickableHistogramSlider(data, controlGender, "Gender", "Gender", controlWidth, controlHeight, updateData, filters, { colorInterpolationType: "categorical", colorScheme: [
-      '#ff8ab7','#3ca951','#efb118'], sortOrder: sortOrders["Gender"], initiateCollapsed: true });
-
-      //search bars
-      let searchJobTitle = d3.select("div#searchJobTitle")
-      const jobTitleSearchBar = new SearchBar(searchJobTitle, "Job Title", data, filters, updateData, { placeholderText: "eg. Designer", initiateCollapsed: true });
-
-      let searchLocation = d3.select("div#searchLocation")
-      const locationSearchBar = new SearchBar(searchLocation, "Location", data, filters, updateData, { placeholderText: "eg. New York, NY", initiateCollapsed: true });
-
-      let searchUG = d3.select("div#searchUG")
-      const ugSearchBar = new SearchBar(searchUG, "Undergraduate School", data, filters, updateData, { placeholderText: "eg. Cornell University", initiateCollapsed: true });
-
-      let searchGrad = d3.select("div#searchGrad")
-      const gradSearchBar = new SearchBar(searchGrad, "Graduate School", data, filters, updateData, { placeholderText: "eg. University of Washington", initiateCollapsed: true });
-
-
-      //scales
-      const salaryExtent = d3.extent(data, d => d['Salary'])
-      const salaryScale = d3.scaleSqrt().domain(salaryExtent).range([0.5, 15])
-
-      const satisfactionScale = satisfactionSlider.colorScale;
-      const attributeToSlider = {
-        "Year": timeSlider,
-        "Salary": salarySlider, //this is a curveSlider
-        "Job Satisfaction": satisfactionSlider,
-        "Firm Type": firmtypeSlider,
-        "Firm Size": firmsizeSlider,
-        "Age": ageSlider,
-        "Years of Experience": yearsOfExperienceSlider,
-        "Licensed": licensedSlider,
-        "Gender": genderSlider,
-        //below are searchBar objects
-        "Job Title": jobTitleSearchBar,
-        "Location": locationSearchBar,
-        "Undergraduate School": ugSearchBar,
-        "Graduate School": gradSearchBar
-      }
-
-
-      const colorScales = {};
-      const histogramSliders = [];
-
-      Object.keys(attributeToSlider).forEach(key => {
-        const slider = attributeToSlider[key];
-        if (slider instanceof ClickableHistogramSlider) {
-          colorScales[key] = slider.colorScale;
-          histogramSliders.push(slider);
-        }
-      });
-
-      //individual map
-      //setting up params and functions to handle canvas resizing
-      //TODO: need to apply to hexBin as well
-      let collapsed = false;
-      const collapsedSidebarWidth = 30;
-      const expandedSidebarWidth = 330;
-      const buffer = 50; //rem
-      function calcCanvasWidth() {
-
-        // console.log("window.innerWidth", window.innerWidth)
-        // console.log("screen.width", screen.width)
-
-        //if it's too small then 
-        if (screen.width < 750) {
-          console.log("phone: individuanl map width", window.innerWidth - buffer)
-          return window.innerWidth - buffer;
+          return stillPassed;
         }
 
-        return window.innerWidth - buffer - (collapsed ? collapsedSidebarWidth : expandedSidebarWidth);
-      }
+        //sets up controls
+        let controlWidth = 270;
+        let controlHeight = 60;
 
-      const individualMap = new IndividualMap("canvasContainer", calcCanvasWidth(), data, salaryScale, colorScales, filters);
-      d3.select("div#canvasContainer")
-        .style("width", individualMap.width)
-        .style("height", individualMap.height);
+        let controlSalary = d3.select("#controlfilterSalary");
+        let salarySlider = new CurveSlider(
+          data,
+          controlSalary,
+          "Salary",
+          "Salary",
+          controlWidth,
+          controlHeight,
+          updateData,
+          filters,
+          {
+            maxLimit: 200000,
+            scaleFormatter: (d) => (d === 0 ? "$0" : d3.format("$.2s")(d)),
+          }
+        );
 
-      //initiate texts
-      d3.select("h2#medianSalary").text(d3.format("$,")(d3.median(data, d => d['Salary'])));
-          d3.select("h2#meanSatisfaction").text(d3.format(".2f")(d3.mean(data, d => d['Job Satisfaction'])));
-          d3.select("h2#numResponses").text(d3.format(",")(data.length));
-          d3.select("p#numResponsesTotal").text(`/${d3.format(",")(data.length)} responses (100%)`);
+        // let greens = ['#f7fcf5', '#e5f5e0', '#c7e9c0', '#a1d99b', '#74c476', '#41ab5d', '#238b45', '#006d2c', '#00441b']
+        const GnColorInterpolator = d3.interpolateRgb("#e5f5e0", "#00441b");
+        let controlTime = d3.select("#controlfilterTime");
+        const timeSlider = new ClickableHistogramSlider(
+          data,
+          controlTime,
+          "Survey Year",
+          "Year",
+          controlWidth,
+          controlHeight,
+          updateData,
+          filters,
+          {
+            colorInterpolator: GnColorInterpolator,
+            colorInterpolationType: "sequential discrete",
+            fontsize: "0.5rem",
+            initiateCollapsed: true,
+          }
+        );
 
-      //add resizing function
-      function resizeCanvas() {
-        if (calcCanvasWidth() == individualMap.width) {
-          return; //return if no change
+        let controlSatisfaction = d3.select("#controlfilterSatisfaction");
+        const BuOrColorInterpolator = d3.piecewise(d3.interpolateRgb, [
+          "#0a1869",
+          "#a9c9e7",
+          "#ffe3a8",
+          "#fc6f03",
+        ]);
+        const satisfactionSlider = new ClickableHistogramSlider(
+          data,
+          controlSatisfaction,
+          "Job Satisfaction",
+          "Job Satisfaction",
+          controlWidth,
+          controlHeight,
+          updateData,
+          filters,
+          {
+            colorInterpolator: BuOrColorInterpolator,
+            colorInterpolationType: "sequential continuous",
+          }
+        );
+
+        // let antiqueColors = ['#428ED9','#A5B845',  '#E5594B', '#F7AB3B','#EABDD1', '#625252']
+        let observable10 = [
+          "#6cc5b0",
+          "#4269d0",
+          "#ff8ab7",
+          "#efb118",
+          "#3ca951",
+          "#ff725c",
+          "#a463f2",
+          "#97bbf5",
+          "#9c6b4e",
+          "#9498a0",
+        ];
+        let controlFirmType = d3.select("#controlfilterFirmType");
+        const firmtypeSlider = new ClickableHistogramSlider(
+          data,
+          controlFirmType,
+          "Firm Type",
+          "Firm Type",
+          controlWidth,
+          controlHeight,
+          updateData,
+          filters,
+          {
+            colorInterpolationType: "categorical",
+            colorScheme: observable10,
+            sortOrder: sortOrders["Firm Type"],
+            fontsize: "0.5rem",
+            initiateCollapsed: true,
+          }
+        );
+
+        //let blues = ['#f7fbff', '#deebf7', '#c6dbef', '#9ecae1', '#6baed6', '#4292c6', '#2171b5', '#08519c', '#08306b']
+        let controlFirmSize = d3.select("#controlfilterFirmSize");
+        const BuColorInterpolator = d3.interpolateRgb("#deebf7", "#08306b");
+        const firmsizeSlider = new ClickableHistogramSlider(
+          data,
+          controlFirmSize,
+          "Firm Size",
+          "Firm Size",
+          controlWidth,
+          controlHeight,
+          updateData,
+          filters,
+          {
+            colorInterpolator: BuColorInterpolator,
+            colorInterpolationType: "sequential discrete",
+            sortOrder: sortOrders["Firm Size"],
+            rotateAxisLabels: true,
+            initiateCollapsed: true,
+          }
+        );
+
+        // let purples = ['#fcfbfd', '#efedf5', '#dadaeb', '#bcbddc', '#9e9ac8', '#807dba', '#6a51a3', '#54278f', '#3f007d']
+        const PuColorInterpolator = d3.interpolateRgb("#efedf5", "#3f007d");
+        let controlAge = d3.select("#controlfilterAge");
+        const ageSlider = new ClickableHistogramSlider(
+          data,
+          controlAge,
+          "Age",
+          "Age",
+          controlWidth,
+          controlHeight,
+          updateData,
+          filters,
+          {
+            colorInterpolator: PuColorInterpolator,
+            colorInterpolationType: "sequential discrete",
+            sortOrder: sortOrders["Age"],
+            rotateAxisLabels: true,
+            initiateCollapsed: true,
+          }
+        );
+
+        let controlYearsOfExperience = d3.select(
+          "#controlfilterYearsOfExperience"
+        );
+        const yearsOfExperienceSlider = new ClickableHistogramSlider(
+          data,
+          controlYearsOfExperience,
+          "Years of Experience",
+          "Years of Experience",
+          controlWidth,
+          controlHeight,
+          updateData,
+          filters,
+          {
+            colorInterpolator: d3.interpolatePuRd,
+            colorInterpolationType: "sequential discrete",
+            sortOrder: sortOrders["Years of Experience"],
+            rotateAxisLabels: true,
+            initiateCollapsed: true,
+          }
+        );
+
+        const firmTypeScale = d3
+          .scaleOrdinal()
+          .domain([
+            "Boutique",
+            "Corporate",
+            "Individual",
+            "Starchitect",
+            "Other",
+            "N/A",
+          ])
+          .range(d3.schemeTableau10);
+
+        let controlLicensed = d3.select("#controlfilterLicensed");
+        const licensedSlider = new ClickableHistogramSlider(
+          data,
+          controlLicensed,
+          "Licensed",
+          "Licensed",
+          controlWidth,
+          controlHeight,
+          updateData,
+          filters,
+          {
+            colorInterpolationType: "categorical",
+            colorScheme: ["#4269d0", "#97bbf5"],
+            sortOrder: sortOrders["Licensed"],
+            initiateCollapsed: true,
+          }
+        );
+
+        let controlGender = d3.select("#controlfilterGender");
+        const genderSlider = new ClickableHistogramSlider(
+          data,
+          controlGender,
+          "Gender",
+          "Gender",
+          controlWidth,
+          controlHeight,
+          updateData,
+          filters,
+          {
+            colorInterpolationType: "categorical",
+            colorScheme: ["#ff8ab7", "#3ca951", "#efb118"],
+            sortOrder: sortOrders["Gender"],
+            initiateCollapsed: true,
+          }
+        );
+
+        //search bars
+        let searchJobTitle = d3.select("div#searchJobTitle");
+        const jobTitleSearchBar = new SearchBar(
+          searchJobTitle,
+          "Job Title",
+          data,
+          filters,
+          updateData,
+          { placeholderText: "eg. Designer", initiateCollapsed: true }
+        );
+
+        let searchLocation = d3.select("div#searchLocation");
+        const locationSearchBar = new SearchBar(
+          searchLocation,
+          "Location",
+          data,
+          filters,
+          updateData,
+          { placeholderText: "eg. New York, NY", initiateCollapsed: true }
+        );
+
+        let searchUG = d3.select("div#searchUG");
+        const ugSearchBar = new SearchBar(
+          searchUG,
+          "Undergraduate School",
+          data,
+          filters,
+          updateData,
+          { placeholderText: "eg. Cornell University", initiateCollapsed: true }
+        );
+
+        let searchGrad = d3.select("div#searchGrad");
+        const gradSearchBar = new SearchBar(
+          searchGrad,
+          "Graduate School",
+          data,
+          filters,
+          updateData,
+          {
+            placeholderText: "eg. University of Washington",
+            initiateCollapsed: true,
+          }
+        );
+
+        //scales
+        const salaryExtent = d3.extent(data, (d) => d["Salary"]);
+        const salaryScale = d3
+          .scaleSqrt()
+          .domain(salaryExtent)
+          .range([0.5, 15]);
+
+        const satisfactionScale = satisfactionSlider.colorScale;
+        const attributeToSlider = {
+          Year: timeSlider,
+          Salary: salarySlider, //this is a curveSlider
+          "Job Satisfaction": satisfactionSlider,
+          "Firm Type": firmtypeSlider,
+          "Firm Size": firmsizeSlider,
+          Age: ageSlider,
+          "Years of Experience": yearsOfExperienceSlider,
+          Licensed: licensedSlider,
+          Gender: genderSlider,
+          //below are searchBar objects
+          "Job Title": jobTitleSearchBar,
+          Location: locationSearchBar,
+          "Undergraduate School": ugSearchBar,
+          "Graduate School": gradSearchBar,
+        };
+
+        const colorScales = {};
+        const histogramSliders = [];
+
+        Object.keys(attributeToSlider).forEach((key) => {
+          const slider = attributeToSlider[key];
+          if (slider instanceof ClickableHistogramSlider) {
+            colorScales[key] = slider.colorScale;
+            histogramSliders.push(slider);
+          }
+        });
+
+        //individual map
+        //setting up params and functions to handle canvas resizing
+        //TODO: need to apply to hexBin as well
+        let collapsed = false;
+        const collapsedSidebarWidth = 30;
+        const expandedSidebarWidth = 330;
+        const buffer = 50; //rem
+        function calcCanvasWidth() {
+          // console.log("window.innerWidth", window.innerWidth)
+          // console.log("screen.width", screen.width)
+
+          //if it's too small then
+          if (screen.width < 750) {
+            console.log(
+              "phone: individuanl map width",
+              window.innerWidth - buffer
+            );
+            return window.innerWidth - buffer;
+          }
+
+          return (
+            window.innerWidth -
+            buffer -
+            (collapsed ? collapsedSidebarWidth : expandedSidebarWidth)
+          );
         }
-        individualMap.updateWidth(calcCanvasWidth());
+
+        const individualMap = new IndividualMap(
+          "canvasContainer",
+          calcCanvasWidth(),
+          data,
+          salaryScale,
+          colorScales,
+          filters
+        );
         d3.select("div#canvasContainer")
           .style("width", individualMap.width)
           .style("height", individualMap.height);
 
-          console.log("individualMap.width", individualMap.width)
-          d3.select("div.summaryAll").style("width", individualMap.vizWidth);
-      }
-      window.addEventListener('resize', resizeCanvas);
+        //initiate texts
+        d3.select("h2#medianSalary").text(
+          d3.format("$,")(d3.median(data, (d) => d["Salary"]))
+        );
+        d3.select("h2#meanSatisfaction").text(
+          d3.format(".2f")(d3.mean(data, (d) => d["Job Satisfaction"]))
+        );
+        d3.select("h2#numResponses").text(d3.format(",")(data.length));
+        d3.select("p#numResponsesTotal").text(
+          `/${d3.format(",")(data.length)} responses (100%)`
+        );
 
-      //set up the div width and button for sidebar collapse
-      d3.select("div.aside").style("width", expandedSidebarWidth);
-      d3.select("button#sidebarcollapse")
-        .on("click", (event) => {
+        //add resizing function
+        function resizeCanvas() {
+          if (calcCanvasWidth() == individualMap.width) {
+            return; //return if no change
+          }
+          individualMap.updateWidth(calcCanvasWidth());
+          d3.select("div#canvasContainer")
+            .style("width", individualMap.width)
+            .style("height", individualMap.height);
+
+          console.log("individualMap.width", individualMap.width);
+          d3.select("div.summaryContainer").style("width", individualMap.width);
+        }
+        window.addEventListener("resize", resizeCanvas);
+
+        //set up the div width and button for sidebar collapse
+        d3.select("div.aside").style("width", expandedSidebarWidth);
+        d3.select("button#sidebarcollapse").on("click", (event) => {
           collapsed = !collapsed;
 
           if (collapsed) {
             //change sidebar width
-            d3.select("div.aside").style("width", collapsedSidebarWidth)
+            d3.select("div.aside")
+              .style("width", collapsedSidebarWidth)
               .style("overflow", "hidden");
 
             //change toggle properties
@@ -392,12 +665,13 @@
               .style("opacity", 0)
               .style("visibility", "hidden");
 
-            d3.select("button#sidebarcollapse i").style("rotate", "180deg")
+            d3.select("button#sidebarcollapse i").style("rotate", "180deg");
 
             resizeCanvas();
           } else {
             //change sidebar width
-            d3.select("div.aside").style("width", expandedSidebarWidth)
+            d3.select("div.aside")
+              .style("width", expandedSidebarWidth)
               .style("overflow-y", "scroll");
 
             //change toggle properties
@@ -409,158 +683,190 @@
             d3.select("div.sidebar")
               .style("opacity", 1)
               .style("visibility", "visible");
-            d3.select("button#sidebarcollapse i").style("rotate", "0deg")
+            d3.select("button#sidebarcollapse i").style("rotate", "0deg");
 
             resizeCanvas();
           }
         });
 
-      //set up buttons that contain 
-      let buttons = [
-        { className: "customize", collapsed: true, display:"flex" },
-        { className: "filters", collapsed: false, display:"block" }
-      ];
-      buttons.forEach(button => {
-        d3.select(`button.${button.className}`)
-          .on("click", (event) => {
+        //set up buttons that contain
+        let buttons = [
+          { className: "customize", collapsed: true, display: "flex" },
+          { className: "filters", collapsed: false, display: "block" },
+        ];
+        buttons.forEach((button) => {
+          d3.select(`button.${button.className}`).on("click", (event) => {
             button.collapsed = !button.collapsed;
-            d3.select(`button.${button.className} i`).style("rotate", button.collapsed ? "0deg" : "90deg");
-            d3.selectAll(`div.${button.className}`).style("display", button.collapsed ? "none" : button.display);
-          });
-      });
-
-
-      //default coloring is by Job Satisfaction
-      satisfactionSlider.updateColor(true);
-
-      //set up clear all button
-      let clearAllButton = d3.select("button.clear-all-filters")
-
-      clearAllButton.on("click", (event) => {
-
-        Object.keys(filters).forEach(key => { if (filters[key] !== 'd => true') { attributeToSlider[key].clearFilters() } });
-
-        //hide this clear all button
-        clearAllButton.style("visibility", "hidden");
-
-      });
-
-
-      //set up the legends in all the sliders
-      histogramSliders.forEach(slider => {
-        slider.setupLegend(controlWidth, 8);
-      });
-
-      //legend
-      let collapsibleLegend = d3.select("div#collapsibleLegend")
-      const legend = new CollapsibleLegend(collapsibleLegend, "Job Satisfaction", satisfactionSlider.getLegendNode(), salaryScale);
-
-      //color scale dropdown
-      d3.select("select.colorScale")
-        .on("change", function () {
-          individualMap.updateColors(this.value);
-
-          histogramSliders.forEach(slider => {
-            if (slider.attribute == this.value) {
-              slider.updateColor(true)
-              slider.changeCollapsed(false); //open it up
-              legend.updateColorScale(this.value, slider.getLegendNode());
-            }
-            else { slider.updateColor(false) };
+            d3.select(`button.${button.className} i`).style(
+              "rotate",
+              button.collapsed ? "0deg" : "90deg"
+            );
+            d3.selectAll(`div.${button.className}`).style(
+              "display",
+              button.collapsed ? "none" : button.display
+            );
           });
         });
 
-      d3.select("select.sortOrder")
-        .on("change", function () {
-          console.log("updating sort order to", this.value)
+        //default coloring is by Job Satisfaction
+        satisfactionSlider.updateColor(true);
+
+        //set up clear all button
+        let clearAllButton = d3.select("button.clear-all-filters");
+
+        clearAllButton.on("click", (event) => {
+          Object.keys(filters).forEach((key) => {
+            if (filters[key] !== "d => true") {
+              attributeToSlider[key].clearFilters();
+            }
+          });
+
+          //hide this clear all button
+          clearAllButton.style("visibility", "hidden");
+        });
+
+        //set up the legends in all the sliders
+        histogramSliders.forEach((slider) => {
+          slider.setupLegend(controlWidth, 8);
+        });
+
+        //legend
+        let collapsibleLegend = d3.select("div#collapsibleLegend");
+        const legend = new CollapsibleLegend(
+          collapsibleLegend,
+          "Job Satisfaction",
+          satisfactionSlider.getLegendNode(),
+          salaryScale
+        );
+
+        //color scale dropdown
+        d3.select("select.colorScale").on("change", function () {
+          individualMap.updateColors(this.value);
+
+          histogramSliders.forEach((slider) => {
+            if (slider.attribute == this.value) {
+              slider.updateColor(true);
+              slider.changeCollapsed(false); //open it up
+              legend.updateColorScale(this.value, slider.getLegendNode());
+            } else {
+              slider.updateColor(false);
+            }
+          });
+        });
+
+        d3.select("select.sortOrder").on("change", function () {
+          console.log("updating sort order to", this.value);
           individualMap.updateSortOrder(this.value);
         });
 
+        //map related scales and set up
+        const states = await d3.json("data/cb_2023_us_state_5m.json");
+        const stateMesh = topojson.mesh(
+          states,
+          states.objects.cb_2023_us_state_5m
+        );
 
-      //map related scales and set up
-      const states = await d3.json("data/cb_2023_us_state_5m.json");
-      const stateMesh = topojson.mesh(states, states.objects.cb_2023_us_state_5m);
+        const projection = geoAlbersUsaPr()
+          .scale((4 / 3) * widthMap)
+          .translate([widthMap / 2, heightMap / 2]);
 
-      const projection = geoAlbersUsaPr().scale(4 / 3 * widthMap).translate([widthMap / 2, heightMap / 2]);
+        // Append the state mesh.
+        mapArea
+          .append("path")
+          .datum(stateMesh)
+          .attr("fill", "none")
+          .attr("stroke", "#777")
+          .attr("stroke-width", 0.5)
+          .attr("stroke-linejoin", "round")
+          .attr("d", d3.geoPath(projection));
+        //set up the layer used for hexBin rendering
+        let hexBinLayer = mapArea.append("g");
 
-      // Append the state mesh.
-      mapArea.append("path")
-      .datum(stateMesh)
-      .attr("fill", "none")
-      .attr("stroke", "#777")
-      .attr("stroke-width", 0.5)
-      .attr("stroke-linejoin", "round")
-      .attr("d", d3.geoPath(projection));
-      //set up the layer used for hexBin rendering
-      let hexBinLayer = mapArea.append("g");
+        function updateData() {
+          //filter for passing data
+          const passingData = data.filter(pointPassesFilters);
+          const passingDataSize = passingData.length;
+          //console.log("passingDataSize", passingDataSize)
 
-      function updateData() {
-        //filter for passing data
-        const passingData = data.filter(pointPassesFilters);
-        const passingDataSize = passingData.length;
-        //console.log("passingDataSize", passingDataSize)
+          //update sliders
+          salarySlider.update();
+          histogramSliders.forEach((slider) => {
+            slider.update();
+          });
 
-        //update sliders
-        salarySlider.update();
-        histogramSliders.forEach(slider => {
-          slider.update();
-        });
+          // Check if there are non-identity functions in filters, if yes then show clear all button
+          //TODO: this is a super naive way, requires all identify function to be named "d => true"
+          const hasNonIdentityFilters = Object.values(filters).some(
+            (filterFunc) => filterFunc.toString() !== "d => true"
+          );
+          clearAllButton.style(
+            "visibility",
+            hasNonIdentityFilters ? "visible" : "hidden"
+          );
 
-        // Check if there are non-identity functions in filters, if yes then show clear all button
-        //TODO: this is a super naive way, requires all identify function to be named "d => true"
-        const hasNonIdentityFilters = Object.values(filters).some(filterFunc => filterFunc.toString() !== 'd => true');
-        clearAllButton.style("visibility", hasNonIdentityFilters ? "visible" : "hidden");
+          hexbinMap(
+            projection,
+            passingData,
+            "satisfaction",
+            "length",
+            hexBinLayer,
+            widthMap,
+            heightMap
+          );
 
-        hexbinMap(projection, passingData, "satisfaction", "length", hexBinLayer, widthMap, heightMap);
+          const medianSalary = d3.median(passingData, (d) => d["Salary"]);
+          const meanSatisfaction = d3.mean(
+            passingData,
+            (d) => d["Job Satisfaction"]
+          );
 
-
-        const medianSalary = d3.median(passingData, d => d['Salary']);
-        const meanSatisfaction = d3.mean(passingData, d => d['Job Satisfaction']);
-
-          if (passingDataSize >0){
+          if (passingDataSize > 0) {
             //show summary
             d3.select("div.emptySummary").style("display", "none");
-          d3.select("div.summaryAll").style("display", "flex");
+            d3.select("div.summaryAll").style("display", "flex");
             d3.select("h2#medianSalary").text(d3.format("$,")(medianSalary));
-          d3.select("h2#meanSatisfaction").text(d3.format(".2f")(meanSatisfaction));
-          d3.select("h2#numResponses").text(d3.format(",")(passingDataSize));
-          d3.select("p#numResponsesTotal").text(`/${d3.format(",")(data.length)} responses (${d3.format(".0%")(passingDataSize / data.length)})`);
-          }else{
+            d3.select("h2#meanSatisfaction").text(
+              d3.format(".2f")(meanSatisfaction)
+            );
+            d3.select("h2#numResponses").text(d3.format(",")(passingDataSize));
+            d3.select("p#numResponsesTotal").text(
+              `/${d3.format(",")(data.length)} responses (${d3.format(".0%")(
+                passingDataSize / data.length
+              )})`
+            );
+          } else {
             d3.select("div.summaryAll").style("display", "none");
             d3.select("div.emptySummary").style("display", "block");
           }
 
+          individualMap.update();
+        }
 
-        individualMap.update();
-      }
+        updateData();
+      };
 
-      updateData();
+      loadIndividuals();
 
+      //monitoring scroll position
+      document.addEventListener("scroll", () => {
+        const aside = document.querySelector("div.aside");
+        const headingBottom = document
+          .querySelector("div.heading")
+          .getBoundingClientRect().bottom;
 
-    }
+        if (headingBottom <= 0) {
+          // If the heading is out of view, make aside sticky
+          aside.style.position = "fixed";
+          aside.style.top = "0";
+        } else {
+          // Reset aside to its original position
+          aside.style.position = "relative";
+          aside.style.top = "auto";
+        }
+      });
 
-    loadIndividuals();
-
-    //monitoring scroll position
-    document.addEventListener("scroll", () => {
-      const aside = document.querySelector("div.aside");
-      const headingBottom = document.querySelector("div.heading").getBoundingClientRect().bottom;
-
-      if (headingBottom <= 0) {
-        // If the heading is out of view, make aside sticky
-        aside.style.position = "fixed";
-        aside.style.top = "0";
-      } else {
-        // Reset aside to its original position
-        aside.style.position = "relative";
-        aside.style.top = "auto";
-      }
-    });
-
-    //this is d3 stock example
-    // d3.select("div#hexbinMap").node().appendChild(await hexbinMap());
-
-  </script>
-</body>
-
+      //this is d3 stock example
+      // d3.select("div#hexbinMap").node().appendChild(await hexbinMap());
+    </script>
+  </body>
 </html>

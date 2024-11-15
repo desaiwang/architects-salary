@@ -1,38 +1,56 @@
-
 import { geoAlbersUsaPr } from "./geoAlbersUsaPr.js";
 
-export async function hexbinMap(projection, data, categoryColor, categoryRadius, hexBinLayer, widthMap, heightMap) {
-
+export async function hexbinMap(
+  projection,
+  data,
+  categoryColor,
+  categoryRadius,
+  hexBinLayer,
+  widthMap,
+  heightMap
+) {
   //Hexbin map
-  const hexbin = d3.hexbin()
-    .extent([[0, 0], [widthMap, heightMap]])
+  const hexbin = d3
+    .hexbin()
+    .extent([
+      [0, 0],
+      [widthMap, heightMap],
+    ])
     .radius(10)
-    .x(d => {
+    .x((d) => {
       if (d.xy) {
-        return d.xy[0]
+        return d.xy[0];
       } else {
-        console.log("error: d is", d)
+        console.log("error: d is", d);
       }
     })
-    .y(d => d.xy[1]);
+    .y((d) => d.xy[1]);
 
   const bins = hexbin(
-    data.filter(d => d.Location !== 'Barrigada, GU, US')
-      .map(d => ({
+    //Guam unfortunately is not a part of the geo albers projection, so removing it from map visualization
+    data
+      .filter((d) => d.Location !== "Barrigada, GU, US")
+      .map((d) => ({
         xy: projection([d.Longitude, d.Latitude]),
-        Salary: d.Salary, 
-        Satisfaction: d['Job Satisfaction'],
-        Location: d['Location']
+        Salary: d.Salary,
+        Satisfaction: d["Job Satisfaction"],
+        Location: d["Location"],
       }))
   )
-    .map(d => (d.salary = d3.median(d, d => d.Salary), d))
-    .map(d => (d.satisfaction = d3.mean(d, d => d.Satisfaction), d));
+    .map((d) => ((d.salary = d3.median(d, (d) => d.Salary)), d))
+    .map((d) => ((d.satisfaction = d3.mean(d, (d) => d.Satisfaction)), d));
 
   //console.log("bins", bins)
 
   // Create the color and radius scales.
-  const color = d3.scaleSequential(d3.extent(bins, d => d[categoryColor]), d3.interpolateSpectral);
-  const radius = d3.scaleSqrt(d3.extent(bins, d => d[categoryRadius]), [hexbin.radius() * 0.3, hexbin.radius() * 3]);
+  const color = d3.scaleSequential(
+    d3.extent(bins, (d) => d[categoryColor]),
+    d3.interpolateSpectral
+  );
+  const radius = d3.scaleSqrt(
+    d3.extent(bins, (d) => d[categoryRadius]),
+    [hexbin.radius() * 0.3, hexbin.radius() * 3]
+  );
   //d3.extent(bins, d => d[categoryRadius])
 
   // Append the hexagons.
@@ -42,25 +60,31 @@ export async function hexbinMap(projection, data, categoryColor, categoryRadius,
     .data(bins)
     .join("path")
     .attr("class", "hexBin")
-    .attr("transform", d => `translate(${d.x},${d.y})`)
+    .attr("transform", (d) => `translate(${d.x},${d.y})`)
     .attr("d", (d, i) => {
       // if (d.x == 857.3651497465942 & d.y == 165) {
       //   console.log("d is", d, "d[categoryRadius]: ", d[categoryRadius], "radius: ", radius(d[categoryRadius]))
       // }
-      return hexbin.hexagon(radius(d[categoryRadius]))
+      return hexbin.hexagon(radius(d[categoryRadius]));
     })
-    .attr("fill", d => color(d[categoryColor]))
-    .attr("stroke", d => d3.lab(color(d[categoryColor])).darker())
+    .attr("fill", (d) => color(d[categoryColor]))
+    .attr("stroke", (d) => d3.lab(color(d[categoryColor])).darker())
     .attr("opacity", 0.8)
     .append("title")
-    .text(d => `${d.length.toLocaleString()} survey responses\n${d3.format(".2f")(d.satisfaction)} mean satisfaction\n${d3.format("$.2s")(d.salary)} median salary`);
+    .text(
+      (d) =>
+        `${d.length.toLocaleString()} survey responses\n${d3.format(".2f")(
+          d.satisfaction
+        )} mean satisfaction\n${d3.format("$.2s")(d.salary)} median salary`
+    );
 
   hexBinLayer.selectAll("circle").remove();
-  hexBinLayer.append("circle")
+  hexBinLayer
+    .append("circle")
     .attr("cx", 857.3651)
     .attr("cy", 165)
     .attr("r", 2)
-    .attr("fill", "black")
+    .attr("fill", "black");
   //zooming functions, uncommented out for now
 
   // var zoom = d3.zoom()
@@ -91,5 +115,4 @@ export async function hexbinMap(projection, data, categoryColor, categoryRadius,
   //   //   .style("r", d => radius(d.length) / Math.sqrt(transform.k))
 
   // }
-
 }
