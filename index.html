@@ -134,7 +134,20 @@
           <h2 style="text-align: center"> Visualizing Architect's Salary in the US</h2>
           <h5 style="text-align: center; margin-top: -65px; margin-bottom: 50px"> Desai Wang</h5>
         </div>
-        <div style="display: flex; margin-left:2rem">
+        <div class="summaryAll" style="display: flex; column-gap: 2rem; margin-left:1.5rem; vertical-align:bottom;">
+          <div class="summary">
+            <h2>$78,000</h2>
+            <p>median salary</p>
+          </div>
+          <div class="summary">
+            <h2>6.5</h2>
+            <p>mean satisfaction</p>
+          </div>
+          <div class="summary">
+            <h2>500</h2>
+            <p>/13,899 responses</p>
+            <p>(20%)</p>
+          </div>
           <h2 id="summaryText"></h2>
         </div>
         <div id="canvasContainer" style="position:relative">
@@ -324,6 +337,8 @@
           .style("width", individualMap.width)
           .style("height", individualMap.height);
 
+          console.log("individualMap.width", individualMap.width)
+          d3.select("div.summaryAll").style("width", individualMap.vizWidth);
       }
       window.addEventListener('resize', resizeCanvas);
 
@@ -473,11 +488,11 @@
         const medianSalary = d3.median(passingData, d => d['Salary']);
         const meanSatisfaction = d3.mean(passingData, d => d['Job Satisfaction']);
 
-        d3.select("h2#summaryText")
-          .text(passingDataSize > 0 ? `Showing ${d3.format(",")(passingDataSize)} out of ${d3.format(",")(data.length)} individuals. Median Salary: ${d3.format("$,")(medianSalary)}, Mean Satisfaction: ${d3.format(".2f")(meanSatisfaction)}/10` : "No data selected")
+        //TODO: uncomment when summaryText is added
+        // d3.select("h2#summaryText")
+        //   .text(passingDataSize > 0 ? `Showing ${d3.format(",")(passingDataSize)} out of ${d3.format(",")(data.length)} individuals. Median Salary: ${d3.format("$,")(medianSalary)}, Mean Satisfaction: ${d3.format(".2f")(meanSatisfaction)}/10` : "No data selected")
 
         individualMap.update();
-
       }
 
 

@@ -44,6 +44,7 @@ h4.tooltip.bold {
   margin-bottom: 0.1rem;
 }
 
+
 p.tooltip.light {
   font-size: 0.8rem;
   margin-top: 0;
@@ -264,4 +265,27 @@ text.tooltip {
 select {
   border: 1px solid var(--grey-300);
   border-radius: 2px
+}
+
+/* for summary text on top */
+div.summary{
+  display: flex; 
+  align-items:flex-end;
+  flex-wrap:wrap;
+  column-gap:0.25rem;
+  row-gap:0.25rem
+}
+
+ div.summary h2{
+  font-size:2rem;
+  font-weight: 400;
+  color: var(--grey-700);
+  background-color: var(--grey-25);
+  margin-block:0
+}
+div.summary p{
+  font-weight: 300;
+  margin-block:0;
+  padding: 0 0 2px 0;
+  color: var(--grey-500);
 }
