@@ -21,7 +21,7 @@ class IndividualMap {
     this.addInteraction();
     //default to job satisfaction
     this.setColors("Job Satisfaction");
-    // this.render(); //don't render upon initialization, wait for update
+    this.render();
   };
 
   initialize() {
@@ -31,7 +31,7 @@ class IndividualMap {
       top: 20,
       bottom: 20,
       left: 20,
-      right: 20
+      right: 15
     }
 
     this.vizWidth = this.width - this.margins.left - this.margins.right;

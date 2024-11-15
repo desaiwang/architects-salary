@@ -291,3 +291,11 @@ div.summary p{
   padding: 0 0 2px 0;
   color: var(--grey-500);
 }
+
+div.summaryContainer{
+  position:sticky; 
+  top:0;
+  background-color: var(--grey-25);
+  z-index:20;
+  padding: 0.5rem 0;
+}

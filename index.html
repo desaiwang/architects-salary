@@ -134,23 +134,26 @@
           <h2 style="text-align: center"> Visualizing Architect's Salary in the US</h2>
           <h5 style="text-align: center; margin-top: -65px; margin-bottom: 50px"> Desai Wang</h5>
         </div>
-        <div class="emptySummary" style="display:none; margin-left:1.5rem;">
-          <h2>No data selected.</h2>
+        <div class="summaryContainer">
+          <div class="emptySummary" style="display:none; margin-left:1.5rem;">
+            <h2>No data selected.</h2>
+          </div>
+          <div class="summaryAll" style="display: flex; column-gap: 2rem; margin-left:1.5rem; vertical-align:bottom;">
+            <div class="summary" id="medianSalary">
+              <h2 id="medianSalary"></h2>
+              <p>median salary</p>
+            </div>
+            <div class="summary">
+              <h2 id="meanSatisfaction"></h2>
+              <p>mean satisfaction</p>
+            </div>
+            <div class="summary">
+              <h2 id="numResponses"></h2>
+              <p id="numResponsesTotal"></p>
+            </div>
+          </div>
         </div>
-        <div class="summaryAll" style="display: flex; column-gap: 2rem; margin-left:1.5rem; vertical-align:bottom;">
-          <div class="summary" id="medianSalary">
-            <h2 id="medianSalary"></h2>
-            <p>median salary</p>
-          </div>
-          <div class="summary">
-            <h2 id="meanSatisfaction"></h2>
-            <p>mean satisfaction</p>
-          </div>
-          <div class="summary">
-            <h2 id="numResponses"></h2>
-            <p id="numResponsesTotal"></p>
-          </div>
-        </div>
+       
         <div id="canvasContainer" style="position:relative">
         </div>
       </div>
