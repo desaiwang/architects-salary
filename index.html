@@ -124,6 +124,13 @@
             </div>
           </div>
 
+          <div style="padding: 0rem 0">
+            <button id="toggleIndMap" class="collapse title">
+              <i class="bx bx-user"></i>
+              <span>View Map</span>
+            </button>
+          </div>
+
           <div
             class="sidebar"
             style="display: flex; flex-direction: column; width: 305"
@@ -643,7 +650,7 @@
               .style("overflow", "hidden");
 
             //change toggle properties
-            d3.select("div.aside button span")
+            d3.selectAll("div.aside button span")
               .style("opacity", 0)
               .style("visibility", "hidden");
 
@@ -662,7 +669,7 @@
               .style("overflow-y", "scroll");
 
             //change toggle properties
-            d3.select("div.aside button span")
+            d3.selectAll("div.aside button span")
               .style("opacity", 1)
               .style("visibility", "visible");
 

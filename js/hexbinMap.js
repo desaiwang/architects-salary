@@ -111,12 +111,15 @@ class HexbinMap {
       d.jobTitleMode = d3.mode(d.map((d) => d.JobTitle));
       d.firmTypeMode = d3.mode(d.map((d) => d.FirmType));
       d.firmSizeMode = d3.mode(d.map((d) => d.FirmSize));
-      d.undergradMode = d3.mode(d.map((d) => d.Undergrad));
+      //need to save this otherwise async issues will cause it to be undefined
+      let undergradMode = d3.mode(d.map((d) => d.Undergrad));
+      d.undergradMode = undergradMode;
       d.undergradModeCount = d.filter(
-        (d) => d.Undergrad == d.undergradMode
+        (d) => d.Undergrad == undergradMode
       ).length;
-      d.gradMode = d3.mode(d.map((d) => d.Grad));
-      d.gradModeCount = d.filter((d) => d.Grad == d.gradMode).length;
+      let gradMode = d3.mode(d.map((d) => d.Grad));
+      d.gradMode = gradMode;
+      d.gradModeCount = d.filter((d) => d.Grad == gradMode).length;
       return d;
     });
 
@@ -160,10 +163,11 @@ class HexbinMap {
       .on("mouseover", (event, d) => mouseOver(event, d))
       .on("mouseout", (event, d) => {
         d3.select(event.target).attr("opacity", "0.8");
-        //this.tooltipDiv.style("visibility", "hidden");
+        this.tooltipDiv.style("visibility", "hidden");
       });
 
     let mouseOver = (event, d) => {
+      console.log("mouseOver d", d);
       d3.select(event.target).attr("opacity", "1");
 
       let svgRect = this.svgMap.node().getBoundingClientRect();
@@ -189,67 +193,155 @@ class HexbinMap {
       // );
 
       const personOrPeople = d.firmSizeMode === 1 ? "person" : "people";
-      const responses = d.length === 1 ? "response" : "responses";
       const schoolDiv = (d, attribute, title) => {
-        return d[attribute]
-          ? `<div style="line-height: 1.2;display: flex; align-items: baseline;"><p class="tooltip regular">${title}:</p><p class="tooltip light" style="margin-left: 5px;">${d[attribute]}</p></div>`
-          : "";
+        if (d[attribute]) {
+          const moreInfo =
+            d.length > 1
+              ? ` (${d[attribute + "Count"]}, ${d3.format(".0%")(
+                  d[attribute + "Count"] / d.length
+                )})`
+              : "";
+          return `<div style="line-height: 1.2;display: flex; align-items: baseline;"><p class="tooltip regular">${title}:</p><p class="tooltip light" style="margin-left: 5px;">${d[attribute]}${moreInfo}</p></div>`;
+        }
+
+        return "";
       };
 
-      this.tooltipDiv.html(`
-        <div style="display: flex;flex-direction: column;row-gap: 1rem">
-          <div style="display: flex; gap: 20px; width: auto; min-width: 300px; flex-wrap: nowrap;">
-            <!-- Column 1 -->
-            <div style="flex: 1 1 auto; min-width: 0;">
-              <div style="display: flex; align-items: baseline;">
-                <h4 class="tooltip bold">${d["locationMode"]}</h4>
-                <p class="tooltip light" style="margin-left: 5px;">area</p>
+      if (d.length == 1) {
+        this.tooltipDiv.html(`
+          <div style="display: flex;flex-direction: column;">
+            <div style="display: flex; gap: 20px; width: auto; min-width: 300px; flex-wrap: nowrap;">
+              <!-- Column 1 -->
+              <div style="flex: 1 1 auto; min-width: 0;">
+                <div style="display: flex; align-items: baseline;">
+                  <h4 class="tooltip bold">${d["locationMode"]}</h4>
+                </div>
+                <div style="display: flex; align-items: baseline;">
+                  <h4 class="tooltip bold">${d3.format("$,")(d.salary)}</h4>
+                  <p class="tooltip light" style="margin-left: 5px;">per year</p>
+                </div>
+                <div style="display: flex; align-items: baseline;">
+                  <h4 class="tooltip bold">${d3.format(".2f")(
+                    d["Job Satisfaction"]
+                  )}/10</h4>
+                  <p class="tooltip light" style="margin-left: 5px;">satisfaction</p>
+                </div>
+                <p style="margin-top:2px" class="tooltip light">${
+                  d[0]["Gender"]
+                }, ${
+          d[0]["Licensed"] == "Yes" ? "Licensed" : "Not Licensed"
+        }</p>
               </div>
-              <div style="display: flex; align-items: baseline;">
-                <h4 class="tooltip bold">${d3.format("$,")(d.salary)}</h4>
-                <p class="tooltip light" style="margin-left: 5px;">median income</p>
-              </div>
-              <div style="display: flex; align-items: baseline;">
-                <h4 class="tooltip bold">${d3.format(".2f")(
-                  d["Job Satisfaction"]
-                )}/10</h4>
-                <p class="tooltip light" style="margin-left: 5px;">avg satisfaction</p>
-              </div>
-              <p style="margin-top:2px" class="tooltip light">${d3.format(
-                ".0%"
-              )(d.percentageFemale)} female, ${d3.format(".0%")(
-        d.percentageMale
-      )} male</p>
-              <p class="tooltip light">${d3.format(".0%")(
-                d.percentageLicensed
-              )} licensed</p>
+  
+              <!-- Column 2 -->
+              <div style="flex: 1 1 auto; min-width: 0;margin-top: 2px;">
+              <p class="tooltip light">Only Response:</p>
+              <p class="tooltip light">${d.jobTitleMode}</p>
+                <p class="tooltip light">${
+                  d.firmTypeMode === "N/A"
+                    ? `Firm with ${d.firmSizeMode} ${personOrPeople}`
+                    : `${d.firmTypeMode} (${d.firmSizeMode} ${personOrPeople})`
+                }</p>
+                <p class="tooltip light" >${
+                  d.yearsOfExperienceMode
+                } years of experience</p>
+                <p class="tooltip light" >${d.ageMode} years old</p>
+              </div>   
             </div>
+            <div style="margin-top:1rem">
+              ${schoolDiv(d, "undergradMode", "UG")}
+              ${schoolDiv(d, "gradMode", "Grad")}
+            </div>
+  
+            <p style="margin-bottom:-10px; align-self: flex-end; text-align: right;" class="tooltip mini">${
+              d.length
+            } response</p>
+        </div>
+          `);
+      } else if (d.length > 3) {
+        this.tooltipDiv.html(`
+          <div style="display: flex;flex-direction: column;row-gap: 1rem;">
+            <div style="display: flex; gap: 20px; width: auto; min-width: 300px; flex-wrap: nowrap;">
+              <!-- Column 1 -->
+              <div style="flex: 1 1 auto; min-width: 0;">
+                <div style="display: flex; align-items: baseline;">
+                  <h4 class="tooltip bold">${d["locationMode"]}</h4>
+                  <p class="tooltip light" style="margin-left: 5px;">area</p>
+                </div>
+                <div style="display: flex; align-items: baseline;">
+                  <h4 class="tooltip bold">${d3.format("$,")(d.salary)}</h4>
+                  <p class="tooltip light" style="margin-left: 5px;">median income</p>
+                </div>
+                <div style="display: flex; align-items: baseline;">
+                  <h4 class="tooltip bold">${d3.format(".2f")(
+                    d["Job Satisfaction"]
+                  )}/10</h4>
+                  <p class="tooltip light" style="margin-left: 5px;">avg satisfaction</p>
+                </div>
+                <p style="margin-top:2px" class="tooltip light">${d3.format(
+                  ".0%"
+                )(d.percentageFemale)} female, ${d3.format(".0%")(
+          d.percentageMale
+        )} male</p>
+                <p class="tooltip light">${d3.format(".0%")(
+                  d.percentageLicensed
+                )} licensed</p>
+              </div>
+  
+              <!-- Column 2 -->
+              <div style="flex: 1 1 auto; min-width: 0;margin-top: 2px;">
+              <p class="tooltip light">Most Common Responses:</p>
+              <p class="tooltip light">${d.jobTitleMode}</p>
+                <p class="tooltip light">${
+                  d.firmTypeMode === "N/A"
+                    ? `Firm with ${d.firmSizeMode} ${personOrPeople}`
+                    : `${d.firmTypeMode} (${d.firmSizeMode} ${personOrPeople})`
+                }</p>
+                <p class="tooltip light" >${
+                  d.yearsOfExperienceMode
+                } years of experience</p>
+                <p class="tooltip light" >${d.ageMode} years old</p>
+              </div>   
+            </div>
+            <div>
+              ${schoolDiv(d, "undergradMode", "Most Common UG")}
+              ${schoolDiv(d, "gradMode", "Most Common Grad")}
+            </div>
+  
+            <p style="margin-bottom:-10px; align-self: flex-end; text-align: right;" class="tooltip mini">${
+              d.length
+            } responses</p>
+        </div>
+          `);
+      } else {
+        this.tooltipDiv.html(`
+          <div style="display: flex;flex-direction: column;row-gap: 1rem">
+            <div style="display: flex; gap: 20px; width: auto; min-width: 200px; flex-wrap: nowrap;">
+              <!-- Column 1 -->
+              <div style="flex: 1 1 auto; min-width: 0;">
+                <div style="display: flex; align-items: baseline;">
+                  <h4 class="tooltip bold">${d["locationMode"]}</h4>
+                  <p class="tooltip light" style="margin-left: 5px;">area</p>
+                </div>
+                <div style="display: flex; align-items: baseline;">
+                  <h4 class="tooltip bold">${d3.format("$,")(d.salary)}</h4>
+                  <p class="tooltip light" style="margin-left: 5px;">median income</p>
+                </div>
+                <div style="display: flex; align-items: baseline;">
+                  <h4 class="tooltip bold">${d3.format(".2f")(
+                    d["Job Satisfaction"]
+                  )}/10</h4>
+                  <p class="tooltip light" style="margin-left: 5px;">avg satisfaction</p>
+                </div>
+              </div>
+  
+            <p style="margin-bottom:-10px; align-self: flex-end; text-align: right;" class="tooltip mini">${
+              d.length
+            } responses</p>
+        </div>
+          `);
+      }
 
-            <!-- Column 2 -->
-            <div style="flex: 1 1 auto; min-width: 0;margin-top: 2px;">
-            <p class="tooltip light">Most Common Responses:</p>
-            <p class="tooltip light">${d.jobTitleMode}</p>
-              <p class="tooltip light">${
-                d.firmTypeMode === "N/A"
-                  ? `Firm with ${d.firmSizeMode} ${personOrPeople}`
-                  : `${d.firmTypeMode} (${d.firmSizeMode} ${personOrPeople})`
-              }</p>
-              <p class="tooltip light" >${
-                d.yearsOfExperienceMode
-              } years of experience</p>
-              <p class="tooltip light" >${d.ageMode} years old</p>
-            </div>   
-          </div>
-          <div>
-            ${schoolDiv(d, "undergradMode", "Most Common UG")}
-            ${schoolDiv(d, "gradMode", "Most Common Grad")}
-          </div>
-
-          <p style="margin-bottom:-10px; align-self: flex-end; text-align: right;" class="tooltip mini">${
-            d.length
-          } ${responses}</p>
-      </div>
-        `);
       // this.tooltipDiv.html(
       //   `${d.length.toLocaleString()} survey responses<br>
       //     ${d3.format(".2f")(d["Job Satisfaction"])} mean satisfaction<br>
