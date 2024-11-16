@@ -1,5 +1,6 @@
 import { geoAlbersUsaPr } from "./geoAlbersUsaPr.js";
 import { Legend } from "./legend.js";
+import calculateBounds from "./bounds.js";
 
 class HexbinMap {
   constructor(divID, stateMesh, colorScales) {
@@ -15,8 +16,8 @@ class HexbinMap {
     this.heightMap = 581;
 
     // Create the container SVG for map
-    this.svgMap = d3
-      .select(`div#${this.divID}`)
+    this.container = d3.select(`div#${this.divID}`);
+    this.svgMap = this.container
       .append("svg")
       .attr("viewBox", [0, 0, this.widthMap, this.heightMap])
       .attr("style", "max-width: 90%; height: auto;");
@@ -43,12 +44,9 @@ class HexbinMap {
     this.hexBinColorScale = this.mapArea
       .append("g")
       .attr("id", "hexBinColorScale");
-  }
 
-  render(data, categoryColor, categoryRadius) {
-    console.log("about to render hexbin map", data);
-    //Hexbin map
-    const hexbin = d3
+    //set up hexbinGenerator
+    this.hexbin = d3
       .hexbin()
       .extent([
         [0, 0],
@@ -58,35 +56,67 @@ class HexbinMap {
       .x((d) => {
         if (d.xy) {
           return d.xy[0];
-        }
-        //else {console.log("error: d is", d);}
+        } else {
+          console.log("error: d is", d);
+        } //TODO: remove this line in production
       })
       .y((d) => d.xy[1]);
 
-    const bins = hexbin(
-      //Guam unfortunately is not a part of the geo albers projection, so removing it from map visualization
+    //create tooltip
+    this.tooltipDiv = this.container
+      .append("div")
+      .attr("id", "tooltip")
+      .attr("class", "tooltip")
+      .style("visibility", "hidden")
+      .style("position", "absolute")
+      .style("background", "white")
+      .style("padding", "18px")
+      .style("border", "2px solid #181D27")
+      .style("border-radius", "5px")
+      .style("pointer-events", "none");
+  }
+
+  render(data, categoryColor, categoryRadius) {
+    console.log("about to render hexbin map", data);
+
+    const bins = this.hexbin(
       data
-        .filter((d) => d.Location !== "Barrigada, GU, US")
+        .filter((d) => d.Location !== "Barrigada, GU") //Guam unfortunately is not a part of the geo albers projection, so removing it from map visualization
         .map((d) => ({
           xy: this.projection([d.Longitude, d.Latitude]),
           Salary: d.Salary,
           Satisfaction: d["Job Satisfaction"],
           Licensed: d.Licensed,
           Gender: d.Gender,
+          Age: d.Age,
+          YearsOfExperience: d["Years of Experience"],
           Location: d.Location,
+          JobTitle: d["Job Title"],
           FirmType: d["Firm Type"],
           FirmSize: d["Firm Size"],
+          Undergrad: d["Undergraduate School"],
+          Grad: d["Graduate School"],
         }))
     ).map((d) => {
       d.salary = d3.median(d, (d) => d.Salary);
       d["Job Satisfaction"] = d3.mean(d, (d) => d.Satisfaction);
+      d.ageMode = d3.mode(d.map((d) => d.Age));
+      d.yearsOfExperienceMode = d3.mode(d.map((d) => d.YearsOfExperience));
       d.percentageLicensed =
         d.filter((d) => d.Licensed === "Yes").length / d.length;
       d.percentageFemale =
         d.filter((d) => d.Gender === "Female").length / d.length;
+      d.percentageMale = d.filter((d) => d.Gender === "Male").length / d.length;
       d.locationMode = d3.mode(d.map((d) => d.Location));
+      d.jobTitleMode = d3.mode(d.map((d) => d.JobTitle));
       d.firmTypeMode = d3.mode(d.map((d) => d.FirmType));
       d.firmSizeMode = d3.mode(d.map((d) => d.FirmSize));
+      d.undergradMode = d3.mode(d.map((d) => d.Undergrad));
+      d.undergradModeCount = d.filter(
+        (d) => d.Undergrad == d.undergradMode
+      ).length;
+      d.gradMode = d3.mode(d.map((d) => d.Grad));
+      d.gradModeCount = d.filter((d) => d.Grad == d.gradMode).length;
       return d;
     });
 
@@ -107,7 +137,7 @@ class HexbinMap {
 
     const radius = d3.scaleSqrt(
       d3.extent(bins, (d) => d[categoryRadius]),
-      [hexbin.radius() * 0.3, hexbin.radius() * 3]
+      [this.hexbin.radius() * 0.3, this.hexbin.radius() * 3]
     );
 
     // Append the hexagons
@@ -122,52 +152,159 @@ class HexbinMap {
         // if (d.x == 857.3651497465942 & d.y == 165) {
         //   console.log("d is", d, "d[categoryRadius]: ", d[categoryRadius], "radius: ", radius(d[categoryRadius]))
         // }
-        return hexbin.hexagon(radius(d[categoryRadius]));
+        return this.hexbin.hexagon(radius(d[categoryRadius]));
       })
       .attr("fill", (d) => color(d[categoryColor]))
       .attr("stroke", (d) => d3.lab(color(d[categoryColor])).darker())
       .attr("opacity", 0.8)
-      .append("title")
-      .text(
-        (d) =>
-          `${d.length.toLocaleString()} survey responses\n${d3.format(".2f")(
-            d["Job Satisfaction"]
-          )} mean satisfaction\n${d3.format("$.2s")(
-            d.salary
-          )} median salary\n${d3.format(".1%")(
-            d.percentageLicensed
-          )} licensed\n${d3.format(".1%")(d.percentageFemale)} female\n${
-            d.locationMode
-          } as most common location\n${
-            d.firmTypeMode
-          } as most common firm type\n${d.firmSizeMode} as most common firm size
-          `
-      );
+      .on("mouseover", (event, d) => mouseOver(event, d))
+      .on("mouseout", (event, d) => {
+        d3.select(event.target).attr("opacity", "0.8");
+        //this.tooltipDiv.style("visibility", "hidden");
+      });
 
-    let mapZoomed = ({ transform }) => {
-      // Transform the group object to reflect the zoom action
-      this.mapArea.attr("transform", transform.toString());
-      // Divide by scale to make sure strokes remain a consistent width during zooming
-      // mapArea.select(".state-outline")
-      //   .style("stroke-width", 2 / transform.k);
-      // mapArea.select(".county-outline")
-      //   .style("stroke-width", 1 / transform.k);
-      // mapArea.selectAll("circle")
-      //   .style("r", d => radius(d.length) / Math.sqrt(transform.k))
+    let mouseOver = (event, d) => {
+      d3.select(event.target).attr("opacity", "1");
+
+      let svgRect = this.svgMap.node().getBoundingClientRect();
+      let viewBox = this.svgMap.node().viewBox.baseVal;
+      //logging statements
+      // console.log("svgRect", svgRect);
+      // console.log("svgMap viewbox", viewBox);
+      // console.log("svgRect left", svgRect.left);
+      // console.log("d.x", d.x);
+      // console.log("svgRect.width", svgRect.width);
+      // console.log("viewBox.width", viewBox.width);
+      // console.log(
+      //   "attempt to set left as",
+      //   svgRect.left + (d.x * svgRect.width) / viewBox.width
+      // );
+      // console.log("svgRect top", svgRect.top);
+      // console.log("d.y", d.y);
+      // console.log("svgRect.height", svgRect.height);
+      // console.log("viewBox.height", viewBox.height);
+      // console.log(
+      //   "attempt to set top as ",
+      //   svgRect.top + (d.y * svgRect.height) / viewBox.height
+      // );
+
+      const personOrPeople = d.firmSizeMode === 1 ? "person" : "people";
+      const responses = d.length === 1 ? "response" : "responses";
+      const schoolDiv = (d, attribute, title) => {
+        return d[attribute]
+          ? `<div style="line-height: 1.2;display: flex; align-items: baseline;"><p class="tooltip regular">${title}:</p><p class="tooltip light" style="margin-left: 5px;">${d[attribute]}</p></div>`
+          : "";
+      };
+
+      this.tooltipDiv.html(`
+        <div style="display: flex;flex-direction: column;row-gap: 1rem">
+          <div style="display: flex; gap: 20px; width: auto; min-width: 300px; flex-wrap: nowrap;">
+            <!-- Column 1 -->
+            <div style="flex: 1 1 auto; min-width: 0;">
+              <div style="display: flex; align-items: baseline;">
+                <h4 class="tooltip bold">${d["locationMode"]}</h4>
+                <p class="tooltip light" style="margin-left: 5px;">area</p>
+              </div>
+              <div style="display: flex; align-items: baseline;">
+                <h4 class="tooltip bold">${d3.format("$,")(d.salary)}</h4>
+                <p class="tooltip light" style="margin-left: 5px;">median income</p>
+              </div>
+              <div style="display: flex; align-items: baseline;">
+                <h4 class="tooltip bold">${d3.format(".2f")(
+                  d["Job Satisfaction"]
+                )}/10</h4>
+                <p class="tooltip light" style="margin-left: 5px;">avg satisfaction</p>
+              </div>
+              <p style="margin-top:2px" class="tooltip light">${d3.format(
+                ".0%"
+              )(d.percentageFemale)} female, ${d3.format(".0%")(
+        d.percentageMale
+      )} male</p>
+              <p class="tooltip light">${d3.format(".0%")(
+                d.percentageLicensed
+              )} licensed</p>
+            </div>
+
+            <!-- Column 2 -->
+            <div style="flex: 1 1 auto; min-width: 0;margin-top: 2px;">
+            <p class="tooltip light">Most Common Responses:</p>
+            <p class="tooltip light">${d.jobTitleMode}</p>
+              <p class="tooltip light">${
+                d.firmTypeMode === "N/A"
+                  ? `Firm with ${d.firmSizeMode} ${personOrPeople}`
+                  : `${d.firmTypeMode} (${d.firmSizeMode} ${personOrPeople})`
+              }</p>
+              <p class="tooltip light" >${
+                d.yearsOfExperienceMode
+              } years of experience</p>
+              <p class="tooltip light" >${d.ageMode} years old</p>
+            </div>   
+          </div>
+          <div>
+            ${schoolDiv(d, "undergradMode", "Most Common UG")}
+            ${schoolDiv(d, "gradMode", "Most Common Grad")}
+          </div>
+
+          <p style="margin-bottom:-10px; align-self: flex-end; text-align: right;" class="tooltip mini">${
+            d.length
+          } ${responses}</p>
+      </div>
+        `);
+      // this.tooltipDiv.html(
+      //   `${d.length.toLocaleString()} survey responses<br>
+      //     ${d3.format(".2f")(d["Job Satisfaction"])} mean satisfaction<br>
+      //     ${d3.format("$,")(d.salary)} median salary<br>
+      //     ${d3.format(".1%")(d.percentageLicensed)} licensed<br>
+      //     ${d3.format(".1%")(d.percentageFemale)} female<br>
+      //     ${d.locationMode} as most common location<br>
+      //     ${d.firmTypeMode} as most common firm type<br>
+      //     ${d.firmSizeMode} as most common firm size<br>
+      //     ${d.ageMode} as most common age<br>
+      //     ${d.undergradMode} (${
+      //     d.undergradModeCount
+      //   }) most common undergrad school<br>
+      //     ${d.gradMode}  (${d.gradModeCount})most common grad school`
+      // );
+
+      const tooltipRect = this.tooltipDiv.node().getBoundingClientRect();
+      const bounds = calculateBounds(
+        svgRect.width,
+        svgRect.height,
+        tooltipRect.width,
+        tooltipRect.height,
+        (d.x * svgRect.width) / viewBox.width,
+        (d.y * svgRect.height) / viewBox.height
+      );
+      this.tooltipDiv
+        .style("left", bounds.x)
+        .style("top", bounds.y)
+        .style("visibility", "visible");
     };
-    //zooming functions, uncommented out for now
-    var zoom = d3
-      .zoom()
-      .scaleExtent([1, 15])
-      .translateExtent([
-        [-50, -50],
-        [this.widthMap + 50, this.heightMap + 50],
-      ]) // to lock to edges
-      .on("zoom", mapZoomed);
-    console.log("this.mapArea", this.mapArea);
-    this.svgMap.call(zoom);
-    //manually call zoom interaction to activate any code that's in zoomed()
-    this.svgMap.call(zoom.transform, d3.zoomIdentity);
+
+    // let mapZoomed = ({ transform }) => {
+    //   // Transform the group object to reflect the zoom action
+    //   this.mapArea.attr("transform", transform.toString());
+    //   // Divide by scale to make sure strokes remain a consistent width during zooming
+    //   // mapArea.select(".state-outline")
+    //   //   .style("stroke-width", 2 / transform.k);
+    //   // mapArea.select(".county-outline")
+    //   //   .style("stroke-width", 1 / transform.k);
+    //   // mapArea.selectAll("circle")
+    //   //   .style("r", d => radius(d.length) / Math.sqrt(transform.k))
+    // };
+    // //zooming functions, uncommented out for now
+    // var zoom = d3
+    //   .zoom()
+    //   .scaleExtent([1, 15])
+    //   .translateExtent([
+    //     [-50, -50],
+    //     [this.widthMap + 50, this.heightMap + 50],
+    //   ]) // to lock to edges
+    //   .on("zoom", mapZoomed);
+    // console.log("this.mapArea", this.mapArea);
+    // this.svgMap.call(zoom);
+    // //manually call zoom interaction to activate any code that's in zoomed()
+    // this.svgMap.call(zoom.transform, d3.zoomIdentity);
   }
 }
 
