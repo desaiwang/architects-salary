@@ -48,7 +48,8 @@
       <!-- Heading Text Section -->
   <section class="headingText">
     <h1>How much are architects really paid in the US?</h1>
-    <p>Using over 13,000 survey responses from Archinect.com, I visualized the relationships between pay, gender, location, licensure, and job satisfaction in architecture.</p>
+    <p>Using over 13,000 survey responses from <a class="removeUnderline" href="https://salaries.archinect.com/">
+      Archinect.com</a>, I visualized the relationships between pay, gender, location, licensure, and job satisfaction in architecture.</p>
     <p>My hope is that by sharing this data, we can drive pay transparency and strive for a fairer future for architects.</p>
   </section>
 
@@ -59,41 +60,10 @@
     </svg>
     </a>
   </div>
-
   </div>
-
-
 </div>
 
   <div>
-    <!-- <div class="heading">
-      <div class="header">
-        <div><a href="https://desaiwang.github.io">Desai Wang</a></div>
-        <div class="headerLinks">
-          <a href="https://desaiwang.com">work</a>
-
-          <a href="https://desaiwang.github.io">play</a>
-          <a href="https://desaiwang.com/blog">blog</a>
-        </div>
-      </div>
-
-      <div class="overview">
-
-        <div>
-          <h1>How much are architects really paid in the US?</h1>
-          <p>Using over 13,000 survey responses from Archinect.com, I visualized the relationships between pay, gender, location, licensure, and job satisfaction in architecture.</p>
-          <p>My hope is that by sharing this data, we can drive pay transparency and strive for a fairer future for architects.</p>
-        </div>
-
-        <div class="scrollArrow" style="align-self: flex-end; ">
-          <a href="#visualization" class="scroll-link"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" width="50" height="50">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25 12 21m0 0-3.75-3.75M12 21V3" />
-          </svg>
-          go to visualization</a>
-        </div>
-      </div>
-    </div> -->
-
     <div id="visualization" style="display: flex;">
       <div class="main" style="padding-bottom:16px">
         <div class="summaryContainer">
@@ -602,21 +572,36 @@
 
     loadIndividuals();
 
-    //monitoring scroll position
+    //also set div.aside to have opacity 1 if screen is large
+    if (window.innerWidth > 768) {
+      d3.select("div.aside")
+      .style("opacity", 1)
+      .style("transform", "scale(1)");
+    };
+    //monitoring scroll position to make aside sticky
     document.addEventListener("scroll", () => {
-      const aside = document.querySelector("div.aside");
-      const headingBottom = document.querySelector("div.heading").getBoundingClientRect().bottom;
+    const aside = document.querySelector("div.aside");
+    const headingBottom = document.querySelector("div.heading").getBoundingClientRect().bottom;
+    const isMobile = window.innerWidth <= 768;  // Adjust for mobile breakpoint
 
-      if (headingBottom <= 0) {
-        // If the heading is out of view, make aside sticky
-        aside.style.position = "fixed";
-        aside.style.top = "0";
-      } else {
-        // Reset aside to its original position
-        aside.style.position = "relative";
-        aside.style.top = "auto";
+    if (headingBottom <= 0) {
+      // If the heading is out of view, make aside sticky
+      aside.classList.add("sticky");
+
+      // Apply fade-in animation for mobile devices
+      if (isMobile) {
+        aside.classList.add("visible");  // Trigger the fade-in and pop-up effect
       }
-    });
+    } else {
+      // Reset aside to its original position and remove animation class
+      aside.classList.remove("sticky");
+
+            // Apply fade-in animation for mobile devices
+      if (isMobile) {
+        aside.classList.remove("visible");  // Trigger the fade-in and pop-up effect
+      }
+    }
+  });
 
     //this is d3 stock example
     // d3.select("div#hexbinMap").node().appendChild(await hexbinMap());

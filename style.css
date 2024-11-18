@@ -13,7 +13,8 @@
   --grey-900: #181D27;
   --grey-950: #0A0D12;
 
-  --sidebar-color: var(--grey-100)
+  --sidebar-color: var(--grey-100);
+  --hover-purple: #b366fc;
 }
 
 .grey-900{
@@ -86,6 +87,22 @@ div.aside {
   padding: 0rem 1rem 1rem 1rem;
   /* width set in index.html */
   /* transition: width 0.5s ease-in-out; */
+
+  opacity: 0; /* Initially hidden */
+  transform: scale(0.95); /* Slightly scale down for the "pop" effect */
+  transition: opacity 0.5s ease, transform 0.3s ease; /* Smooth fade-in and scaling */
+}
+
+/* For when the aside is active (on scroll past heading) */
+div.aside.visible {
+  opacity: 1;
+  transform: scale(1); /* Normal scale */
+}
+
+/* Make sure the aside is fixed when it becomes sticky */
+div.aside.sticky {
+  position: fixed;
+  top: 0;
 }
 
 div.aside::-webkit-scrollbar 
@@ -148,7 +165,7 @@ button.collapse.title span {
 button.collapse:active,
 button.collapse:hover,
 button.collapse:focus-visible {
-  color: #b366fc;
+  color: var(--hover-purple);
 }
 
 
@@ -305,7 +322,7 @@ div.summaryContainer{
   position:sticky; 
   top:-1; 
   background-color: var(--grey-25);
-  z-index:20;
+  z-index:10;
   padding: 0.5rem 0;
 }
 
@@ -453,15 +470,24 @@ html {
   scroll-behavior: smooth; /* Enables smooth scrolling */
 }
 
-.heading .scroll-link {
+.removeUnderline{
+  text-decoration: none;
+  color: var(--grey-900)
+}
+
+.removeUnderline:hover{
+  text-decoration: underline;
+}
+
+a.scroll-link {
   /* padding: 0.5rem 1rem; */
   color: var(--grey-900); /* Button text color */
   text-decoration: none;
   cursor: pointer;
 }
 
-.heading .scroll-link:hover {
-  background-color: var(--button-hover-color); /* Optional hover effect */
+a.scroll-link:hover {
+  color: var(--hover-purple); /* Optional hover effect */
 }
 
 div.scrollArrow a{
