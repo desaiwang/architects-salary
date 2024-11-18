@@ -15,27 +15,65 @@
   <script src="https://d3js.org/topojson.v2.min.js"></script>
   <!-- <script src="https://cdn.jsdelivr.net/npm/d3-tile@1"></script> -->
   <script src="https://cdn.jsdelivr.net/npm/d3-hexbin@0.2"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body>
+  <div className="w-[80%] max-w-[1300px] mx-auto z-10">
+    <div class="flex justify-between items-center py-6 md:py-10 w-full">
+      <!-- Left Section: Logo -->
+      <div class="text-xl md:text-3xl font-inter">
+        <a href="/home" class="hover:underline">Desai Wang</a>
+      </div>
+    
+      <!-- Middle Section: Navigation Links (hidden on small screens) -->
+      <div class="text-xl md:text-3xl flex space-x-14 font-inter hidden md:flex">
+        <a href="https://desaiwang.com" class="hover:underline">work</a>
+        <a href="/everything-I-ate-in-Singapore" class="hover:underline">play</a>
+        <a href="https://desaiwang.com/blog" class="hover:underline">blog</a>
+      </div>
+    
+      <!-- Right Section: Mobile Menu Button -->
+      <div class="md:hidden">
+        <button onclick="toggleMenu()" class="text-2xl">
+          ☰
+        </button>
+        <div id="mobile-menu" class="hidden z-100 absolute right-10 mt-2 p-2 px-5 w-28 bg-white bg-opacity-75 rounded-lg border border-black border-2 border-dotted">
+          <a href="https://desaiwang.com" class="block px-4 py-2 text-xl hover:underline">work</a>
+          <a href="/everything-I-ate-in-Singapore" class="block px-4 py-2 text-xl hover:underline">play</a>
+          <a href="https://desaiwang.com/blog" class="block px-4 py-2 text-xl hover:underline">blog</a>
+        </div>
+      </div>
+    </div>
+  
+      <div class="text-2xl md:text-4xl font-inter py-16 md:py-20 leading-tight md:leading-snug hyphens-auto grey-900">
+        <h1>How much are architects really paid in the US?</h1>
+  
+      <p>Using over 13,000 survey responses from Archinect.com, I visualized the relationships between pay, gender, location, licensure, and job satisfaction in architecture.</p>
+  
+      <p>My hope is that by sharing this data, we can drive pay transparency and strive for a fairer future for architects.</p></div>
+  </div>
+  
   <div>
-    <div class="heading">
+    <!-- <div class="heading">
       <div class="header">
         <div><a href="https://desaiwang.github.io">Desai Wang</a></div>
         <div class="headerLinks">
           <a href="https://desaiwang.com">work</a>
-          <!-- TODO: update play link when section is created -->
+
           <a href="https://desaiwang.github.io">play</a>
           <a href="https://desaiwang.com/blog">blog</a>
         </div>
       </div>
 
       <div class="overview">
+
         <div>
           <h1>How much are architects really paid in the US?</h1>
           <p>Using over 13,000 survey responses from Archinect.com, I visualized the relationships between pay, gender, location, licensure, and job satisfaction in architecture.</p>
           <p>My hope is that by sharing this data, we can drive pay transparency and strive for a fairer future for architects.</p>
         </div>
+
         <div class="scrollArrow" style="align-self: flex-end; ">
           <a href="#visualization" class="scroll-link"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" width="50" height="50">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25 12 21m0 0-3.75-3.75M12 21V3" />
@@ -43,7 +81,7 @@
           go to visualization</a>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <div id="visualization" style="display: flex;">
       <div class="main" style="padding-bottom:16px">
@@ -177,6 +215,18 @@
       
     </div>
   </div>
+
+  <script>
+    //for mobile menu toggles
+      const toggleMenu = () => {
+    const menu = document.getElementById('mobile-menu');
+    if (menu.classList.contains('hidden')) {
+      menu.classList.remove('hidden');
+    } else {
+      menu.classList.add('hidden');
+    }
+  };
+  </script>
 
   <script type="module">
 

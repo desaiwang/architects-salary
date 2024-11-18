@@ -16,6 +16,10 @@
   --sidebar-color: var(--grey-100)
 }
 
+.grey-900{
+  color: var(--grey-900)
+}
+
 body {
   font-family: 'Inter', sans-serif;
   font-weight: 300;
@@ -306,9 +310,10 @@ div.summaryContainer{
 
 /* styles for heading section*/
 div.heading{
-  padding:2.5rem 9.5rem;
-  min-height: 100vh;
+  /* padding:2.5rem 9.5rem; */
+  /* min-height: 100vh; */
 }
+
 
 div.header{
   display:flex; 
