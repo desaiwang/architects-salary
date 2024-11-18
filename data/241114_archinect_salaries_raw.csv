@@ -1,4 +1,8 @@
 id,Job Satisfaction,Salary,Salary Unit,Location,Job Title,Firm Type,Firm Size,Health Insurance,Overtime,Vacation Days,Annual Bonus,Work Status,Years of Experience,Age,Gender,Licensed,Undergraduate School,Graduate School,Post-Graduate School,Date
+20188,6,"65,000",peryear,"San Francisco, CA, US",Junior Designer,NA,16-30 People,NA,NA,NA,NA,NA,< 1,21-25,Male,No,NA,NA,NA,Nov '24
+20187,7,"67,000",peryear,"Chicago, IL, US",Junior Architect,Corporate,501 + People,Yes,Unpaid Overtime,12,"10,000",Full-time,3-5,26-30,Male,Licensed,NA,NA,NA,Nov '24
+20185,8,"97,000",peryear,"Madison, WI, US",Project Manager,Corporate,51-100 People,Yes,Unpaid Overtime,15,"13,000",Full-time,11-15,31-35,Male,Licensed,UG:University of Wisconsin-Milwaukee,Grad:University of Oregon,NA,Nov '24
+20183,6,"116,000",peryear,"San Francisco, CA, US",Job Captain,Corporate,51-100 People,Yes,Unpaid Overtime,14,"15,000",Full-time,8-10,31-35,Male,No,UG:University of Southern California (USC),NA,NA,Nov '24
 20182,5,"68,000",peryear,"Albany, NY, US",Designer,Corporate,11-15 People,Yes,Unpaid Overtime,12,NA,Full-time,3-5,26-30,Female,No,UG:University of Oregon,Grad:University of Oregon,NA,Nov '24
 20181,7,"100,000",peryear,"Philadelphia, PA, US",Project Architect,Starchitect,31-50 People,Yes,No Overtime,10,NA,Full-time,11-15,36-40,Female,Licensed,NA,NA,NA,Nov '24
 20180,6,"100,000",peryear,"Steamboat Springs, CO, US",Project Architect,Boutique,11-15 People,Yes,Unpaid Overtime,21,"2,000",Full-time,8-10,31-35,Female,Licensed,UG:University of Colorado at Boulder,NA,NA,Nov '24

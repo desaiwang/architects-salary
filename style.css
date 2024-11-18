@@ -14,6 +14,14 @@
   --grey-950: #0a0d12;
 
   --sidebar-color: var(--grey-100);
+<<<<<<< HEAD
+=======
+  --hover-purple: #b366fc;
+}
+
+.grey-900{
+  color: var(--grey-900)
+>>>>>>> main
 }
 
 body {
@@ -79,6 +87,22 @@ div.aside {
   padding: 0rem 1rem 1rem 1rem;
   /* width set in index.html */
   /* transition: width 0.5s ease-in-out; */
+
+  opacity: 0; /* Initially hidden */
+  transform: scale(0.95); /* Slightly scale down for the "pop" effect */
+  transition: opacity 0.5s ease, transform 0.3s ease; /* Smooth fade-in and scaling */
+}
+
+/* For when the aside is active (on scroll past heading) */
+div.aside.visible {
+  opacity: 1;
+  transform: scale(1); /* Normal scale */
+}
+
+/* Make sure the aside is fixed when it becomes sticky */
+div.aside.sticky {
+  position: fixed;
+  top: 0;
 }
 
 div.aside::-webkit-scrollbar div.suggestionContainer::-webkit-scrollbar {
@@ -140,7 +164,7 @@ button.collapse.title span {
 button.collapse:active,
 button.collapse:hover,
 button.collapse:focus-visible {
-  color: #b366fc;
+  color: var(--hover-purple);
 }
 
 button.clear-filters {
@@ -293,6 +317,7 @@ div.summaryContainer {
   position: sticky;
   top: -1;
   background-color: var(--grey-25);
+<<<<<<< HEAD
   z-index: 10;
   padding: 0.5rem 0;
 }
@@ -300,9 +325,25 @@ div.summaryContainer {
 /* styles for heading section*/
 div.heading {
   padding: 2.5rem 9.5rem;
-  min-height: 100vh;
+=======
+  z-index:10;
+  padding: 0.5rem 0;
 }
 
+/*trying to copy tailwind styles from desaiwang.github.io*/
+div.headingContainer {
+>>>>>>> main
+  min-height: 100vh;
+  width: 80%;
+  max-width: 1300px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+  display:flex;
+  flex-direction:column;
+}
+
+<<<<<<< HEAD
 div.header {
   display: flex;
   justify-content: space-between;
@@ -327,16 +368,141 @@ div.headerLinks {
 
 div.overview {
   padding: 5rem 0;
+=======
+/* Header Section */
+header {
+>>>>>>> main
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 0;
+  position: relative;
+
+  flex-shrink:0;
 }
 
+<<<<<<< HEAD
 div.overview h1,
 div.overview p {
   font-size: 2.5rem;
   font-weight: 400;
   color: var(--grey-900);
+=======
+header .logo {
+  font-size: 1.25rem; /* Default size */
+  font-family: 'Inter', sans-serif;
+}
+
+header .navigation {
+  display: none;
+}
+
+header .navigation.desktop {
+  display: none; /* Hidden on smaller screens */
+}
+
+header .navigation.desktop a,
+header .logo a {
+  text-decoration: none;
+  color: var(--grey-900);
+  font-weight:400;
+}
+
+header .navigation.desktop a:hover,
+header .logo a:hover {
+  text-decoration: underline;
+}
+
+header .menu-button {
+  font-size: 2rem;
+  display: block;
+  cursor: pointer;
+}
+
+header .menu-mobile {
+  display: none;
+  position: absolute;
+  right: 2.5rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  width: 7rem;
+  background: rgba(255, 255, 255, 0.75);
+  border: 2px dotted black;
+  border-radius: 0.5rem;
+  z-index: 100;
+}
+
+header .menu-mobile a {
+  display: block;
+  padding: 0.5rem 0;
+  font-size: 1.25rem;
+}
+
+header .menu-mobile a:hover {
+  text-decoration: underline;
+}
+
+.heading{
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  align-items:center;
+  padding: 0rem 0 4rem;
+
+  flex-grow:1;
+}
+
+/* Heading Text Section */
+.headingText {
+  font-size: 1.75rem;
+  font-family: 'Inter', sans-serif;
+  padding: 1rem 0;
+  line-height: 1.25;
+  color: var(--grey-900);
+}
+
+.headingText h1 {
+  font-size: 2rem;
+  font-weight:400;
+  margin-bottom: 1rem;
+  margin-top:0rem;
+}
+
+
+.headingText p {
+  margin-bottom: 1rem;
+}
+
+/* Responsive Styles */
+@media (min-width: 768px) {
+  header {
+    padding: 2.5rem 0; /* Matches md:py-10 */
+  }
+
+  header .logo,
+  header .navigation.desktop {
+  font-size: 1.875rem; /* Matches md:text-3xl */
+}
+
+  header .navigation.desktop {
+    display: flex; /* Shows navigation on larger screens */
+    gap: 3.5rem;
+  }
+
+  header .menu-button {
+    display: none; /* Hides the menu button on larger screens */
+  }
+
+  .headingText {
+    padding: 4rem 0 2rem 0;
+    font-size: 2.5rem; /* Matches md:text-4xl */
+    line-height: 1.5; /* Matches md:leading-snug */
+  }
+
+  .headingText h1{
+    font-size: 2.75rem;
+  }
+>>>>>>> main
 }
 
 /* section navigation */
@@ -344,16 +510,24 @@ html {
   scroll-behavior: smooth; /* Enables smooth scrolling */
 }
 
-.heading .scroll-link {
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
+.removeUnderline{
+  text-decoration: none;
+  color: var(--grey-900)
+}
+
+.removeUnderline:hover{
+  text-decoration: underline;
+}
+
+a.scroll-link {
+  /* padding: 0.5rem 1rem; */
   color: var(--grey-900); /* Button text color */
   text-decoration: none;
   cursor: pointer;
 }
 
-.heading .scroll-link:hover {
-  background-color: var(--button-hover-color); /* Optional hover effect */
+a.scroll-link:hover {
+  color: var(--hover-purple); /* Optional hover effect */
 }
 
 div.scrollArrow a {
