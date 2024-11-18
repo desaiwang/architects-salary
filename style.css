@@ -308,6 +308,16 @@ div.summaryContainer{
   padding: 0.5rem 0;
 }
 
+/*trying to copy tailwind styles from desaiwang.github.io*/
+div.headingContainer {
+  width: 80%;
+  max-width: 1300px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+
 /* styles for heading section*/
 div.heading{
   /* padding:2.5rem 9.5rem; */
