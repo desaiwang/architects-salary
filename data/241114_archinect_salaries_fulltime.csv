@@ -1,4 +1,8 @@
 id,Job Satisfaction,Salary,Salary Unit,Location,Job Title,Firm Type,Firm Size,Health Insurance,Overtime,Vacation Days,Annual Bonus,Work Status,Years of Experience,Age,Gender,Licensed,Undergraduate School,Graduate School,Post-Graduate School,Date,Year,Latitude,Longitude
+20188,6,65000,year,"San Francisco, CA",Junior Designer,,16-30,,,,,,< 1,21-25,Male,No,,,,2024-11-01,2024,37.7792588,-122.4193286
+20187,7,67000,year,"Chicago, IL",Junior Architect,Corporate,501+,Yes,Unpaid Overtime,12.0,10000.0,Full-time,3-5,26-30,Male,Yes,,,,2024-11-01,2024,41.8755616,-87.6244212
+20185,8,97000,year,"Madison, WI",Project Manager,Corporate,51-100,Yes,Unpaid Overtime,15.0,13000.0,Full-time,11-15,31-35,Male,Yes,University of Wisconsin-Milwaukee,University of Oregon,,2024-11-01,2024,43.074761,-89.3837613
+20183,6,116000,year,"San Francisco, CA",Job Captain,Corporate,51-100,Yes,Unpaid Overtime,14.0,15000.0,Full-time,8-10,31-35,Male,No,University of Southern California (USC),,,2024-11-01,2024,37.7792588,-122.4193286
 20182,5,68000,year,"Albany, NY",Designer,Corporate,11-15,Yes,Unpaid Overtime,12.0,,Full-time,3-5,26-30,Female,No,University of Oregon,University of Oregon,,2024-11-01,2024,42.6511674,-73.754968
 20181,7,100000,year,"Philadelphia, PA",Project Architect,Starchitect,31-50,Yes,No Overtime,10.0,,Full-time,11-15,36-40,Female,Yes,,,,2024-11-01,2024,39.9527237,-75.1635262
 20180,6,100000,year,"Steamboat Springs, CO",Project Architect,Boutique,11-15,Yes,Unpaid Overtime,21.0,2000.0,Full-time,8-10,31-35,Female,Yes,University of Colorado at Boulder,,,2024-11-01,2024,,
