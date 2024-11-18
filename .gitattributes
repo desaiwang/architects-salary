@@ -1,4 +1,2 @@
 # Auto detect text files and perform LF normalization
 * text=auto
-# trying to strip ipynb outputs //but can be nice to leave it out as well.
-*.ipynb filter=strip-notebook-output
