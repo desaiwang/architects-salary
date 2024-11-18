@@ -14,14 +14,11 @@
   --grey-950: #0a0d12;
 
   --sidebar-color: var(--grey-100);
-<<<<<<< HEAD
-=======
   --hover-purple: #b366fc;
 }
 
-.grey-900{
-  color: var(--grey-900)
->>>>>>> main
+.grey-900 {
+  color: var(--grey-900);
 }
 
 body {
@@ -317,80 +314,36 @@ div.summaryContainer {
   position: sticky;
   top: -1;
   background-color: var(--grey-25);
-<<<<<<< HEAD
   z-index: 10;
-  padding: 0.5rem 0;
-}
-
-/* styles for heading section*/
-div.heading {
-  padding: 2.5rem 9.5rem;
-=======
-  z-index:10;
   padding: 0.5rem 0;
 }
 
 /*trying to copy tailwind styles from desaiwang.github.io*/
 div.headingContainer {
->>>>>>> main
   min-height: 100vh;
   width: 80%;
   max-width: 1300px;
   margin: 0 auto;
   position: relative;
   z-index: 10;
-  display:flex;
-  flex-direction:column;
-}
-
-<<<<<<< HEAD
-div.header {
   display: flex;
-  justify-content: space-between;
-  font-size: 30px;
-  font-weight: 400;
+  flex-direction: column;
 }
 
-div.header a {
-  color: var(--grey900);
-  text-decoration: none;
-}
-
-div.header a:hover {
-  text-decoration: underline;
-}
-
-div.headerLinks {
-  display: flex;
-  flex-direction: row;
-  column-gap: 3.5rem;
-}
-
-div.overview {
-  padding: 5rem 0;
-=======
 /* Header Section */
 header {
->>>>>>> main
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem 0;
   position: relative;
 
-  flex-shrink:0;
+  flex-shrink: 0;
 }
 
-<<<<<<< HEAD
-div.overview h1,
-div.overview p {
-  font-size: 2.5rem;
-  font-weight: 400;
-  color: var(--grey-900);
-=======
 header .logo {
   font-size: 1.25rem; /* Default size */
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 header .navigation {
@@ -405,7 +358,7 @@ header .navigation.desktop a,
 header .logo a {
   text-decoration: none;
   color: var(--grey-900);
-  font-weight:400;
+  font-weight: 400;
 }
 
 header .navigation.desktop a:hover,
@@ -442,20 +395,20 @@ header .menu-mobile a:hover {
   text-decoration: underline;
 }
 
-.heading{
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  align-items:center;
+.heading {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
   padding: 0rem 0 4rem;
 
-  flex-grow:1;
+  flex-grow: 1;
 }
 
 /* Heading Text Section */
 .headingText {
   font-size: 1.75rem;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   padding: 1rem 0;
   line-height: 1.25;
   color: var(--grey-900);
@@ -463,11 +416,10 @@ header .menu-mobile a:hover {
 
 .headingText h1 {
   font-size: 2rem;
-  font-weight:400;
+  font-weight: 400;
   margin-bottom: 1rem;
-  margin-top:0rem;
+  margin-top: 0rem;
 }
-
 
 .headingText p {
   margin-bottom: 1rem;
@@ -481,8 +433,8 @@ header .menu-mobile a:hover {
 
   header .logo,
   header .navigation.desktop {
-  font-size: 1.875rem; /* Matches md:text-3xl */
-}
+    font-size: 1.875rem; /* Matches md:text-3xl */
+  }
 
   header .navigation.desktop {
     display: flex; /* Shows navigation on larger screens */
@@ -499,10 +451,9 @@ header .menu-mobile a:hover {
     line-height: 1.5; /* Matches md:leading-snug */
   }
 
-  .headingText h1{
+  .headingText h1 {
     font-size: 2.75rem;
   }
->>>>>>> main
 }
 
 /* section navigation */
@@ -510,12 +461,12 @@ html {
   scroll-behavior: smooth; /* Enables smooth scrolling */
 }
 
-.removeUnderline{
+.removeUnderline {
   text-decoration: none;
-  color: var(--grey-900)
+  color: var(--grey-900);
 }
 
-.removeUnderline:hover{
+.removeUnderline:hover {
   text-decoration: underline;
 }
 
