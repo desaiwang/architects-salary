@@ -224,6 +224,19 @@ div#filters {
   /* transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out; */
 }
 
+/*hexBin map styles*/
+
+.stateOutline {
+  stroke: var(--grey-400);
+  stroke-width: 1;
+}
+
+.hexBinSizeLegend {
+  stroke: var(--grey-400);
+  stroke-width: 1;
+  fill: none;
+}
+
 div.main {
   padding-bottom: 16px;
   min-height: 100vh;

@@ -26,8 +26,10 @@ class HexbinMap {
       .attr("viewBox", [0, 0, this.widthMap, this.heightMap + 80]) //50 is for legends at the bottom
       .attr("style", "max-width: 90%; height: auto;");
 
+    this.svgColorScale = this.container.append("g");
+    this.svgSizeScale = this.svgMap.append("g");
+
     this.mapArea = this.svgMap.append("g");
-    console.log("mapArea", this.mapArea);
 
     this.projection = geoAlbersUsaPr()
       .scale((4 / 3) * this.widthMap)
@@ -37,19 +39,23 @@ class HexbinMap {
     this.mapArea
       .append("path")
       .datum(this.stateMesh)
+      .attr("class", "stateOutline")
       .attr("fill", "none")
-      .attr("stroke", "#777")
-      .attr("stroke-width", 0.5)
       .attr("stroke-linejoin", "round")
       .attr("d", d3.geoPath(this.projection));
 
     //set up the layer used for hexBin rendering
     this.hexBinLayer = this.mapArea.append("g");
     this.hexBinHover = this.mapArea.append("g");
-    this.hexBinColorScale = this.mapArea
-      .append("g")
+    this.hexBinColorScale = this.svgColorScale
       .attr("id", "hexBinColorScale")
       .style("transform", `translate(${20}px, ${this.heightMap + 10}px)`);
+    this.hexBinSizeScale = this.svgSizeScale
+      .attr("id", "hexBinSizeScale")
+      .style(
+        "transform",
+        `translate(${this.widthMap - 200}px, ${this.heightMap + 10}px)`
+      );
 
     //set up hexbinGenerator
     this.hexbin = d3
@@ -82,18 +88,79 @@ class HexbinMap {
       .style("pointer-events", "none");
   }
 
+  updateColorScale() {
+    if (
+      this.colorAttribute == "firmTypeMode" ||
+      this.colorAttribute == "firmSizeMode"
+    ) {
+      this.color = this.colorScales[this.colorAttribute];
+      this.hexBinColorScale.selectAll("*").remove();
+
+      //TODO: how to get the nodes to render into this svg?
+    } else {
+      this.color = d3.scaleSequential(
+        d3.extent(this.bins, (d) => d[this.colorAttribute]),
+        this.colorScales[this.colorAttribute]
+      );
+
+      this.hexBinColorScale.selectAll("*").remove();
+      this.hexBinColorScale.node().append(Legend(this.color));
+    }
+  }
+
   updateColorAttribute(colorAttribute) {
     this.colorAttribute = colorAttribute;
-    this.render();
+    this.updateColorScale();
+
+    this.hexBinLayer
+      .selectAll("path")
+      .attr("fill", (d) => this.color(d[this.colorAttribute]))
+      .attr("stroke", (d) =>
+        d3.lab(this.color(d[this.colorAttribute])).darker()
+      );
   }
 
   updateSizeScale() {
-    this.radius = d3.scaleSqrt(
-      d3.extent(this.bins, (d) => d[this.sizeAttribute]),
-      this.sizeAttribute == "length"
-        ? [this.hexbin.radius() * 0.3, this.hexbin.radius() * 3]
-        : [this.hexbin.radius() * 0.1, this.hexbin.radius() * 1.1]
+    const sizeAttributeDomain = d3.extent(
+      this.bins,
+      (d) => d[this.sizeAttribute]
     );
+
+    if (this.sizeAttribute == "length") {
+      this.radius = d3.scaleSqrt(sizeAttributeDomain, [
+        this.hexbin.radius() * 0.3,
+        this.hexbin.radius() * 2.1,
+      ]);
+    } else {
+      this.radius = d3.scaleSqrt(sizeAttributeDomain, [
+        this.hexbin.radius() * 0.1,
+        this.hexbin.radius() * 1.1,
+      ]);
+    }
+
+    // this.radius = d3.scaleSqrt(
+    //   sizeAttributeDomain,
+    //   this.sizeAttribute == "length"
+    //     ? [this.hexbin.radius() * 0.3, this.hexbin.radius() * 2.5]
+    //     : [this.hexbin.radius() * 0.1, this.hexbin.radius() * 1.1]
+    // );
+
+    // let xAcc = 0;
+    // const tickData =
+    //   sizeAttributeDomain[1] > 1000
+    //     ? [100, 500, 1000, 1500]
+    //     : this.radius.ticks(5);
+    // this.hexBinSizeScale
+    //   .selectAll("path")
+    //   .data(tickData)
+    //   .join("path")
+    //   .attr("class", "hexBinSizeLegend")
+    //   .attr("d", (d) => this.hexbin.hexagon(this.radius(d)))
+    //   .style("transform", (d, i) => {
+    //     const xPos = xAcc;
+    //     xAcc += this.radius(d) * 2 + 20;
+    //     return `translate(${xPos}px, 18px)`;
+    //   });
   }
 
   updateSizeAttribute(sizeAttribute) {
@@ -114,8 +181,6 @@ class HexbinMap {
   }
 
   render() {
-    console.log("about to render hexbin map, logging data", this.data);
-
     this.bins = this.hexbin(
       this.data
         .filter((d) => d.Location !== "Barrigada, GU") //Guam unfortunately is not a part of the geo albers projection, so removing it from map visualization
@@ -165,26 +230,8 @@ class HexbinMap {
     const minBinLength = 5;
     this.bins = this.bins.filter((d) => d.length > minBinLength);
 
-    let color;
-    if (
-      this.colorAttribute == "firmTypeMode" ||
-      this.colorAttribute == "firmSizeMode"
-    ) {
-      color = this.colorScales[this.colorAttribute];
-      this.hexBinColorScale.selectAll("*").remove();
-
-      //TODO: how to get the nodes to render into this svg?
-    } else {
-      color = d3.scaleSequential(
-        d3.extent(this.bins, (d) => d[this.colorAttribute]),
-        this.colorScales[this.colorAttribute]
-      );
-
-      this.hexBinColorScale.selectAll("*").remove();
-      this.hexBinColorScale.node().append(Legend(color));
-    }
-
     this.updateSizeScale();
+    this.updateColorScale();
 
     // Append the hexagons
     this.hexBinLayer.selectAll("path").remove();
@@ -200,8 +247,10 @@ class HexbinMap {
         // }
         return this.hexbin.hexagon(this.radius(d[this.sizeAttribute]));
       })
-      .attr("fill", (d) => color(d[this.colorAttribute]))
-      .attr("stroke", (d) => d3.lab(color(d[this.colorAttribute])).darker())
+      .attr("fill", (d) => this.color(d[this.colorAttribute]))
+      .attr("stroke", (d) =>
+        d3.lab(this.color(d[this.colorAttribute])).darker()
+      )
       .attr("opacity", 0.8)
       .on("mouseover", (event, d) => mouseOver(event, d))
       .on("mouseout", (event, d) => {

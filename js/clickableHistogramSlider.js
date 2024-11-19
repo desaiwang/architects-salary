@@ -75,9 +75,8 @@ class ClickableHistogramSlider {
     //set timeout to be null
     this.timeout = null;
     this.uniqueKeys = this.groupCounts.map((d) => d.key);
-    console.log("uniqueKeys", this.uniqueKeys);
-    //set colorScale if colorInterpolator is provided
 
+    //set colorScale if colorInterpolator is provided
     if (this.options.colorInterpolationType) {
       if (this.options.colorInterpolationType === "sequential discrete") {
         this.colorScale = (x) =>
