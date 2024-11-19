@@ -93,7 +93,7 @@
         </div>
       </div>
 
-      <div id="canvasContainer" style="position: relative"></div>
+      <div id="canvasContainer" style="position: relative; display:none"></div>
 
       <div id="hexbinMap" style="position: relative"></div>
 
@@ -217,15 +217,15 @@
               <div class="colorScaleHexbin" style="margin-left: 1.25rem">
                 <select class="colorScaleHexbin" style="width: 180">
                   <option value="Job Satisfaction" selected>
-                    Job Satisfaction
+                    Job Satisfaction (Mean)
                   </option>
                   <option value="Salary">
-                    Salary
+                    Salary (Median)
                   </option>
                   <option value="percentageFemale">Gender (% Female)</option>
                   <option value="percentageLicensed">Licensed</option>
-                  <option value="firmTypeMode">Firm Type</option>
-                  <option value="firmSizeMode">Firm Size</option>
+                  <option value="firmTypeMode">Firm Type (Most Common)</option>
+                  <option value="firmSizeMode">Firm Size (Most Common)</option>
                 </select>
               </div>
             </div>
@@ -598,6 +598,15 @@
         }
       });
 
+      const colorScalesHexbin = {
+        "Job Satisfaction": BuOrColorInterpolator,
+        "Salary": d3.interpolateGnBu,
+        "percentageLicensed": d3.interpolateBlues,
+        "percentageFemale": d3.interpolateRgb("#3ca951", "#ff8ab7"),
+        "firmTypeMode": colorScales["Firm Type"],
+        "firmSizeMode": colorScales["Firm Size"],
+      };
+
       //individual map
       //setting up params and functions to handle canvas resizing
       //TODO: need to apply to hexBin as well
@@ -726,7 +735,7 @@
         if (showIndMap) {
           individualMap.update();
         } else {
-          hexbinMap.render(passingData, "Job Satisfaction", "length");
+          hexbinMap.render(passingData);
         }
 
         //display correct customize
@@ -815,8 +824,12 @@
         states.objects.cb_2023_us_state_5m
       );
 
-      let hexbinMap = new HexbinMap("hexbinMap", stateMesh, colorScales);
+      let hexbinMap = new HexbinMap("hexbinMap", data, stateMesh, colorScalesHexbin);
 
+      //set up the hexbin customize dropdowns
+      d3.select("select.colorScaleHexbin").on("change", function () {
+        hexbinMap.updateColorAttribute(this.value);
+      });
       //update data
       function updateData() {
         //filter for passing data
@@ -870,7 +883,7 @@
         if (showIndMap) {
           individualMap.update();
         } else {
-          hexbinMap.render(passingData, "Job Satisfaction", "length");
+          hexbinMap.updateData(passingData);
         }
 
       }
