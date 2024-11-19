@@ -830,6 +830,11 @@
       d3.select("select.colorScaleHexbin").on("change", function () {
         hexbinMap.updateColorAttribute(this.value);
       });
+
+      d3.select("select.sizeScaleHexbin").on("change", function () {
+        hexbinMap.updateSizeAttribute(this.value);
+      });
+
       //update data
       function updateData() {
         //filter for passing data

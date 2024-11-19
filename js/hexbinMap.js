@@ -87,6 +87,27 @@ class HexbinMap {
     this.render();
   }
 
+  updateSizeScale() {
+    this.radius = d3.scaleSqrt(
+      d3.extent(this.bins, (d) => d[this.sizeAttribute]),
+      this.sizeAttribute == "length"
+        ? [this.hexbin.radius() * 0.3, this.hexbin.radius() * 3]
+        : [this.hexbin.radius() * 0.1, this.hexbin.radius() * 1.1]
+    );
+  }
+
+  updateSizeAttribute(sizeAttribute) {
+    this.sizeAttribute = sizeAttribute;
+
+    this.updateSizeScale();
+
+    this.hexBinLayer
+      .selectAll("path")
+      .transition()
+      .attr("d", (d, i) =>
+        this.hexbin.hexagon(this.radius(d[this.sizeAttribute]))
+      );
+  }
   updateData(data) {
     this.data = data;
     this.render();
@@ -95,7 +116,7 @@ class HexbinMap {
   render() {
     console.log("about to render hexbin map, logging data", this.data);
 
-    let bins = this.hexbin(
+    this.bins = this.hexbin(
       this.data
         .filter((d) => d.Location !== "Barrigada, GU") //Guam unfortunately is not a part of the geo albers projection, so removing it from map visualization
         .map((d) => ({
@@ -142,7 +163,7 @@ class HexbinMap {
     //restrict bins to only those with a length greater than a certain number
     //TODO: maybe make this an user-controllable variable
     const minBinLength = 5;
-    bins = bins.filter((d) => d.length > minBinLength);
+    this.bins = this.bins.filter((d) => d.length > minBinLength);
 
     let color;
     if (
@@ -155,7 +176,7 @@ class HexbinMap {
       //TODO: how to get the nodes to render into this svg?
     } else {
       color = d3.scaleSequential(
-        d3.extent(bins, (d) => d[this.colorAttribute]),
+        d3.extent(this.bins, (d) => d[this.colorAttribute]),
         this.colorScales[this.colorAttribute]
       );
 
@@ -163,20 +184,13 @@ class HexbinMap {
       this.hexBinColorScale.node().append(Legend(color));
     }
 
-    const radius = d3.scaleSqrt(
-      d3.extent(bins, (d) => d[this.sizeAttribute]),
-      [this.hexbin.radius() * 0.3, this.hexbin.radius() * 3]
-    );
+    this.updateSizeScale();
 
     // Append the hexagons
     this.hexBinLayer.selectAll("path").remove();
-
-    if (this.colorAttribute == "firmSizeMode") {
-      console.log("just testing Firm Size color scales, color (1)", color(1));
-    }
-    this.hexagons = this.hexBinLayer
+    this.hexBinLayer
       .selectAll("path")
-      .data(bins)
+      .data(this.bins)
       .join("path")
       .attr("class", "hexBin")
       .attr("transform", (d) => `translate(${d.x},${d.y})`)
@@ -184,18 +198,9 @@ class HexbinMap {
         // if (d.x == 857.3651497465942 & d.y == 165) {
         //   console.log("d is", d, "d[this.sizeAttribute]: ", d[this.sizeAttribute], "radius: ", radius(d[this.sizeAttribute]))
         // }
-        return this.hexbin.hexagon(radius(d[this.sizeAttribute]));
+        return this.hexbin.hexagon(this.radius(d[this.sizeAttribute]));
       })
-      .attr("fill", (d) => {
-        if (this.colorAttribute == "firmSizeMode") {
-          console.log("d[this.colorAttribute]", d[this.colorAttribute]);
-          console.log(
-            "color(d[this.colorAttribute])",
-            color(d[this.colorAttribute])
-          );
-        }
-        return color(d[this.colorAttribute]);
-      })
+      .attr("fill", (d) => color(d[this.colorAttribute]))
       .attr("stroke", (d) => d3.lab(color(d[this.colorAttribute])).darker())
       .attr("opacity", 0.8)
       .on("mouseover", (event, d) => mouseOver(event, d))
@@ -205,21 +210,11 @@ class HexbinMap {
         this.hexBinHover.selectAll("*").remove();
       });
 
-    // console.log("bins", bins);
-    // this.hexBinHover
-    //   .selectAll("path")
-    //   .data(bins)
-    //   .join("path")
-    //   .attr("transform", (d) => `translate(${d.x},${d.y})`)
-    //   .attr("d", (d) => this.hexbin.hexagon(radius(d[this.sizeAttribute]) + 2))
-    //   .attr("fill", "none")
-    //   .attr("stroke", "black");
-
     let mouseOver = (event, d) => {
       console.log("mouseOver d", d);
       d3.select(event.target).attr("opacity", "1");
 
-      const hexRadius = radius(d[this.sizeAttribute]);
+      const hexRadius = this.radius(d[this.sizeAttribute]);
       const hoverHexRadius = hexRadius + 3;
       this.hexBinHover
         .append("path")
