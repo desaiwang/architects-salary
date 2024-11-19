@@ -3,10 +3,14 @@ import { Legend } from "./legend.js";
 import calculateBounds from "./bounds.js";
 
 class HexbinMap {
-  constructor(divID, stateMesh, colorScales) {
+  constructor(divID, data, stateMesh, colorScales) {
     this.divID = divID;
+    this.data = data;
     this.stateMesh = stateMesh;
     this.colorScales = colorScales;
+
+    this.colorAttribute = "Job Satisfaction";
+    this.sizeAttribute = "length";
     this.initialize();
   }
 
@@ -19,7 +23,7 @@ class HexbinMap {
     this.container = d3.select(`div#${this.divID}`);
     this.svgMap = this.container
       .append("svg")
-      .attr("viewBox", [0, 0, this.widthMap, this.heightMap])
+      .attr("viewBox", [0, 0, this.widthMap, this.heightMap + 80]) //50 is for legends at the bottom
       .attr("style", "max-width: 90%; height: auto;");
 
     this.mapArea = this.svgMap.append("g");
@@ -41,9 +45,11 @@ class HexbinMap {
 
     //set up the layer used for hexBin rendering
     this.hexBinLayer = this.mapArea.append("g");
+    this.hexBinHover = this.mapArea.append("g");
     this.hexBinColorScale = this.mapArea
       .append("g")
-      .attr("id", "hexBinColorScale");
+      .attr("id", "hexBinColorScale")
+      .style("transform", `translate(${20}px, ${this.heightMap + 10}px)`);
 
     //set up hexbinGenerator
     this.hexbin = d3
@@ -76,11 +82,21 @@ class HexbinMap {
       .style("pointer-events", "none");
   }
 
-  render(data, categoryColor, categoryRadius) {
-    console.log("about to render hexbin map", data);
+  updateColorAttribute(colorAttribute) {
+    this.colorAttribute = colorAttribute;
+    this.render();
+  }
 
-    const bins = this.hexbin(
-      data
+  updateData(data) {
+    this.data = data;
+    this.render();
+  }
+
+  render() {
+    console.log("about to render hexbin map, logging data", this.data);
+
+    let bins = this.hexbin(
+      this.data
         .filter((d) => d.Location !== "Barrigada, GU") //Guam unfortunately is not a part of the geo albers projection, so removing it from map visualization
         .map((d) => ({
           xy: this.projection([d.Longitude, d.Latitude]),
@@ -123,29 +139,42 @@ class HexbinMap {
       return d;
     });
 
-    // Create the color and radius scales.
-    const BuOrColorInterpolator = d3.piecewise(d3.interpolateRgb, [
-      "#0a1869",
-      "#a9c9e7",
-      "#ffe3a8",
-      "#fc6f03",
-    ]);
-    const color = d3.scaleSequential(
-      d3.extent(bins, (d) => d[categoryColor]),
-      BuOrColorInterpolator
-    );
+    //restrict bins to only those with a length greater than a certain number
+    //TODO: maybe make this an user-controllable variable
+    const minBinLength = 5;
+    bins = bins.filter((d) => d.length > minBinLength);
 
-    this.hexBinColorScale.selectAll("*").remove();
-    this.hexBinColorScale.node().append(Legend(color));
+    let color;
+    if (
+      this.colorAttribute == "firmTypeMode" ||
+      this.colorAttribute == "firmSizeMode"
+    ) {
+      color = this.colorScales[this.colorAttribute];
+      this.hexBinColorScale.selectAll("*").remove();
+
+      //TODO: how to get the nodes to render into this svg?
+    } else {
+      color = d3.scaleSequential(
+        d3.extent(bins, (d) => d[this.colorAttribute]),
+        this.colorScales[this.colorAttribute]
+      );
+
+      this.hexBinColorScale.selectAll("*").remove();
+      this.hexBinColorScale.node().append(Legend(color));
+    }
 
     const radius = d3.scaleSqrt(
-      d3.extent(bins, (d) => d[categoryRadius]),
+      d3.extent(bins, (d) => d[this.sizeAttribute]),
       [this.hexbin.radius() * 0.3, this.hexbin.radius() * 3]
     );
 
     // Append the hexagons
     this.hexBinLayer.selectAll("path").remove();
-    this.hexBinLayer
+
+    if (this.colorAttribute == "firmSizeMode") {
+      console.log("just testing Firm Size color scales, color (1)", color(1));
+    }
+    this.hexagons = this.hexBinLayer
       .selectAll("path")
       .data(bins)
       .join("path")
@@ -153,22 +182,52 @@ class HexbinMap {
       .attr("transform", (d) => `translate(${d.x},${d.y})`)
       .attr("d", (d, i) => {
         // if (d.x == 857.3651497465942 & d.y == 165) {
-        //   console.log("d is", d, "d[categoryRadius]: ", d[categoryRadius], "radius: ", radius(d[categoryRadius]))
+        //   console.log("d is", d, "d[this.sizeAttribute]: ", d[this.sizeAttribute], "radius: ", radius(d[this.sizeAttribute]))
         // }
-        return this.hexbin.hexagon(radius(d[categoryRadius]));
+        return this.hexbin.hexagon(radius(d[this.sizeAttribute]));
       })
-      .attr("fill", (d) => color(d[categoryColor]))
-      .attr("stroke", (d) => d3.lab(color(d[categoryColor])).darker())
+      .attr("fill", (d) => {
+        if (this.colorAttribute == "firmSizeMode") {
+          console.log("d[this.colorAttribute]", d[this.colorAttribute]);
+          console.log(
+            "color(d[this.colorAttribute])",
+            color(d[this.colorAttribute])
+          );
+        }
+        return color(d[this.colorAttribute]);
+      })
+      .attr("stroke", (d) => d3.lab(color(d[this.colorAttribute])).darker())
       .attr("opacity", 0.8)
       .on("mouseover", (event, d) => mouseOver(event, d))
       .on("mouseout", (event, d) => {
         d3.select(event.target).attr("opacity", "0.8");
         this.tooltipDiv.style("visibility", "hidden");
+        this.hexBinHover.selectAll("*").remove();
       });
+
+    // console.log("bins", bins);
+    // this.hexBinHover
+    //   .selectAll("path")
+    //   .data(bins)
+    //   .join("path")
+    //   .attr("transform", (d) => `translate(${d.x},${d.y})`)
+    //   .attr("d", (d) => this.hexbin.hexagon(radius(d[this.sizeAttribute]) + 2))
+    //   .attr("fill", "none")
+    //   .attr("stroke", "black");
 
     let mouseOver = (event, d) => {
       console.log("mouseOver d", d);
       d3.select(event.target).attr("opacity", "1");
+
+      const hexRadius = radius(d[this.sizeAttribute]);
+      const hoverHexRadius = hexRadius + 3;
+      this.hexBinHover
+        .append("path")
+        .attr("transform", `translate(${d.x},${d.y})`)
+        .attr("d", this.hexbin.hexagon(hoverHexRadius))
+        .attr("fill", "none")
+        .attr("stroke", "black")
+        .attr("stroke-width", 1.5);
 
       let svgRect = this.svgMap.node().getBoundingClientRect();
       let viewBox = this.svgMap.node().viewBox.baseVal;
@@ -195,15 +254,14 @@ class HexbinMap {
       const personOrPeople = d.firmSizeMode === 1 ? "person" : "people";
       const schoolDiv = (d, attribute, title) => {
         if (d[attribute]) {
+          //TODO: should there be count as well?
+          //${d[attribute + "Count"]},
           const moreInfo =
             d.length > 1
-              ? ` (${d[attribute + "Count"]}, ${d3.format(".0%")(
-                  d[attribute + "Count"] / d.length
-                )})`
+              ? `(${d3.format(".0%")(d[attribute + "Count"] / d.length)})`
               : "";
-          return `<div style="line-height: 1.2;display: flex; align-items: baseline;"><p class="tooltip regular">${title}:</p><p class="tooltip light" style="margin-left: 5px;">${d[attribute]}${moreInfo}</p></div>`;
+          return `<div style="line-height: 1.2;display: flex; align-items: baseline;"><p class="tooltip regular">${title}:</p><p class="tooltip light" style="margin-left: 5px;">${d[attribute]} ${moreInfo}</p></div>`;
         }
-
         return "";
       };
 
@@ -382,26 +440,6 @@ class HexbinMap {
     // //manually call zoom interaction to activate any code that's in zoomed()
     // this.svgMap.call(zoom.transform, d3.zoomIdentity);
   }
-}
-
-function hexbinMap(
-  projection,
-  data,
-  categoryColor,
-  categoryRadius,
-  hexBinLayer,
-  widthMap,
-  heightMap
-) {
-  //console.log("bins", bins)
-  //d3.extent(bins, d => d[categoryRadius])
-  // hexBinLayer.selectAll("circle").remove();
-  // hexBinLayer
-  //   .append("circle")
-  //   .attr("cx", 857.3651)
-  //   .attr("cy", 165)
-  //   .attr("r", 2)
-  //   .attr("fill", "black");
 }
 
 export default HexbinMap;
