@@ -121,10 +121,13 @@
             </div>
           </div>
 
-          <div style="padding: 0rem 0">
-            <button id="toggleIndMap" class="collapse title">
+          <div id="toggleIndMapContainer" >
+            <button id="toggleIndMap" class="collapse title" style="padding-top:0; white-space: nowrap;">
               <svg width="17" height="12" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="10" cy="6" r="4" stroke="black" stroke-width="1" fill="none" />
+                <!-- Circle -->
+                <circle id="toggleCircle" cx="10" cy="5.5" r="4" stroke="currentColor" stroke-width="1.25" fill="none" style="display:none;"/>
+                <!-- Hexagon -->
+                <polygon id="toggleHexagon" points="-4,0 -2,-3.464 2,-3.464 4,0 2,3.464 -2,3.464" stroke="currentColor" stroke-width="1.25" fill="none" style="transform: translate(10px,5.5px) scale(110%)" />
                 </svg>
               <span style="margin-left:2px">View Map</span>
             </button>
@@ -138,7 +141,6 @@
               <div style="display: flex; justify-content: space-between">
                 <button
                   class="collapse filters title"
-                  style="padding-top: 0.25rem"
                 >
                   <i class="bx bx-chevron-right"></i>
                   <span>Filter</span>
@@ -701,8 +703,12 @@
 
         let showIndMap = true;
         d3.select("button#toggleIndMap").on("click", (event) => {
+          console.log()
           showIndMap = !showIndMap;
-            event.target.textContent = showIndMap? "View Map":"View Individuals";
+          d3.select("button#toggleIndMap span").text(showIndMap? "View Map":"View Individuals");
+
+            d3.select("#toggleHexagon").style("display", showIndMap? "block":"none");
+            d3.select("#toggleCircle").style("display", showIndMap? "none":"block");
         });
 
         //set up buttons that contain
