@@ -342,22 +342,6 @@ class HexbinMap {
           `);
       }
 
-      // this.tooltipDiv.html(
-      //   `${d.length.toLocaleString()} survey responses<br>
-      //     ${d3.format(".2f")(d["Job Satisfaction"])} mean satisfaction<br>
-      //     ${d3.format("$,")(d.salary)} median salary<br>
-      //     ${d3.format(".1%")(d.percentageLicensed)} licensed<br>
-      //     ${d3.format(".1%")(d.percentageFemale)} female<br>
-      //     ${d.locationMode} as most common location<br>
-      //     ${d.firmTypeMode} as most common firm type<br>
-      //     ${d.firmSizeMode} as most common firm size<br>
-      //     ${d.ageMode} as most common age<br>
-      //     ${d.undergradMode} (${
-      //     d.undergradModeCount
-      //   }) most common undergrad school<br>
-      //     ${d.gradMode}  (${d.gradModeCount})most common grad school`
-      // );
-
       const tooltipRect = this.tooltipDiv.node().getBoundingClientRect();
       const bounds = calculateBounds(
         svgRect.width,
