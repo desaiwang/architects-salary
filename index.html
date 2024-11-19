@@ -51,7 +51,7 @@
   <div class="heading">
       <!-- Heading Text Section -->
   <section class="headingText">
-    <h1>How much are architects really paid in the US?</h1>
+    <h1>How much do architects really make in the US?</h1>
     <p>Using over 13,000 survey responses from <a class="removeUnderline" href="https://salaries.archinect.com/">
       Archinect.com</a>, I visualized the relationships between pay, gender, location, licensure, and job satisfaction in architecture.</p>
     <p>My hope is that by sharing this data, we can drive pay transparency and strive for a fairer future for architects.</p>
@@ -697,6 +697,12 @@
 
             resizeCanvas();
           }
+        });
+
+        let showIndMap = true;
+        d3.select("button#toggleIndMap").on("click", (event) => {
+          showIndMap = !showIndMap;
+            event.target.textContent = showIndMap? "View Map":"View Individuals";
         });
 
         //set up buttons that contain
