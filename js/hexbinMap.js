@@ -98,7 +98,7 @@ class HexbinMap {
           Grad: d["Graduate School"],
         }))
     ).map((d) => {
-      d.salary = d3.median(d, (d) => d.Salary);
+      d.Salary = d3.median(d, (d) => d.Salary);
       d["Job Satisfaction"] = d3.mean(d, (d) => d.Satisfaction);
       d.ageMode = d3.mode(d.map((d) => d.Age));
       d.yearsOfExperienceMode = d3.mode(d.map((d) => d.YearsOfExperience));
@@ -217,7 +217,7 @@ class HexbinMap {
                   <h4 class="tooltip bold">${d["locationMode"]}</h4>
                 </div>
                 <div style="display: flex; align-items: baseline;">
-                  <h4 class="tooltip bold">${d3.format("$,")(d.salary)}</h4>
+                  <h4 class="tooltip bold">${d3.format("$,")(d.Salary)}</h4>
                   <p class="tooltip light" style="margin-left: 5px;">per year</p>
                 </div>
                 <div style="display: flex; align-items: baseline;">
@@ -269,7 +269,7 @@ class HexbinMap {
                   <p class="tooltip light" style="margin-left: 5px;">area</p>
                 </div>
                 <div style="display: flex; align-items: baseline;">
-                  <h4 class="tooltip bold">${d3.format("$,")(d.salary)}</h4>
+                  <h4 class="tooltip bold">${d3.format("$,")(d.Salary)}</h4>
                   <p class="tooltip light" style="margin-left: 5px;">median income</p>
                 </div>
                 <div style="display: flex; align-items: baseline;">
@@ -324,7 +324,7 @@ class HexbinMap {
                   <p class="tooltip light" style="margin-left: 5px;">area</p>
                 </div>
                 <div style="display: flex; align-items: baseline;">
-                  <h4 class="tooltip bold">${d3.format("$,")(d.salary)}</h4>
+                  <h4 class="tooltip bold">${d3.format("$,")(d.Salary)}</h4>
                   <p class="tooltip light" style="margin-left: 5px;">median income</p>
                 </div>
                 <div style="display: flex; align-items: baseline;">

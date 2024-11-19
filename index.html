@@ -67,7 +67,7 @@
   </div>
 
   <div id="visualization" style="display: flex">
-    <div class="main" style="padding-bottom: 16px">
+    <div class="main">
       <div class="summaryContainer">
         <div class="emptySummary" style="display: none; margin-left: 1.5rem">
           <h2>No data selected.</h2>
@@ -173,23 +173,18 @@
                   margin: 0.5rem 0 0.25rem 1rem;
                   display: none;
                 ">
-            <div style="
-                    display: flex;
-                    flex-direction: row;
-                    margin-left: 0.5rem;
-                    justify-content: space-between;
-                  ">
+            <div class="customizeDropdown indMapCustomize">
               <span class="title" style="font-size: 0.8rem">color by:</span>
               <div class="colorScale" style="margin-left: 1.25rem">
                 <select class="colorScale" style="width: 180">
                   <option value="Job Satisfaction" selected>
                     Job Satisfaction
                   </option>
+                  <option value="Gender">Gender</option>
                   <option value="Age">Age</option>
                   <option value="Years of Experience">
                     Years of Experience
                   </option>
-                  <option value="Gender">Gender</option>
                   <option value="Licensed">Licensed</option>
                   <option value="Firm Type">Firm Type</option>
                   <option value="Firm Size">Firm Size</option>
@@ -198,12 +193,7 @@
               </div>
             </div>
 
-            <div style="
-                    display: flex;
-                    flex-direction: row;
-                    margin-left: 0.5rem;
-                    justify-content: space-between;
-                  ">
+            <div class="customizeDropdown indMapCustomize">
               <span class="title" style="font-size: 0.8rem">sort by:</span>
               <div class="sortOrder" style="margin-left: 1.25rem">
                 <select class="sortOrder" style="width: 180">
@@ -221,6 +211,44 @@
                 </select>
               </div>
             </div>
+
+            <div class="customizeDropdown hexbinCustomize" style="display:none">
+              <span class="title" style="font-size: 0.8rem">color by:</span>
+              <div class="colorScaleHexbin" style="margin-left: 1.25rem">
+                <select class="colorScaleHexbin" style="width: 180">
+                  <option value="Job Satisfaction" selected>
+                    Job Satisfaction
+                  </option>
+                  <option value="Salary">
+                    Salary
+                  </option>
+                  <option value="percentageFemale">Gender (% Female)</option>
+                  <option value="percentageLicensed">Licensed</option>
+                  <option value="firmTypeMode">Firm Type</option>
+                  <option value="firmSizeMode">Firm Size</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="customizeDropdown hexbinCustomize" style="display:none">
+              <span class="title" style="font-size: 0.8rem">size by:</span>
+              <div class="sizeScaleHexbin" style="margin-left: 1.25rem">
+                <select class="sizeScaleHexbin" style="width: 180">
+                  <option value="length" selected>
+                    Number of Responses
+                  </option>
+                  <option value="Job Satisfaction">
+                    Job Satisfaction
+                  </option>
+                  <option value="Salary">
+                    Salary
+                  </option>
+                  <option value="percentageFemale">Gender (% Female)</option>
+                  <option value="percentageLicensed">Licensed</option>
+                </select>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -683,19 +711,29 @@
 
       let showIndMap = true;
       d3.select("button#toggleIndMap").on("click", (event) => {
-        console.log("toggling map");
-        showIndMap = !showIndMap;
-        d3.select("button#toggleIndMap span").text(showIndMap ? "View Map" : "View Individuals");
 
+        showIndMap = !showIndMap;
+
+        //styles on the toggle button
+        d3.select("button#toggleIndMap span").text(showIndMap ? "View Map" : "View Individuals");
         d3.select("#toggleHexagon").style("display", showIndMap ? "block" : "none");
         d3.select("#toggleCircle").style("display", showIndMap ? "none" : "block");
+
+        //displaying the correct map
         d3.select("div#hexbinMap").style("display", showIndMap ? "none" : "block");
         d3.select("div#canvasContainer").style("display", showIndMap ? "block" : "none");
+        //also need to call an update to refresh
         if (showIndMap) {
           individualMap.update();
         } else {
           hexbinMap.render(passingData, "Job Satisfaction", "length");
         }
+
+        //display correct customize
+        d3.selectAll("div.indMapCustomize").style("display", showIndMap ? "flex" : "none");
+        d3.selectAll("div.hexbinCustomize").style("display", showIndMap ? "none" : "flex");
+
+        //TODO: display correct legend info
 
       });
 

@@ -224,13 +224,12 @@ div#filters {
   /* transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out; */
 }
 
-/* div.main {
-  width: 5rem;
-  padding: 1rem 1rem;
-  transition: width 0.5s ease-in-out;
+div.main {
+  padding-bottom: 16px;
+  min-height: 100vh;
 }
 
-@media (min-width: 768px) {
+/* @media (min-width: 768px) {
   div.main {
     width: calc(90vw - var(--sb-width));
   }
@@ -246,6 +245,7 @@ input {
   -webkit-box-sizing: border-box;
 }
 
+/*styles for suggestions dropdown when user is typing*/
 div.suggestionsContainer {
   background-color: var(--grey-50);
   border: 1px solid var(--grey-200);
@@ -279,6 +279,14 @@ text.tooltip {
 select {
   border: 1px solid var(--grey-300);
   border-radius: 2px;
+}
+
+/*styles for dropdown in customize section*/
+.customizeDropdown {
+  display: flex;
+  flex-direction: row;
+  margin-left: 0.5rem;
+  justify-content: space-between;
 }
 
 /* for summary text on top */
