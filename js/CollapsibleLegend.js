@@ -136,7 +136,8 @@ class CollapsibleLegend {
 
   //scales the size of the hexagons based on zoom levels
   scaleSizeScaleHex(ratio) {
-    this.legendNodeContainer.style("transform", `scale(${ratio})`);
+    this.scaleRatio = ratio;
+    this.legendNodeContainer.style("transform", `scale(${this.scaleRatio})`);
   }
 
   updateSizeScaleHex(sizeAttribute, legendNode) {
@@ -157,7 +158,8 @@ class CollapsibleLegend {
     // Append the new legend node
     this.legendNodeContainer = this.sizeLegendHex
       .append("div")
-      .style("margin-left", "0.5rem");
+      .style("margin-left", "0.5rem")
+      .style("transform", `scale(${this.scaleRatio})`);
 
     this.legendNodeContainer.node().appendChild(legendNode);
   }
@@ -199,7 +201,6 @@ class CollapsibleLegend {
       .text(`${colorAttribute.toLowerCase()} (hexagon color)`);
 
     // Append the new legend node
-    console.log("legendNode passed to collapsible legend", legendNode);
     this.colorLegendHex
       .append("div")
       .style("margin-left", "0.5rem")

@@ -26,7 +26,7 @@ class HexbinMap {
       .append("svg")
       .attr("id", "hexbinMapSVG")
       .attr("viewBox", [0, 0, this.widthMap, this.heightMap + 80]) //50 is for legends at the bottom
-      .attr("style", "max-width: 90%; height: auto;");
+      .attr("style", "width: 90%; max-width:928px; height: auto;");
 
     this.mapArea = this.svgMap.append("g");
 
@@ -129,27 +129,28 @@ class HexbinMap {
         this.hexbin.radius() * 1.1,
       ]);
     }
+    //to emphasize the really large cities
+    const ultraBig =
+      sizeAttributeDomain[1] > 2000 && this.sizeAttribute == "length";
 
     this.radius = d3.scaleSqrt(
       sizeAttributeDomain,
-      this.sizeAttribute == "length"
-        ? [this.hexbin.radius() * 0.3, this.hexbin.radius() * 2.5]
+      ultraBig
+        ? [this.hexbin.radius() * 0.3, this.hexbin.radius() * 2]
+        : this.sizeAttribute == "length"
+        ? [this.hexbin.radius() * 0.3, this.hexbin.radius() * 1.1]
         : [this.hexbin.radius() * 0.1, this.hexbin.radius() * 1.1]
     );
 
     let xAcc = 0;
-    const tickData =
-      sizeAttributeDomain[1] > 1000 && this.sizeAttribute == "length"
-        ? [100, 400, 800, 1600, 2000]
-        : this.radius.ticks(5);
+    const tickData = ultraBig
+      ? [100, 400, 800, 1600, 2000]
+      : this.radius.ticks(5);
 
     this.hexBinSizeScale.selectAll("*").remove();
 
     let hexagons = this.hexBinSizeScale
-      .attr(
-        "viewBox",
-        this.sizeAttribute == "length" ? "0 0 270 70" : "0 0 270 50"
-      )
+      .attr("viewBox", ultraBig ? "0 0 270 60" : "0 0 270 50")
       .append("g")
       .selectAll()
       .data(tickData)
@@ -157,9 +158,7 @@ class HexbinMap {
       .style("transform", (d, i) => {
         const xPos = xAcc;
         xAcc += this.radius(d) * 2 + (this.sizeAttribute == "Salary" ? 30 : 25);
-        return `translate(${xPos + 20}px, ${
-          this.sizeAttribute == "length" ? 25 : 15
-        }px)`;
+        return `translate(${xPos + 15}px, ${ultraBig ? 20 : 15}px)`;
       });
 
     hexagons
@@ -195,7 +194,7 @@ class HexbinMap {
 
     this.hexBinLayer
       .selectAll("path")
-      .transition()
+      // .transition()
       .attr("d", (d, i) =>
         this.hexbin.hexagon(this.radius(d[this.sizeAttribute]))
       );

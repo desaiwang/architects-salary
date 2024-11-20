@@ -93,9 +93,9 @@
         </div>
       </div>
 
-      <div id="canvasContainer" style="position: relative; display:none"></div>
+      <div id="canvasContainer" style="position: relative;"></div>
 
-      <div id="hexbinMap" style="position: relative; min-height:1vh"></div>
+      <div id="hexbinMap" style="position: relative; min-height:1vh; display:none"></div>
 
     </div>
 
@@ -766,18 +766,24 @@
 
       let collapsibleLegend = d3.select("div#collapsibleLegend");
 
-      const hexBinSizeScale = hexbinMap.hexBinSizeScale.node().cloneNode(true);
-      //change the visibility to visible
-      hexBinSizeScale.style.visibility = "visible";
-      hexBinSizeScale.style.position = "relative";
+      let hexBinSizeScaleNode;
+
+      function updateHexBinSizeScaleNode() {
+        hexBinSizeScaleNode = hexbinMap.hexBinSizeScale.node().cloneNode(true);
+        //change the visibility to visible
+        hexBinSizeScaleNode.style.visibility = "visible";
+        hexBinSizeScaleNode.style.position = "relative";
+      }
+
+      updateHexBinSizeScaleNode();
       const legend = new CollapsibleLegend(
         collapsibleLegend,
         "length",
-        hexBinSizeScale,
+        hexBinSizeScaleNode,
         "Job Satisfaction",
         satisfactionSlider.getLegendNode(),
         "Mean Job Satisfaction",
-        Legend(hexbinMap.color, { width: 250, marginTop: 0, height: 30, tickValues: hexbinMap.color.ticks(6) }),
+        Legend(hexbinMap.color, { width: 250, marginTop: 0, height: 30, tickValues: hexbinMap.color.ticks(6), tickFormat: d3.format(".2s") }),
         salaryScale
       );
 
@@ -806,37 +812,40 @@
         "length": "Number of Responses"
       };
       //set up the hexbin customize dropdowns
+      let colorScaleHexbinAttribute = "Job Satisfaction";
+
+      function updateColorScaleHexbin(colorScaleHexbinAttribute) {
+        if (colorScaleHexbinAttribute == "firmTypeMode") {
+          legend.updateColorScaleHex(hexSelectValueTitleMap[colorScaleHexbinAttribute], firmtypeSlider.getLegendNode());
+        } else if (colorScaleHexbinAttribute == "firmSizeMode") {
+          legend.updateColorScaleHex(hexSelectValueTitleMap[colorScaleHexbinAttribute], firmsizeSlider.getLegendNode());
+        } else {
+          const tickFormat =
+            colorScaleHexbinAttribute == "percentageFemale" || colorScaleHexbinAttribute == "percentageLicensed" ? d3.format(".0%")
+              : colorScaleHexbinAttribute == "Salary" ? d3.format("$.2s")
+                : d3.format(".2s");
+
+          legend.updateColorScaleHex(hexSelectValueTitleMap[colorScaleHexbinAttribute], Legend(hexbinMap.color, { width: 250, marginTop: 0, height: 30, tickValues: hexbinMap.color.ticks(6), tickFormat: tickFormat }));
+        }
+      }
+
       d3.select("select.colorScaleHexbin").on("change", function () {
         hexbinMap.updateColorAttribute(this.value);
 
-        const title = hexSelectValueTitleMap[this.value];
+        colorScaleHexbinAttribute = this.value;
         //update collapsible legend
-        if (this.value == "firmTypeMode") {
-          legend.updateColorScaleHex(title, firmtypeSlider.getLegendNode());
-        } else if (this.value == "firmSizeMode") {
-          legend.updateColorScaleHex(title, firmsizeSlider.getLegendNode());
-        } else {
-          const tickFormat =
-            this.value == "percentageFemale" || this.value == "percentageLicensed" ? d3.format(".0%")
-              : this.value == "Salary" ? d3.format("$.2s")
-                : d3.format(".0f");
-
-          legend.updateColorScaleHex(title, Legend(hexbinMap.color, { width: 250, marginTop: 0, height: 30, tickValues: hexbinMap.color.ticks(6), tickFormat: tickFormat }));
-        }
-
+        updateColorScaleHexbin(colorScaleHexbinAttribute);
       });
 
       let sizeScaleHexbinTitle = "length";
+
       d3.select("select.sizeScaleHexbin").on("change", function () {
         sizeScaleHexbinTitle = hexSelectValueTitleMap[this.value];
 
         hexbinMap.updateSizeAttribute(this.value);
-        const hexBinSizeScale = hexbinMap.hexBinSizeScale.node().cloneNode(true);
-        //change the visibility to visible
-        hexBinSizeScale.style.visibility = "visible";
-        hexBinSizeScale.style.position = "relative";
+        updateHexBinSizeScaleNode();
 
-        legend.updateSizeScaleHex(sizeScaleHexbinTitle, hexBinSizeScale);
+        legend.updateSizeScaleHex(sizeScaleHexbinTitle, hexBinSizeScaleNode);
       });
 
 
@@ -864,6 +873,7 @@
           //also scale hex size legend
           const svgElement = document.querySelector("#hexbinMapSVG"); // Select your SVG element
           console.log("svgElement", svgElement);
+          console.log("svgElement.getBoundingClientRect().width", svgElement.getBoundingClientRect().width);
           const scale = svgElement.getBoundingClientRect().width / hexbinMap.widthMap;
           console.log("scale percentage", scale);
 
@@ -875,6 +885,7 @@
       }
       window.addEventListener("resize", resizeCanvas);
 
+      let initialSwitch = true;
       d3.select("button#toggleIndMap").on("click", (event) => {
 
         showIndMap = !showIndMap;
@@ -891,7 +902,7 @@
         if (showIndMap) {
           individualMap.update();
         } else {
-          hexbinMap.render(passingData);
+          hexbinMap.updateData(passingData);
         }
 
         //display correct customize
@@ -903,7 +914,11 @@
 
         //run resiveCanvas
         resizeCanvas(false);
-
+        //TODO: less hacky way of correcting hex size scale, please
+        if (initialSwitch) {
+          initialSwitch = false;
+          updateData();
+        }
       });
 
 
@@ -962,18 +977,17 @@
         } else {
           hexbinMap.updateData(passingData);
 
-          const hexBinSizeScale = hexbinMap.hexBinSizeScale.node().cloneNode(true);
-          //change the visibility to visible
-          hexBinSizeScale.style.visibility = "visible";
-          hexBinSizeScale.style.position = "relative";
-          legend.updateSizeScaleHex(sizeScaleHexbinTitle, hexBinSizeScale);
+          updateHexBinSizeScaleNode();
+          legend.updateSizeScaleHex(sizeScaleHexbinTitle, hexBinSizeScaleNode);
+
+          updateColorScaleHexbin(colorScaleHexbinAttribute);
         }
 
       }
 
-      updateData();
       resizeCanvas(false);
-      d3.select("div.summaryContainer").style("width", individualMap.width);
+      updateData();
+
     };
 
     loadIndividuals();
