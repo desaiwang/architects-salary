@@ -12,6 +12,7 @@ class HexbinMap {
     this.colorAttribute = "Job Satisfaction";
     this.sizeAttribute = "length";
     this.initialize();
+    this.render();
   }
 
   initialize() {
@@ -26,7 +27,6 @@ class HexbinMap {
       .attr("viewBox", [0, 0, this.widthMap, this.heightMap + 80]) //50 is for legends at the bottom
       .attr("style", "max-width: 90%; height: auto;");
 
-    this.svgColorScale = this.container.append("g");
     this.svgSizeScale = this.svgMap.append("g");
 
     this.mapArea = this.svgMap.append("g");
@@ -47,8 +47,6 @@ class HexbinMap {
     //set up the layer used for hexBin rendering
     this.hexBinLayer = this.mapArea.append("g");
     this.hexBinHover = this.mapArea.append("g");
-    this.hexBinColorScale = this.svgColorScale.attr("id", "hexBinColorScale");
-    //.style("transform", `translate(${200}px, ${this.heightMap + 10}px)`);
     this.hexBinSizeScale = this.svgSizeScale
       .attr("id", "hexBinSizeScale")
       .style(
@@ -93,21 +91,11 @@ class HexbinMap {
       this.colorAttribute == "firmSizeMode"
     ) {
       this.color = this.colorScales[this.colorAttribute];
-      this.hexBinColorScale.selectAll("*").remove();
-
-      //TODO: how to get the nodes to render into this svg?
     } else {
       this.color = d3.scaleSequential(
         d3.extent(this.bins, (d) => d[this.colorAttribute]),
         this.colorScales[this.colorAttribute]
       );
-
-      this.hexBinColorScale.selectAll("*").remove();
-      const legendElement = Legend(this.color);
-      legendElement.style.display = null;
-      legendElement.style.padding = "10px";
-      console.log(legendElement);
-      this.hexBinColorScale.node().append(legendElement);
     }
   }
 
@@ -187,6 +175,7 @@ class HexbinMap {
         this.hexbin.hexagon(this.radius(d[this.sizeAttribute]))
       );
   }
+
   updateData(data) {
     this.data = data;
     this.render();

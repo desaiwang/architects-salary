@@ -217,15 +217,15 @@
               <div class="colorScaleHexbin" style="margin-left: 1.25rem">
                 <select class="colorScaleHexbin" style="width: 180">
                   <option value="Job Satisfaction" selected>
-                    Job Satisfaction (Mean)
+                    Mean Job Satisfaction
                   </option>
                   <option value="Salary">
-                    Salary (Median)
+                    Median Salary
                   </option>
-                  <option value="percentageFemale">Gender (% Female)</option>
-                  <option value="percentageLicensed">Licensed</option>
-                  <option value="firmTypeMode">Firm Type (Most Common)</option>
-                  <option value="firmSizeMode">Firm Size (Most Common)</option>
+                  <option value="percentageFemale">% Female</option>
+                  <option value="percentageLicensed">% Licensed</option>
+                  <option value="firmTypeMode">Most Common Firm Type</option>
+                  <option value="firmSizeMode">Most Common Firm Size</option>
                 </select>
               </div>
             </div>
@@ -238,13 +238,13 @@
                     Number of Responses
                   </option>
                   <option value="Job Satisfaction">
-                    Job Satisfaction
+                    Mean Job Satisfaction
                   </option>
                   <option value="Salary">
-                    Salary
+                    Median Salary
                   </option>
-                  <option value="percentageFemale">Gender (% Female)</option>
-                  <option value="percentageLicensed">Licensed</option>
+                  <option value="percentageFemale">% Female</option>
+                  <option value="percentageLicensed">% Licensed</option>
                 </select>
               </div>
             </div>
@@ -285,6 +285,7 @@
     import Checkboxes from "./js/checkboxes.js";
     import CollapsibleLegend from "./js/CollapsibleLegend.js";
     import { sortOrders } from "./js/sortOrders.js";
+    import { Legend } from "./js/legend.js";
 
     const loadIndividuals = async function () {
       let data = await d3.csv(
@@ -718,35 +719,6 @@
         }
       });
 
-      let showIndMap = true;
-      d3.select("button#toggleIndMap").on("click", (event) => {
-
-        showIndMap = !showIndMap;
-
-        //styles on the toggle button
-        d3.select("button#toggleIndMap span").text(showIndMap ? "View Map" : "View Individuals");
-        d3.select("#toggleHexagon").style("display", showIndMap ? "block" : "none");
-        d3.select("#toggleCircle").style("display", showIndMap ? "none" : "block");
-
-        //displaying the correct map
-        d3.select("div#hexbinMap").style("display", showIndMap ? "none" : "block");
-        d3.select("div#canvasContainer").style("display", showIndMap ? "block" : "none");
-        //also need to call an update to refresh
-        if (showIndMap) {
-          individualMap.update();
-        } else {
-          hexbinMap.render(passingData);
-        }
-
-        //display correct customize
-        d3.selectAll("div.indMapCustomize").style("display", showIndMap ? "flex" : "none");
-        d3.selectAll("div.hexbinCustomize").style("display", showIndMap ? "none" : "flex");
-
-        //display correct legend info
-        legend.toggleIndMap(showIndMap);
-
-      });
-
       //set up buttons that contain
       d3.select("button.filters i").style("rotate", "90deg"); //this is not collapsed
       let buttons = [
@@ -784,17 +756,37 @@
         clearAllButton.style("visibility", "hidden");
       });
 
+
+
+      d3.select("select.sortOrder").on("change", function () {
+        console.log("updating sort order to", this.value);
+        individualMap.updateSortOrder(this.value);
+      });
+
+      //map related scales and set up
+      const states = await d3.json("data/cb_2023_us_state_5m.json");
+      const stateMesh = topojson.mesh(
+        states,
+        states.objects.cb_2023_us_state_5m
+      );
+
+      let hexbinMap = new HexbinMap("hexbinMap", data, stateMesh, colorScalesHexbin);
+
+
+      //LEGENDS
       //set up the legends in all the sliders
       histogramSliders.forEach((slider) => {
         slider.setupLegend(controlWidth, 8);
       });
 
-      //legend
       let collapsibleLegend = d3.select("div#collapsibleLegend");
+
       const legend = new CollapsibleLegend(
         collapsibleLegend,
         "Job Satisfaction",
         satisfactionSlider.getLegendNode(),
+        "Mean Job Satisfaction",
+        Legend(hexbinMap.color, { width: 250, marginTop: 0, height: 30, tickValues: hexbinMap.color.ticks(6) }),
         salaryScale
       );
 
@@ -813,28 +805,71 @@
         });
       });
 
-      d3.select("select.sortOrder").on("change", function () {
-        console.log("updating sort order to", this.value);
-        individualMap.updateSortOrder(this.value);
-      });
-
-      //map related scales and set up
-      const states = await d3.json("data/cb_2023_us_state_5m.json");
-      const stateMesh = topojson.mesh(
-        states,
-        states.objects.cb_2023_us_state_5m
-      );
-
-      let hexbinMap = new HexbinMap("hexbinMap", data, stateMesh, colorScalesHexbin);
-
+      let hexSelectValueTitleMap = {
+        "Job Satisfaction": "Mean Job Satisfaction",
+        "Salary": "Median Salary",
+        "percentageFemale": "% Female",
+        "percentageLicensed": "% Licensed",
+        "firmTypeMode": "Most Common Firm Type",
+        "firmSizeMode": "Most Common Firm Size",
+      };
       //set up the hexbin customize dropdowns
       d3.select("select.colorScaleHexbin").on("change", function () {
         hexbinMap.updateColorAttribute(this.value);
+
+        const title = hexSelectValueTitleMap[this.value];
+        //update collapsible legend
+        if (this.value == "firmTypeMode") {
+          legend.updateColorScaleHex(title, firmtypeSlider.getLegendNode());
+        } else if (this.value == "firmSizeMode") {
+          console.log("firmSizeMode")
+          legend.updateColorScaleHex(title, firmsizeSlider.getLegendNode());
+        } else {
+          console.log("entered else loop")
+          const tickFormat =
+            this.value == "percentageFemale" || this.value == "percentageLicensed" ? d3.format(".0%")
+              : this.value == "Salary" ? d3.format("$.2s")
+                : d3.format(".0f");
+
+          legend.updateColorScaleHex(title, Legend(hexbinMap.color, { width: 250, marginTop: 0, height: 30, tickValues: hexbinMap.color.ticks(6), tickFormat: tickFormat }));
+        }
+
       });
 
       d3.select("select.sizeScaleHexbin").on("change", function () {
         hexbinMap.updateSizeAttribute(this.value);
       });
+
+
+      let showIndMap = true;
+      d3.select("button#toggleIndMap").on("click", (event) => {
+
+        showIndMap = !showIndMap;
+
+        //styles on the toggle button
+        d3.select("button#toggleIndMap span").text(showIndMap ? "View Map" : "View Individuals");
+        d3.select("#toggleHexagon").style("display", showIndMap ? "block" : "none");
+        d3.select("#toggleCircle").style("display", showIndMap ? "none" : "block");
+
+        //displaying the correct map
+        d3.select("div#hexbinMap").style("display", showIndMap ? "none" : "block");
+        d3.select("div#canvasContainer").style("display", showIndMap ? "block" : "none");
+        //also need to call an update to refresh
+        if (showIndMap) {
+          individualMap.update();
+        } else {
+          hexbinMap.render(passingData);
+        }
+
+        //display correct customize
+        d3.selectAll("div.indMapCustomize").style("display", showIndMap ? "flex" : "none");
+        d3.selectAll("div.hexbinCustomize").style("display", showIndMap ? "none" : "flex");
+
+        //display correct legend info
+        legend.toggleIndMap(showIndMap);
+
+      });
+
 
       //update data
       function updateData() {

@@ -4,6 +4,8 @@ class CollapsibleLegend {
     div,
     initialcolorAttribute,
     initialLegendNode,
+    initialHexColorAttribute,
+    initialHexLegendNode,
     salaryScale,
     options = {}
   ) {
@@ -22,6 +24,7 @@ class CollapsibleLegend {
     this.initialize();
     this.setupSalaryLegend(salaryScale);
     this.updateColorScale(initialcolorAttribute, initialLegendNode);
+    this.updateColorScaleHex(initialHexColorAttribute, initialHexLegendNode);
   }
 
   initialize() {
@@ -140,6 +143,30 @@ class CollapsibleLegend {
 
     // Append the new legend node
     this.colorLegend
+      .append("div")
+      .style("margin-left", "0.5rem")
+      .node()
+      .appendChild(legendNode);
+  }
+
+  updateColorScaleHex(colorAttribute, legendNode) {
+    // Remove existing child nodes
+    while (this.colorLegendHex.node().firstChild) {
+      this.colorLegendHex
+        .node()
+        .removeChild(this.colorLegendHex.node().firstChild);
+    }
+
+    this.colorLegendHex
+      .append("div")
+      .attr("id", "colorLegendAttribute")
+      .style("margin-bottom", "0.5rem")
+      .style("font-size", this.options.titleFontSize)
+      .text(`${colorAttribute.toLowerCase()} (hexagon color)`);
+
+    // Append the new legend node
+    console.log("legendNode passed to collapsible legend", legendNode);
+    this.colorLegendHex
       .append("div")
       .style("margin-left", "0.5rem")
       .node()
