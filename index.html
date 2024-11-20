@@ -659,21 +659,6 @@
         `/${d3.format(",")(data.length)} responses (100%)`
       );
 
-      //add resizing function
-      function resizeCanvas(checkChange = true) {
-        if (checkChange && calcCanvasWidth() == individualMap.width) {
-          return; //return if no change
-        }
-        individualMap.updateWidth(calcCanvasWidth());
-        d3.select("div#canvasContainer")
-          .style("width", individualMap.width)
-          .style("height", individualMap.height);
-
-        console.log("individualMap.width", individualMap.width);
-        d3.select("div.summaryContainer").style("width", individualMap.width);
-      }
-      window.addEventListener("resize", resizeCanvas);
-
       //set up the div width and button for sidebar collapse
       d3.select("div.aside").style("width", expandedSidebarWidth);
       d3.select("button#sidebarcollapse").on("click", (event) => {
@@ -781,8 +766,13 @@
 
       let collapsibleLegend = d3.select("div#collapsibleLegend");
 
+      const hexBinSizeScale = hexbinMap.hexBinSizeScale.node().cloneNode(true);
+      //change the visibility to visible
+      hexBinSizeScale.style.visibility = "visible"
       const legend = new CollapsibleLegend(
         collapsibleLegend,
+        "length",
+        hexBinSizeScale,
         "Job Satisfaction",
         satisfactionSlider.getLegendNode(),
         "Mean Job Satisfaction",
@@ -812,6 +802,7 @@
         "percentageLicensed": "% Licensed",
         "firmTypeMode": "Most Common Firm Type",
         "firmSizeMode": "Most Common Firm Size",
+        "length": "Number of Responses"
       };
       //set up the hexbin customize dropdowns
       d3.select("select.colorScaleHexbin").on("change", function () {
@@ -822,10 +813,8 @@
         if (this.value == "firmTypeMode") {
           legend.updateColorScaleHex(title, firmtypeSlider.getLegendNode());
         } else if (this.value == "firmSizeMode") {
-          console.log("firmSizeMode")
           legend.updateColorScaleHex(title, firmsizeSlider.getLegendNode());
         } else {
-          console.log("entered else loop")
           const tickFormat =
             this.value == "percentageFemale" || this.value == "percentageLicensed" ? d3.format(".0%")
               : this.value == "Salary" ? d3.format("$.2s")
@@ -836,12 +825,46 @@
 
       });
 
+      let sizeScaleHexbinTitle = "length";
       d3.select("select.sizeScaleHexbin").on("change", function () {
+        sizeScaleHexbinTitle = hexSelectValueTitleMap[this.value];
+
         hexbinMap.updateSizeAttribute(this.value);
+        const hexBinSizeScale = hexbinMap.hexBinSizeScale.node().cloneNode(true);
+        //change the visibility to visible
+        hexBinSizeScale.style.visibility = "visible";
+
+        legend.updateSizeScaleHex(title, hexBinSizeScale);
       });
 
 
       let showIndMap = true;
+
+      //add resizing function, if checkChange is false then always do updates (use for when indMap view is switched)
+      let prevCanvasWidth = 0;
+      function resizeCanvas(checkChange = true) {
+        const svgElement = document.querySelector("#hexbinMapSVG"); // Select your SVG element
+        let currCanvasWidth = calcCanvasWidth();
+        console.log("currCanvasWidth", currCanvasWidth);
+        if (checkChange && currCanvasWidth == prevCanvasWidth) {
+          return; //return if no change
+        }
+
+        if (showIndMap) {
+          individualMap.updateWidth(calcCanvasWidth());
+          d3.select("div#canvasContainer")
+            .style("width", individualMap.width)
+            .style("height", individualMap.height);
+          d3.select("div.summaryContainer").style("width", individualMap.width);
+        } else {
+          d3.select("div.summaryContainer").style("width", currCanvasWidth);
+        }
+
+        prevCanvasWidth = currCanvasWidth;
+
+      }
+      window.addEventListener("resize", resizeCanvas);
+
       d3.select("button#toggleIndMap").on("click", (event) => {
 
         showIndMap = !showIndMap;
@@ -867,6 +890,9 @@
 
         //display correct legend info
         legend.toggleIndMap(showIndMap);
+
+        //run resiveCanvas
+        resizeCanvas(false);
 
       });
 
@@ -925,11 +951,17 @@
           individualMap.update();
         } else {
           hexbinMap.updateData(passingData);
+
+          const hexBinSizeScale = hexbinMap.hexBinSizeScale.node().cloneNode(true);
+          //change the visibility to visible
+          hexBinSizeScale.style.visibility = "visible";
+          legend.updateSizeScaleHex(sizeScaleHexbinTitle, hexBinSizeScale);
         }
 
       }
 
       updateData();
+      resizeCanvas(false);
       d3.select("div.summaryContainer").style("width", individualMap.width);
     };
 
@@ -945,9 +977,10 @@
       //hide hexbinMap controls for mobile
       //TODO: bring this back when there's mobile support
       d3.select("div#toggleIndMapContainer").style("display", "none");
-    }
+    };
 
-    ;
+
+
     //monitoring scroll position to make aside sticky
     document.addEventListener("scroll", () => {
       const aside = document.querySelector("div.aside");

@@ -2,10 +2,12 @@ import { Legend } from "./legend.js";
 class CollapsibleLegend {
   constructor(
     div,
+    initialHexSizeAttribute,
+    initialHexSizeLegendNode,
     initialcolorAttribute,
     initialLegendNode,
     initialHexColorAttribute,
-    initialHexLegendNode,
+    initialHexColorLegendNode,
     salaryScale,
     options = {}
   ) {
@@ -23,8 +25,12 @@ class CollapsibleLegend {
     this.div = div;
     this.initialize();
     this.setupSalaryLegend(salaryScale);
+    this.updateSizeScaleHex(initialHexSizeAttribute, initialHexSizeLegendNode);
     this.updateColorScale(initialcolorAttribute, initialLegendNode);
-    this.updateColorScaleHex(initialHexColorAttribute, initialHexLegendNode);
+    this.updateColorScaleHex(
+      initialHexColorAttribute,
+      initialHexColorLegendNode
+    );
   }
 
   initialize() {
@@ -52,7 +58,7 @@ class CollapsibleLegend {
       .attr("id", "colorLegend")
       .style("padding", "0rem 0rem 0.5rem");
 
-    this.sizeLengendHex = this.input
+    this.sizeLegendHex = this.input
       .append("div")
       .attr("id", "sizeLegend")
       .style("padding", "0.5rem 0rem")
@@ -75,12 +81,12 @@ class CollapsibleLegend {
     if (showIndMap) {
       this.sizeLegend.style("display", "block");
       this.colorLegend.style("display", "block");
-      this.sizeLengendHex.style("display", "none");
+      this.sizeLegendHex.style("display", "none");
       this.colorLegendHex.style("display", "none");
     } else {
       this.sizeLegend.style("display", "none");
       this.colorLegend.style("display", "none");
-      this.sizeLengendHex.style("display", "block");
+      this.sizeLegendHex.style("display", "block");
       this.colorLegendHex.style("display", "block");
     }
   }
@@ -126,6 +132,30 @@ class CollapsibleLegend {
         const textWidth = this.getBBox().width;
         d3.select(this).attr("x", -textWidth / 2);
       });
+  }
+
+  updateSizeScaleHex(sizeAttribute, legendNode) {
+    console.log("sizeAttribute", sizeAttribute);
+    // Remove existing child nodes
+    while (this.sizeLegendHex.node().firstChild) {
+      this.sizeLegendHex
+        .node()
+        .removeChild(this.sizeLegendHex.node().firstChild);
+    }
+
+    this.sizeLegendHex
+      .append("div")
+      .attr("id", "sizeLegendAttribute")
+      .style("margin-bottom", "0.5rem")
+      .style("font-size", this.options.titleFontSize)
+      .text(`${sizeAttribute.toLowerCase()} (hexagon size)`);
+
+    // Append the new legend node
+    this.sizeLegendHex
+      .append("div")
+      .style("margin-left", "0.5rem")
+      .node()
+      .appendChild(legendNode);
   }
 
   updateColorScale(colorAttribute, legendNode) {

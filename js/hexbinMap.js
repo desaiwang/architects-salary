@@ -24,10 +24,9 @@ class HexbinMap {
     this.container = d3.select(`div#${this.divID}`);
     this.svgMap = this.container
       .append("svg")
+      .attr("id", "hexbinMapSVG")
       .attr("viewBox", [0, 0, this.widthMap, this.heightMap + 80]) //50 is for legends at the bottom
       .attr("style", "max-width: 90%; height: auto;");
-
-    this.svgSizeScale = this.svgMap.append("g");
 
     this.mapArea = this.svgMap.append("g");
 
@@ -47,12 +46,10 @@ class HexbinMap {
     //set up the layer used for hexBin rendering
     this.hexBinLayer = this.mapArea.append("g");
     this.hexBinHover = this.mapArea.append("g");
-    this.hexBinSizeScale = this.svgSizeScale
-      .attr("id", "hexBinSizeScale")
-      .style(
-        "transform",
-        `translate(${this.widthMap - 200}px, ${this.heightMap + 10}px)`
-      );
+    this.hexBinSizeScale = this.container
+      .append("svg")
+      .attr("id", "hexBinSizeScale");
+    //.style("visibility", "hidden");
 
     //set up hexbinGenerator
     this.hexbin = d3
@@ -142,25 +139,44 @@ class HexbinMap {
         ? [100, 500, 1000, 1500]
         : this.radius.ticks(5);
 
+    this.hexBinSizeScale.selectAll("*").remove();
     let hexagons = this.hexBinSizeScale
+      .append("g")
       .selectAll()
       .data(tickData)
       .join("g")
       .style("transform", (d, i) => {
         const xPos = xAcc;
-        xAcc += this.radius(d) * 2 + 20;
-        return `translate(${xPos}px, 18px)`;
+        xAcc += this.radius(d) * 2 + (this.sizeAttribute == "Salary" ? 30 : 20);
+        return `translate(${xPos + 20}px, 50px)`;
       });
 
     hexagons
       .append("path")
       .attr("class", "hexBinSizeLegend")
-      .attr("d", (d) => this.hexbin.hexagon(this.radius(d)));
+      .attr("d", (d) => this.hexbin.hexagon(this.radius(d)))
+      .style("transform", (d) => `translate(0px,-${this.radius(d)}px)`);
+
+    const tickFormat =
+      this.sizeAttribute == "percentageFemale" ||
+      this.sizeAttribute == "percentageLicensed"
+        ? d3.format(".0%")
+        : this.sizeAttribute == "Salary"
+        ? d3.format("$.2s")
+        : d3.format(".0f");
 
     hexagons
       .append("text")
-      .text((d) => d)
-      .attr("y", 12);
+      .text((d) => tickFormat(d))
+      .attr("font-size", "0.8rem")
+      .attr("y", 20)
+      .each(function (d) {
+        // Center text based on its width
+        const textWidth = this.getBBox().width;
+        d3.select(this).attr("x", -textWidth / 2);
+      });
+
+    console.log("hexBinSizeScale.node()", this.hexBinSizeScale.node());
   }
 
   updateSizeAttribute(sizeAttribute) {
