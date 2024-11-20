@@ -47,9 +47,8 @@ class HexbinMap {
     //set up the layer used for hexBin rendering
     this.hexBinLayer = this.mapArea.append("g");
     this.hexBinHover = this.mapArea.append("g");
-    this.hexBinColorScale = this.svgColorScale
-      .attr("id", "hexBinColorScale")
-      .style("transform", `translate(${20}px, ${this.heightMap + 10}px)`);
+    this.hexBinColorScale = this.svgColorScale.attr("id", "hexBinColorScale");
+    //.style("transform", `translate(${200}px, ${this.heightMap + 10}px)`);
     this.hexBinSizeScale = this.svgSizeScale
       .attr("id", "hexBinSizeScale")
       .style(
@@ -104,7 +103,11 @@ class HexbinMap {
       );
 
       this.hexBinColorScale.selectAll("*").remove();
-      this.hexBinColorScale.node().append(Legend(this.color));
+      const legendElement = Legend(this.color);
+      legendElement.style.display = null;
+      legendElement.style.padding = "10px";
+      console.log(legendElement);
+      this.hexBinColorScale.node().append(legendElement);
     }
   }
 
@@ -147,9 +150,10 @@ class HexbinMap {
 
     let xAcc = 0;
     const tickData =
-      sizeAttributeDomain[1] > 1000
+      sizeAttributeDomain[1] > 1000 && this.sizeAttribute == "length"
         ? [100, 500, 1000, 1500]
         : this.radius.ticks(5);
+    console.log("tickData", tickData);
     this.hexBinSizeScale
       .selectAll("path")
       .data(tickData)
@@ -260,9 +264,10 @@ class HexbinMap {
       });
 
     let mouseOver = (event, d) => {
-      console.log("mouseOver d", d);
+      //console.log("mouseOver d", d);
       d3.select(event.target).attr("opacity", "1");
 
+      //show original hexagon: this.hexbin.radius()
       const hexRadius = this.radius(d[this.sizeAttribute]);
       const hoverHexRadius = hexRadius + 3;
       this.hexBinHover
