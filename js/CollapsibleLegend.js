@@ -134,8 +134,12 @@ class CollapsibleLegend {
       });
   }
 
+  //scales the size of the hexagons based on zoom levels
+  scaleSizeScaleHex(ratio) {
+    this.legendNodeContainer.style("transform", `scale(${ratio})`);
+  }
+
   updateSizeScaleHex(sizeAttribute, legendNode) {
-    console.log("sizeAttribute", sizeAttribute);
     // Remove existing child nodes
     while (this.sizeLegendHex.node().firstChild) {
       this.sizeLegendHex
@@ -151,11 +155,11 @@ class CollapsibleLegend {
       .text(`${sizeAttribute.toLowerCase()} (hexagon size)`);
 
     // Append the new legend node
-    this.sizeLegendHex
+    this.legendNodeContainer = this.sizeLegendHex
       .append("div")
-      .style("margin-left", "0.5rem")
-      .node()
-      .appendChild(legendNode);
+      .style("margin-left", "0.5rem");
+
+    this.legendNodeContainer.node().appendChild(legendNode);
   }
 
   updateColorScale(colorAttribute, legendNode) {

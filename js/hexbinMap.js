@@ -48,8 +48,12 @@ class HexbinMap {
     this.hexBinHover = this.mapArea.append("g");
     this.hexBinSizeScale = this.container
       .append("svg")
-      .attr("id", "hexBinSizeScale");
-    //.style("visibility", "hidden");
+      .attr("id", "hexBinSizeScale")
+      .style("width", "auto")
+      .style("height", "auto")
+      .style("max-width", "100%")
+      .style("visibility", "hidden")
+      .style("position", "absolute");
 
     //set up hexbinGenerator
     this.hexbin = d3
@@ -136,26 +140,33 @@ class HexbinMap {
     let xAcc = 0;
     const tickData =
       sizeAttributeDomain[1] > 1000 && this.sizeAttribute == "length"
-        ? [100, 500, 1000, 1500]
+        ? [100, 400, 800, 1600, 2000]
         : this.radius.ticks(5);
 
     this.hexBinSizeScale.selectAll("*").remove();
+
     let hexagons = this.hexBinSizeScale
+      .attr(
+        "viewBox",
+        this.sizeAttribute == "length" ? "0 0 270 70" : "0 0 270 50"
+      )
       .append("g")
       .selectAll()
       .data(tickData)
       .join("g")
       .style("transform", (d, i) => {
         const xPos = xAcc;
-        xAcc += this.radius(d) * 2 + (this.sizeAttribute == "Salary" ? 30 : 20);
-        return `translate(${xPos + 20}px, 50px)`;
+        xAcc += this.radius(d) * 2 + (this.sizeAttribute == "Salary" ? 30 : 25);
+        return `translate(${xPos + 20}px, ${
+          this.sizeAttribute == "length" ? 25 : 15
+        }px)`;
       });
 
     hexagons
       .append("path")
       .attr("class", "hexBinSizeLegend")
       .attr("d", (d) => this.hexbin.hexagon(this.radius(d)))
-      .style("transform", (d) => `translate(0px,-${this.radius(d)}px)`);
+      .style("transform", (d) => `translate(0px,0}px)`);
 
     const tickFormat =
       this.sizeAttribute == "percentageFemale" ||
@@ -168,15 +179,13 @@ class HexbinMap {
     hexagons
       .append("text")
       .text((d) => tickFormat(d))
-      .attr("font-size", "0.8rem")
-      .attr("y", 20)
+      .attr("font-size", "0.6rem")
+      .attr("y", this.sizeAttribute == "length" ? 30 : 25)
       .each(function (d) {
         // Center text based on its width
         const textWidth = this.getBBox().width;
         d3.select(this).attr("x", -textWidth / 2);
       });
-
-    console.log("hexBinSizeScale.node()", this.hexBinSizeScale.node());
   }
 
   updateSizeAttribute(sizeAttribute) {

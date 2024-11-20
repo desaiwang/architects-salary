@@ -95,7 +95,7 @@
 
       <div id="canvasContainer" style="position: relative; display:none"></div>
 
-      <div id="hexbinMap" style="position: relative"></div>
+      <div id="hexbinMap" style="position: relative; min-height:1vh"></div>
 
     </div>
 
@@ -768,7 +768,8 @@
 
       const hexBinSizeScale = hexbinMap.hexBinSizeScale.node().cloneNode(true);
       //change the visibility to visible
-      hexBinSizeScale.style.visibility = "visible"
+      hexBinSizeScale.style.visibility = "visible";
+      hexBinSizeScale.style.position = "relative";
       const legend = new CollapsibleLegend(
         collapsibleLegend,
         "length",
@@ -833,6 +834,7 @@
         const hexBinSizeScale = hexbinMap.hexBinSizeScale.node().cloneNode(true);
         //change the visibility to visible
         hexBinSizeScale.style.visibility = "visible";
+        hexBinSizeScale.style.position = "relative";
 
         legend.updateSizeScaleHex(sizeScaleHexbinTitle, hexBinSizeScale);
       });
@@ -843,9 +845,9 @@
       //add resizing function, if checkChange is false then always do updates (use for when indMap view is switched)
       let prevCanvasWidth = 0;
       function resizeCanvas(checkChange = true) {
-        const svgElement = document.querySelector("#hexbinMapSVG"); // Select your SVG element
+
         let currCanvasWidth = calcCanvasWidth();
-        console.log("currCanvasWidth", currCanvasWidth);
+
         if (checkChange && currCanvasWidth == prevCanvasWidth) {
           return; //return if no change
         }
@@ -858,6 +860,14 @@
           d3.select("div.summaryContainer").style("width", individualMap.width);
         } else {
           d3.select("div.summaryContainer").style("width", currCanvasWidth);
+
+          //also scale hex size legend
+          const svgElement = document.querySelector("#hexbinMapSVG"); // Select your SVG element
+          console.log("svgElement", svgElement);
+          const scale = svgElement.getBoundingClientRect().width / hexbinMap.widthMap;
+          console.log("scale percentage", scale);
+
+          legend.scaleSizeScaleHex(scale);
         }
 
         prevCanvasWidth = currCanvasWidth;
@@ -955,6 +965,7 @@
           const hexBinSizeScale = hexbinMap.hexBinSizeScale.node().cloneNode(true);
           //change the visibility to visible
           hexBinSizeScale.style.visibility = "visible";
+          hexBinSizeScale.style.position = "relative";
           legend.updateSizeScaleHex(sizeScaleHexbinTitle, hexBinSizeScale);
         }
 
