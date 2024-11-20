@@ -742,7 +742,8 @@
         d3.selectAll("div.indMapCustomize").style("display", showIndMap ? "flex" : "none");
         d3.selectAll("div.hexbinCustomize").style("display", showIndMap ? "none" : "flex");
 
-        //TODO: display correct legend info
+        //display correct legend info
+        legend.toggleIndMap(showIndMap);
 
       });
 

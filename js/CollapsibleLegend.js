@@ -48,12 +48,38 @@ class CollapsibleLegend {
       .append("div")
       .attr("id", "colorLegend")
       .style("padding", "0rem 0rem 0.5rem");
+
+    this.sizeLengendHex = this.input
+      .append("div")
+      .attr("id", "sizeLegend")
+      .style("padding", "0.5rem 0rem")
+      .style("display", "none");
+    this.colorLegendHex = this.input
+      .append("div")
+      .attr("id", "colorLegend")
+      .style("padding", "0rem 0rem 0.5rem")
+      .style("display", "none");
+
     //add control to button
     this.collapsed = false;
     button.on("click", () => {
       this.collapsed = !this.collapsed;
       this.onCollapsedChange();
     });
+  }
+
+  toggleIndMap(showIndMap = true) {
+    if (showIndMap) {
+      this.sizeLegend.style("display", "block");
+      this.colorLegend.style("display", "block");
+      this.sizeLengendHex.style("display", "none");
+      this.colorLegendHex.style("display", "none");
+    } else {
+      this.sizeLegend.style("display", "none");
+      this.colorLegend.style("display", "none");
+      this.sizeLengendHex.style("display", "block");
+      this.colorLegendHex.style("display", "block");
+    }
   }
 
   setupSalaryLegend(salaryScale) {

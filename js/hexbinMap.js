@@ -153,18 +153,26 @@ class HexbinMap {
       sizeAttributeDomain[1] > 1000 && this.sizeAttribute == "length"
         ? [100, 500, 1000, 1500]
         : this.radius.ticks(5);
-    console.log("tickData", tickData);
-    this.hexBinSizeScale
-      .selectAll("path")
+
+    let hexagons = this.hexBinSizeScale
+      .selectAll()
       .data(tickData)
-      .join("path")
-      .attr("class", "hexBinSizeLegend")
-      .attr("d", (d) => this.hexbin.hexagon(this.radius(d)))
+      .join("g")
       .style("transform", (d, i) => {
         const xPos = xAcc;
         xAcc += this.radius(d) * 2 + 20;
         return `translate(${xPos}px, 18px)`;
       });
+
+    hexagons
+      .append("path")
+      .attr("class", "hexBinSizeLegend")
+      .attr("d", (d) => this.hexbin.hexagon(this.radius(d)));
+
+    hexagons
+      .append("text")
+      .text((d) => d)
+      .attr("y", 12);
   }
 
   updateSizeAttribute(sizeAttribute) {
