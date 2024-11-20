@@ -116,7 +116,7 @@
             <circle id="toggleCircle" cx="10" cy="5.5" r="4" stroke="currentColor" stroke-width="1.25" fill="none"
               style="display:none;" />
             <!-- Hexagon -->
-            <polygon id="toggleHexagon" points="-4,0 -2,-3.464 2,-3.464 4,0 2,3.464 -2,3.464" stroke="currentColor"
+            <polygon id="toggleHexagon" points="0,4 -3.464,2 -3.464,-2 0,-4 3.464,-2 3.464,2" stroke="currentColor"
               stroke-width="1.25" fill="none" style="transform: translate(10px,5.5px) scale(110%)" />
           </svg>
           <span style="margin-left:2px">View Map</span>
@@ -899,12 +899,19 @@
 
     loadIndividuals();
 
-    //also set div.aside to have opacity 1 if screen is large
+    //set ups for desktop/mobile
     if (window.innerWidth > 768) {
+      //set div.aside to have opacity 1 if screen is large
       d3.select("div.aside")
         .style("opacity", 1)
         .style("transform", "scale(1)");
-    };
+    } else {
+      //hide hexbinMap controls for mobile
+      //TODO: bring this back when there's mobile support
+      d3.select("div#toggleIndMapContainer").style("display", "none");
+    }
+
+    ;
     //monitoring scroll position to make aside sticky
     document.addEventListener("scroll", () => {
       const aside = document.querySelector("div.aside");

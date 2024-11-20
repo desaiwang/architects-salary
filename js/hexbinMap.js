@@ -138,29 +138,29 @@ class HexbinMap {
       ]);
     }
 
-    // this.radius = d3.scaleSqrt(
-    //   sizeAttributeDomain,
-    //   this.sizeAttribute == "length"
-    //     ? [this.hexbin.radius() * 0.3, this.hexbin.radius() * 2.5]
-    //     : [this.hexbin.radius() * 0.1, this.hexbin.radius() * 1.1]
-    // );
+    this.radius = d3.scaleSqrt(
+      sizeAttributeDomain,
+      this.sizeAttribute == "length"
+        ? [this.hexbin.radius() * 0.3, this.hexbin.radius() * 2.5]
+        : [this.hexbin.radius() * 0.1, this.hexbin.radius() * 1.1]
+    );
 
-    // let xAcc = 0;
-    // const tickData =
-    //   sizeAttributeDomain[1] > 1000
-    //     ? [100, 500, 1000, 1500]
-    //     : this.radius.ticks(5);
-    // this.hexBinSizeScale
-    //   .selectAll("path")
-    //   .data(tickData)
-    //   .join("path")
-    //   .attr("class", "hexBinSizeLegend")
-    //   .attr("d", (d) => this.hexbin.hexagon(this.radius(d)))
-    //   .style("transform", (d, i) => {
-    //     const xPos = xAcc;
-    //     xAcc += this.radius(d) * 2 + 20;
-    //     return `translate(${xPos}px, 18px)`;
-    //   });
+    let xAcc = 0;
+    const tickData =
+      sizeAttributeDomain[1] > 1000
+        ? [100, 500, 1000, 1500]
+        : this.radius.ticks(5);
+    this.hexBinSizeScale
+      .selectAll("path")
+      .data(tickData)
+      .join("path")
+      .attr("class", "hexBinSizeLegend")
+      .attr("d", (d) => this.hexbin.hexagon(this.radius(d)))
+      .style("transform", (d, i) => {
+        const xPos = xAcc;
+        xAcc += this.radius(d) * 2 + 20;
+        return `translate(${xPos}px, 18px)`;
+      });
   }
 
   updateSizeAttribute(sizeAttribute) {
