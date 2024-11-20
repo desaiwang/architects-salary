@@ -299,28 +299,6 @@ class HexbinMap {
         .attr("stroke", "black")
         .attr("stroke-width", 1.5);
 
-      let svgRect = this.svgMap.node().getBoundingClientRect();
-      let viewBox = this.svgMap.node().viewBox.baseVal;
-      //logging statements
-      // console.log("svgRect", svgRect);
-      // console.log("svgMap viewbox", viewBox);
-      // console.log("svgRect left", svgRect.left);
-      // console.log("d.x", d.x);
-      // console.log("svgRect.width", svgRect.width);
-      // console.log("viewBox.width", viewBox.width);
-      // console.log(
-      //   "attempt to set left as",
-      //   svgRect.left + (d.x * svgRect.width) / viewBox.width
-      // );
-      // console.log("svgRect top", svgRect.top);
-      // console.log("d.y", d.y);
-      // console.log("svgRect.height", svgRect.height);
-      // console.log("viewBox.height", viewBox.height);
-      // console.log(
-      //   "attempt to set top as ",
-      //   svgRect.top + (d.y * svgRect.height) / viewBox.height
-      // );
-
       const personOrPeople = d.firmSizeMode === 1 ? "person" : "people";
       const schoolDiv = (d, attribute, title) => {
         if (d[attribute]) {
@@ -470,6 +448,8 @@ class HexbinMap {
           `);
       }
 
+      let svgRect = this.svgMap.node().getBoundingClientRect();
+      let viewBox = this.svgMap.node().viewBox.baseVal;
       const tooltipRect = this.tooltipDiv.node().getBoundingClientRect();
       const bounds = calculateBounds(
         svgRect.width,
