@@ -1,0 +1,137 @@
+/*trying to copy tailwind styles from desaiwang.github.io*/
+div.headingContainer {
+  min-height: 100vh;
+  width: 80%;
+  max-width: 1300px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header Section */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 0;
+  position: relative;
+
+  flex-shrink: 0;
+}
+
+header .logo {
+  font-size: 1.25rem; /* Default size */
+  font-family: "Inter", sans-serif;
+}
+
+header .navigation {
+  display: none;
+}
+
+header .navigation.desktop {
+  display: none; /* Hidden on smaller screens */
+}
+
+header .navigation.desktop a,
+header .logo a {
+  text-decoration: none;
+  color: var(--grey-900);
+  font-weight: 400;
+}
+
+header .navigation.desktop a:hover,
+header .logo a:hover {
+  text-decoration: underline;
+}
+
+header .menu-button {
+  font-size: 2rem;
+  display: block;
+  cursor: pointer;
+}
+
+header .menu-mobile {
+  display: none;
+  position: absolute;
+  right: 2.5rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  width: 7rem;
+  background: rgba(255, 255, 255, 0.75);
+  border: 2px dotted black;
+  border-radius: 0.5rem;
+  z-index: 100;
+}
+
+header .menu-mobile a {
+  display: block;
+  padding: 0.5rem 0;
+  font-size: 1.25rem;
+}
+
+header .menu-mobile a:hover {
+  text-decoration: underline;
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0rem 0 4rem;
+
+  flex-grow: 1;
+}
+
+/* Heading Text Section */
+.headingText {
+  font-size: 1.75rem;
+  font-family: "Inter", sans-serif;
+  padding: 1rem 0;
+  line-height: 1.25;
+  color: var(--grey-900);
+}
+
+.headingText h1 {
+  font-size: 2rem;
+  font-weight: 400;
+  margin-bottom: 1rem;
+  margin-top: 0rem;
+}
+
+.headingText p {
+  margin-bottom: 1rem;
+}
+
+/* Responsive Styles */
+@media (min-width: 768px) {
+  header {
+    padding: 2.5rem 0; /* Matches md:py-10 */
+  }
+
+  header .logo,
+  header .navigation.desktop {
+    font-size: 1.875rem; /* Matches md:text-3xl */
+  }
+
+  header .navigation.desktop {
+    display: flex; /* Shows navigation on larger screens */
+    gap: 3.5rem;
+  }
+
+  header .menu-button {
+    display: none; /* Hides the menu button on larger screens */
+  }
+
+  .headingText {
+    padding: 4rem 0 2rem 0;
+    font-size: 2.5rem; /* Matches md:text-4xl */
+    line-height: 1.5; /* Matches md:leading-snug */
+  }
+
+  .headingText h1 {
+    font-size: 2.75rem;
+  }
+}
