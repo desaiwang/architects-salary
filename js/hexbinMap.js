@@ -315,7 +315,7 @@ class HexbinMap {
       if (d.length == 1) {
         this.tooltipDiv.html(`
           <div style="display: flex;flex-direction: column;">
-            <div style="display: flex; gap: 20px; width: auto; min-width: 300px; flex-wrap: nowrap;">
+            <div style="display: flex; gap: 20px; width: auto; min-width: 300px; white-space: nowrap;">
               <!-- Column 1 -->
               <div style="flex: 1 1 auto;">
                 <div style="display: flex; align-items: baseline;">
@@ -365,9 +365,9 @@ class HexbinMap {
       } else if (d.length > 3) {
         this.tooltipDiv.html(`
           <div style="display: flex;flex-direction: column;row-gap: 1rem;">
-            <div style="display: flex; gap: 20px; width: auto; min-width: 300px; flex-wrap: nowrap;">
+            <div style="display: flex; gap: 20px; width: auto; min-width: 300px; max-width:">
               <!-- Column 1 -->
-              <div style="flex: 1 1 auto;">
+              <div style="flex: 1 1 auto; white-space:nowrap">
                 <div style="display: flex; align-items: baseline;">
                   <h4 class="tooltip bold">${d["locationMode"]}</h4>
                   <p class="tooltip light" style="margin-left: 5px;">area</p>
@@ -393,7 +393,7 @@ class HexbinMap {
               </div>
   
               <!-- Column 2 -->
-              <div style="flex: 1 1 auto; margin-top: 2px;">
+              <div style="flex: 1 1 auto; margin-top: 2px; white-space:nowrap">
               <p class="tooltip light">Most Common Responses:</p>
               <p class="tooltip light">${d.jobTitleMode}</p>
                 <p class="tooltip light">${
@@ -407,7 +407,7 @@ class HexbinMap {
                 <p class="tooltip light" >${d.ageMode} years old</p>
               </div>   
             </div>
-            <div>
+            <div style="white-space:nowrap">
               ${schoolDiv(d, "undergradMode", "Most Common UG")}
               ${schoolDiv(d, "gradMode", "Most Common Grad")}
             </div>
@@ -419,8 +419,8 @@ class HexbinMap {
           `);
       } else {
         this.tooltipDiv.html(`
-          <div style="display: flex;flex-direction: column;row-gap: 1rem">
-            <div style="display: flex; gap: 20px; width: auto; min-width: 200px; flex-wrap: nowrap;">
+          <div style="display: flex;flex-direction: column;row-gap: 1rem;">
+            <div style="display: flex; gap: 20px; width: auto; min-width: 200px; white-space: nowrap;">
               <!-- Column 1 -->
               <div style="flex: 1 1 auto; ">
                 <div style="display: flex; align-items: baseline;">
