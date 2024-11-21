@@ -935,31 +935,32 @@
         d3.select("#toggleHexagon").style("display", showIndMap ? "block" : "none");
         d3.select("#toggleCircle").style("display", showIndMap ? "none" : "block");
 
-        //displaying the correct map
-        d3.select("div#hexbinMap").style("display", showIndMap ? "none" : "flex")
-          ;
-        d3.select("div#canvasContainer").style("display", showIndMap ? "block" : "none");
-        //also need to call an update to refresh
         if (showIndMap) {
-          individualMap.update();
-        } else {
-          hexbinMap.updateData(passingData);
-        }
+          //display right map
+          d3.select("div#hexbinMap").style("display", "none");
+          d3.select("div#canvasContainer").style("display", "block");
+          //display properties
+          d3.selectAll("div.indMapCustomize").style("display", "flex");
+          d3.selectAll("div.hexbinCustomize").style("display", "none");
 
-        //update height property on main div to correct for positioning
-        if (showIndMap) {
+          //correct height property (better scrolling experience)
           mainContainer.classList.add("min-height-view");
           mainContainer.classList.remove("height-view");
+
+          //update
+          individualMap.update();
         } else {
+          // Actions when `showIndMap` is false
+          d3.select("div#hexbinMap").style("display", "flex");
+          d3.select("div#canvasContainer").style("display", "none");
+
+          d3.selectAll("div.indMapCustomize").style("display", "none");
+          d3.selectAll("div.hexbinCustomize").style("display", "flex");
           mainContainer.classList.add("height-view");
           mainContainer.classList.remove("min-height-view");
+
+          hexbinMap.updateData(passingData);
         }
-
-
-
-        //display correct customize
-        d3.selectAll("div.indMapCustomize").style("display", showIndMap ? "flex" : "none");
-        d3.selectAll("div.hexbinCustomize").style("display", showIndMap ? "none" : "flex");
 
         //display correct legend info
         legend.toggleIndMap(showIndMap);
