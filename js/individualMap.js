@@ -14,6 +14,14 @@ class IndividualMap {
     this.filters = filters;
     this.currentTarget = -1;
 
+    //set up for drag vs. scroll
+    this.touchBuffer = []; // Buffer to store recent touch points
+    this.isDragging = false; // Flag to track dragging state
+    this.bufferTime = 50; // Time threshold (0.1 seconds)
+    this.threshold = 3; // Pixel movement threshold
+    this.angleThreshold = 0.1; // 10% deviation for scrolling angle
+    this.preventTooltip = false; // Flag to track tooltip cooldown
+
     this.initialize();
     this.positionData(); //vizHeight is also set here, after height is determined
     this.setupCanvas();
@@ -234,14 +242,98 @@ class IndividualMap {
   }
 
   addInteraction() {
-    this.interactiveArea.on("mousemove", (event) =>
-      this.handleMouseMove(event)
-    );
+    this.interactiveArea.on("mousemove", (event) => {
+      console.log("mousemove event", event);
+      console.log("d3.point(event)", d3.pointer(event));
+      return this.handleMouseMove(event);
+    });
     this.interactiveArea.on("mouseout", () => this.handleMouseOut());
+
+    //mobile touch events (distinguishes between drag and scroll)
+    this.interactiveArea.on("touchstart", (event) => {
+      this.isDragging = false;
+      this.touchBuffer.push({
+        x: event.touches[0].clientX,
+        y: event.touches[0].clientY,
+      });
+    });
+
+    this.interactiveArea.on("touchmove", (event) => {
+      const touch = event.touches[0];
+      const currentTime = Date.now();
+
+      // Add the current touch point to the buffer
+      this.touchBuffer.push({
+        x: touch.clientX,
+        y: touch.clientY,
+        time: currentTime,
+      });
+
+      // Remove old points from the buffer
+      this.touchBuffer = this.touchBuffer.filter(
+        (point) => currentTime - point.time <= this.bufferTime
+      );
+      // Find oldest point in the buffer
+      const referencePoint = this.touchBuffer[0];
+      // console.log("currentTime", currentTime);
+      console.log("touchBuffer", this.touchBuffer);
+
+      //assume not dragging unless otherwise changed in the checks below
+      this.isDragging = false;
+
+      if (referencePoint) {
+        // Calculate dx and dy from the reference point
+        const dx = touch.clientX - referencePoint.x;
+        const dy = touch.clientY - referencePoint.y;
+
+        if (dx == 0 && dy == 0) {
+          return;
+        }
+
+        const ratio = Math.abs(dy / dx);
+        console.log("dx", dx);
+        console.log("dy", dy);
+        console.log("ratio", ratio);
+        console.log("Math.atan(ratio)", Math.atan(ratio));
+        console.log(
+          "Math.PI / 2 - Math.atan(ratio)",
+          Math.PI / 2 - Math.atan(ratio)
+        );
+        console.log(
+          "Math.atan(ratio) < this.angleThreshold",
+          Math.PI / 2 - Math.atan(ratio) < this.angleThreshold
+        );
+
+        if (
+          Math.PI / 2 - Math.atan(ratio) < this.angleThreshold &&
+          Math.abs(dy) > this.threshold
+        ) {
+          // Allow scrolling if within angle threshold
+          this.isDragging = true;
+        }
+      }
+
+      console.log("isDragging", this.isDragging);
+
+      if (!this.isDragging) {
+        console.log("prevent tooltip from showing");
+        // Not dragging, allow tooltip to show
+        if (!this.preventTooltip) {
+          event.preventDefault();
+          return this.handleMouseMove(event);
+        }
+      } else {
+        setTimeout(() => {
+          this.preventTooltip = false; // Reset flag after cooldown
+        }, 300); // 0.1 seconds cooldown
+        return this.handleMouseOut();
+      }
+    });
+    this.interactiveArea.on("touchend", () => this.handleMouseOut());
   }
 
   handleMouseMove(event) {
-    const loc = d3.pointer(event);
+    const loc = d3.pointers(event)[0];
     let index =
       this.currentTarget === -1
         ? this.delaunay.find(loc[0], loc[1])
