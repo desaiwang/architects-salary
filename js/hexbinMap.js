@@ -285,7 +285,6 @@ class HexbinMap {
       });
 
     let mouseOver = (event, d) => {
-      //console.log("mouseOver d", d);
       d3.select(event.target).attr("opacity", "1");
 
       //show original hexagon: this.hexbin.radius()
@@ -449,35 +448,9 @@ class HexbinMap {
       }
 
       let containerRect = this.container.node().getBoundingClientRect();
-      console.log("containerRect", containerRect);
       let svgRect = this.svgMap.node().getBoundingClientRect();
-      console.log("hover event", event);
-      console.log("svgRect left: ", svgRect.left, "top: ", svgRect.top);
-      console.log("svg width", svgRect.width, "height", svgRect.height);
       let viewBox = this.svgMap.node().viewBox.baseVal;
-      console.log("viewBox width", viewBox.width, "height", viewBox.height);
       const tooltipRect = this.tooltipDiv.node().getBoundingClientRect();
-      console.log(
-        "tooltipRect width",
-        tooltipRect.width,
-        "height",
-        tooltipRect.height
-      );
-      console.log("d.x", d.x, "d.y", d.y);
-      console.log(
-        `svgRect.left + (d.x * svgRect.width) / viewBox.width: ${
-          svgRect.left
-        } + (${d.x} * ${svgRect.width}) / ${viewBox.width} = ${
-          svgRect.left + (d.x * svgRect.width) / viewBox.width
-        }`
-      );
-      console.log(
-        `svgRect.top + (d.y * svgRect.height) / viewBox.height: ${
-          svgRect.top
-        } + (${d.y} * ${svgRect.height}) / ${viewBox.height} = ${
-          svgRect.top + (d.y * svgRect.height) / viewBox.height
-        }`
-      );
 
       const bounds = calculateBounds(
         svgRect.width,
