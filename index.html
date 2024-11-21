@@ -331,7 +331,7 @@
         "data/241114_archinect_salaries_fulltime.csv",
         d3.autoType
       );
-      console.log(data);
+      // console.log(data);
       data.forEach((d) => {
         if (d["Firm Type"] == null) {
           d["Firm Type"] = "N/A";
@@ -649,7 +649,6 @@
 
       //individual map
       //setting up params and functions to handle canvas resizing
-      //TODO: need to apply to hexBin as well
       let collapsed = false;
       const collapsedSidebarWidth = 20;
       const expandedSidebarWidth = 330;
@@ -780,8 +779,6 @@
         clearAllButton.style("visibility", "hidden");
       });
 
-
-
       d3.select("select.sortOrder").on("change", function () {
         console.log("updating sort order to", this.value);
         individualMap.updateSortOrder(this.value);
@@ -911,10 +908,10 @@
 
           //also scale hex size legend
           const svgElement = document.querySelector("#hexbinMapSVG"); // Select your SVG element
-          console.log("svgElement", svgElement);
-          console.log("svgElement.getBoundingClientRect().width", svgElement.getBoundingClientRect().width);
+          // console.log("svgElement", svgElement);
+          // console.log("svgElement.getBoundingClientRect().width", svgElement.getBoundingClientRect().width);
           const scale = svgElement.getBoundingClientRect().width / hexbinMap.widthMap;
-          console.log("scale percentage", scale);
+          // console.log("scale percentage", scale);
 
           legend.scaleSizeScaleHex(scale);
         }
@@ -947,6 +944,18 @@
           mainContainer.classList.add("min-height-view");
           mainContainer.classList.remove("height-view");
 
+          //showColors on slider
+          //should this automatically expand it?
+          const colorScaleValue = d3.select("select.colorScale").property("value");
+          histogramSliders.forEach((slider) => {
+            if (slider.attribute == colorScaleValue) {
+              slider.updateColor(true);
+              slider.changeCollapsed(false); //open it up
+            } else {
+              slider.updateColor(false);
+            }
+          });
+
           //update
           individualMap.update();
         } else {
@@ -958,6 +967,11 @@
           d3.selectAll("div.hexbinCustomize").style("display", "flex");
           mainContainer.classList.add("height-view");
           mainContainer.classList.remove("min-height-view");
+
+          //hide colors on sliders
+          histogramSliders.forEach((slider) => {
+            slider.updateColor(false);
+          });
 
           hexbinMap.updateData(passingData);
         }
