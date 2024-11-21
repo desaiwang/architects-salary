@@ -240,6 +240,8 @@ div#filters {
 div.main {
   padding-bottom: 16px;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* @media (min-width: 768px) {
@@ -332,6 +334,7 @@ div.summary p {
 }
 
 div.summaryContainer {
+  flex: 0 0 auto;
   position: sticky;
   top: -1;
   background-color: var(--grey-25);

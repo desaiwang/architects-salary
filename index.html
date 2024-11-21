@@ -133,7 +133,8 @@
 
       <div id="canvasContainer" style="position: relative;"></div>
 
-      <div id="hexbinMap" style="position: relative; min-height:1vh; display:none"></div>
+      <div id="hexbinMap"
+        style="position: relative; display:none; justify-content: center; align-items: center; flex: 1 1 auto"></div>
 
     </div>
 
@@ -934,7 +935,8 @@
         d3.select("#toggleCircle").style("display", showIndMap ? "none" : "block");
 
         //displaying the correct map
-        d3.select("div#hexbinMap").style("display", showIndMap ? "none" : "block");
+        d3.select("div#hexbinMap").style("display", showIndMap ? "none" : "flex")
+          ;
         d3.select("div#canvasContainer").style("display", showIndMap ? "block" : "none");
         //also need to call an update to refresh
         if (showIndMap) {
