@@ -53,22 +53,28 @@ header .menu-button {
 }
 
 header .menu-mobile {
-  display: none;
+  display: block;
   position: absolute;
-  right: 2.5rem;
+  top: 4rem;
+  right: 0.25rem;
   margin-top: 0.5rem;
-  padding: 0.5rem 1.25rem;
-  width: 7rem;
-  background: rgba(255, 255, 255, 0.75);
-  border: 2px dotted black;
+  padding: 0.5rem 1.5rem;
+  background: var(--grey-25);
+  border: 2px solid var(--grey-700);
   border-radius: 0.5rem;
   z-index: 100;
+}
+
+header .menu-mobile.hidden {
+  display: none;
 }
 
 header .menu-mobile a {
   display: block;
   padding: 0.5rem 0;
   font-size: 1.25rem;
+  text-decoration: none;
+  color: var(--grey-900);
 }
 
 header .menu-mobile a:hover {

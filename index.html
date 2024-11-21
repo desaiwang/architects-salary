@@ -76,7 +76,7 @@
       <div class="menu-button" onclick="toggleMenu()">☰</div>
 
       <!-- Mobile Navigation -->
-      <nav id="mobile-menu" class="menu-mobile">
+      <nav id="mobile-menu" class="menu-mobile hidden">
         <a href="https://desaiwang.com">work</a>
         <a href="/#/everything-I-ate-in-Singapore">play</a>
         <a href="https://desaiwang.com/blog">blog</a>
@@ -711,7 +711,7 @@
             .style("overflow", "hidden");
 
           //change toggle properties
-          d3.selectAll("div.aside button span")
+          d3.selectAll("div.aside button.collapse span")
             .style("opacity", 0)
             .style("visibility", "hidden");
 
@@ -730,7 +730,7 @@
             .style("overflow-y", "scroll");
 
           //change toggle properties
-          d3.selectAll("div.aside button span")
+          d3.selectAll("div.aside button.collapse span")
             .style("opacity", 1)
             .style("visibility", "visible");
 
