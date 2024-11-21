@@ -105,7 +105,7 @@
   </div>
 
   <div id="visualization" style="display: flex">
-    <div class="main">
+    <div class="main min-height-view" id="mainContainer">
       <div class="summaryContainer">
         <div class="emptySummary" style="display: none; margin-left: 1.5rem">
           <h2>No data selected.</h2>
@@ -925,6 +925,7 @@
       window.addEventListener("resize", resizeCanvas);
 
       let initialSwitch = true;
+      let mainContainer = document.getElementById("mainContainer");
       d3.select("button#toggleIndMap").on("click", (event) => {
 
         showIndMap = !showIndMap;
@@ -944,6 +945,17 @@
         } else {
           hexbinMap.updateData(passingData);
         }
+
+        //update height property on main div to correct for positioning
+        if (showIndMap) {
+          mainContainer.classList.add("min-height-view");
+          mainContainer.classList.remove("height-view");
+        } else {
+          mainContainer.classList.add("height-view");
+          mainContainer.classList.remove("min-height-view");
+        }
+
+
 
         //display correct customize
         d3.selectAll("div.indMapCustomize").style("display", showIndMap ? "flex" : "none");
@@ -1050,7 +1062,8 @@
     document.addEventListener("scroll", () => {
       const aside = document.querySelector("div.aside");
       const headingBottom = document.querySelector("div.heading").getBoundingClientRect().bottom;
-      const isMobile = window.innerWidth <= 768;  // Adjust for mobile breakpoint
+      const isMobile = true;
+      //window.innerWidth <= 768;  // Adjust for mobile breakpoint
 
       if (headingBottom <= 0) {
         // If the heading is out of view, make aside sticky

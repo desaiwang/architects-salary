@@ -100,6 +100,17 @@ div.aside.visible {
 div.aside.sticky {
   position: fixed;
   top: 0;
+
+  transition: top 1s ease;
+}
+
+/* Transitioning state for aside */
+div.aside.transitioning {
+  position: relative; /* Maintain the relative position before sticky is applied */
+  top: 0; /* Ensure no abrupt jumps in position */
+  opacity: 1; /* Fully visible during transition */
+  transform: translateY(-10px); /* Slight slide-up effect */
+  transition: transform 0.3s ease, top 0.3s ease; /* Smooth animation for position and slide */
 }
 
 div.aside::-webkit-scrollbar div.suggestionContainer::-webkit-scrollbar {
@@ -242,6 +253,16 @@ div.main {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+.min-height-view {
+  min-height: 100vh;
+  height: auto; /* Ensure height is not applied */
+}
+
+.height-view {
+  height: 100vh;
+  min-height: auto; /* Ensure min-height is not applied */
 }
 
 /* @media (min-width: 768px) {
