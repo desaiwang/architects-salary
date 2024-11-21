@@ -29,7 +29,7 @@ body {
   margin: 0;
   /* remove default margin */
   /* line-height: 1.7; */
-  color: var(--grey-700);
+  /* color: var(--grey-700); */
   background-color: var(--grey-25);
 }
 
@@ -40,33 +40,6 @@ h4,
 h5 {
   font-family: "Inter", sans-serif;
   font-weight: 500;
-}
-
-h4.tooltip.bold {
-  font-size: 0.9rem;
-  font-weight: 500;
-  margin-top: 0;
-  margin-bottom: 0.1rem;
-}
-
-p.tooltip.light {
-  font-size: 0.8rem;
-  margin-top: 0;
-  margin-bottom: 0.1rem;
-  font-weight: 300;
-}
-
-p.tooltip.regular {
-  font-size: 0.8rem;
-  margin-top: 0;
-  margin-bottom: 0.1rem;
-  font-weight: 500;
-}
-
-p.tooltip.mini {
-  margin-top: 0;
-  font-size: 0.6rem;
-  font-weight: 300;
 }
 
 h5 {
@@ -100,6 +73,17 @@ div.aside.visible {
 div.aside.sticky {
   position: fixed;
   top: 0;
+
+  transition: top 1s ease;
+}
+
+/* Transitioning state for aside */
+div.aside.transitioning {
+  position: relative; /* Maintain the relative position before sticky is applied */
+  top: 0; /* Ensure no abrupt jumps in position */
+  opacity: 1; /* Fully visible during transition */
+  transform: translateY(-10px); /* Slight slide-up effect */
+  transition: transform 0.3s ease, top 0.3s ease; /* Smooth animation for position and slide */
 }
 
 div.aside::-webkit-scrollbar div.suggestionContainer::-webkit-scrollbar {
@@ -162,6 +146,7 @@ button.collapse:active,
 button.collapse:hover,
 button.collapse:focus-visible {
   color: var(--hover-purple);
+  border: none; /*Remove border just to be safe*/
 }
 
 button.clear-filters {
@@ -238,15 +223,21 @@ div#filters {
 }
 
 div.main {
-  padding-bottom: 16px;
-  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-/* @media (min-width: 768px) {
-  div.main {
-    width: calc(90vw - var(--sb-width));
-  }
-} */
+.min-height-view {
+  min-height: 100vh;
+  height: auto; /* Ensure height is not applied */
+  padding-bottom: 16px;
+}
+
+.height-view {
+  height: 100vh;
+  min-height: auto; /* Ensure min-height is not applied */
+  padding-bottom: 0px; /*No padding for map since there's ample white space*/
+}
 
 /* add some padding to the input fields */
 input {
@@ -285,13 +276,15 @@ div.suggestion:hover {
 .input {
   display: flex;
 }
-text.tooltip {
-  font-size: 0.6rem;
-}
 
 select {
   border: 1px solid var(--grey-300);
   border-radius: 2px;
+}
+
+select:focus,
+input:focus {
+  outline: none;
 }
 
 /*styles for dropdown in customize section*/
@@ -332,6 +325,7 @@ div.summary p {
 }
 
 div.summaryContainer {
+  flex: 0 0 auto;
   position: sticky;
   top: -1;
   background-color: var(--grey-25);
@@ -339,144 +333,124 @@ div.summaryContainer {
   padding: 0.5rem 0;
 }
 
-/*trying to copy tailwind styles from desaiwang.github.io*/
-div.headingContainer {
-  min-height: 100vh;
-  width: 80%;
-  max-width: 1300px;
-  margin: 0 auto;
-  position: relative;
-  z-index: 10;
+/*styles for tooltip*/
+div.tooltip {
+  padding: 16px;
+  max-width: min-content;
+}
+
+div.tooltip .columns {
   display: flex;
-  flex-direction: column;
+  gap: 20px;
+  width: auto;
+  min-width: 0px;
+  flex-wrap: nowrap;
 }
 
-/* Header Section */
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem 0;
-  position: relative;
-
-  flex-shrink: 0;
+text.tooltip {
+  font-size: 0.6rem;
 }
 
-header .logo {
-  font-size: 1.25rem; /* Default size */
-  font-family: "Inter", sans-serif;
+h4.tooltip.bold {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 0;
+  margin-bottom: 0.1rem;
 }
 
-header .navigation {
-  display: none;
+p.tooltip.light {
+  font-size: 0.8rem;
+  margin-top: 0;
+  margin-bottom: 0.1rem;
+  font-weight: 300;
 }
 
-header .navigation.desktop {
-  display: none; /* Hidden on smaller screens */
+/*adds a left margin*/
+p.tooltip.left-margin {
+  margin-left: 5px;
 }
 
-header .navigation.desktop a,
-header .logo a {
-  text-decoration: none;
-  color: var(--grey-900);
-  font-weight: 400;
+p.tooltip.regular {
+  font-size: 0.8rem;
+  margin-top: 0;
+  margin-bottom: 0.1rem;
+  font-weight: 500;
 }
 
-header .navigation.desktop a:hover,
-header .logo a:hover {
-  text-decoration: underline;
+p.tooltip.mini {
+  margin-top: 0;
+  font-size: 0.6rem;
+  font-weight: 300;
 }
 
-header .menu-button {
-  font-size: 2rem;
-  display: block;
-  cursor: pointer;
+div.tooltip .schools {
+  margin-top: 15px;
+  margin-bottom: 0px;
 }
 
-header .menu-mobile {
-  display: none;
-  position: absolute;
-  right: 2.5rem;
-  margin-top: 0.5rem;
-  padding: 0.5rem 1.25rem;
-  width: 7rem;
-  background: rgba(255, 255, 255, 0.75);
-  border: 2px dotted black;
-  border-radius: 0.5rem;
-  z-index: 100;
+div.tooltip .year {
+  margin-top: 4px;
+  margin-bottom: -12px;
+  align-self: flex-end;
+  text-align: right;
+  color: var(--grey-500);
 }
 
-header .menu-mobile a {
-  display: block;
-  padding: 0.5rem 0;
-  font-size: 1.25rem;
-}
-
-header .menu-mobile a:hover {
-  text-decoration: underline;
-}
-
-.heading {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0rem 0 4rem;
-
-  flex-grow: 1;
-}
-
-/* Heading Text Section */
-.headingText {
-  font-size: 1.75rem;
-  font-family: "Inter", sans-serif;
-  padding: 1rem 0;
-  line-height: 1.25;
-  color: var(--grey-900);
-}
-
-.headingText h1 {
-  font-size: 2rem;
-  font-weight: 400;
-  margin-bottom: 1rem;
-  margin-top: 0rem;
-}
-
-.headingText p {
-  margin-bottom: 1rem;
-}
-
-/* Responsive Styles */
-@media (min-width: 768px) {
-  header {
-    padding: 2.5rem 0; /* Matches md:py-10 */
+/* style tooltip for mobile devices*/
+@media (max-width: 768px) {
+  div.tooltip {
+    padding: 8px 8px 12px;
   }
 
-  header .logo,
-  header .navigation.desktop {
-    font-size: 1.875rem; /* Matches md:text-3xl */
+  div.tooltip .columns {
+    gap: 12px;
   }
 
-  header .navigation.desktop {
-    display: flex; /* Shows navigation on larger screens */
-    gap: 3.5rem;
+  h4.tooltip.bold {
+    font-size: 0.45rem;
+    font-weight: 500;
+    margin-top: 0;
+    margin-bottom: 0.1rem;
   }
 
-  header .menu-button {
-    display: none; /* Hides the menu button on larger screens */
+  p.tooltip.light {
+    font-size: 0.4rem;
+    margin-top: 0;
+    margin-bottom: 0.1rem;
+    font-weight: 300;
   }
 
-  .headingText {
-    padding: 4rem 0 2rem 0;
-    font-size: 2.5rem; /* Matches md:text-4xl */
-    line-height: 1.5; /* Matches md:leading-snug */
+  /*adds a left margin*/
+  p.tooltip.left-margin {
+    margin-left: 3px;
   }
 
-  .headingText h1 {
-    font-size: 2.75rem;
+  p.tooltip.regular {
+    font-size: 0.4rem;
+    margin-top: 0;
+    margin-bottom: 0.1rem;
+    font-weight: 500;
+  }
+
+  p.tooltip.mini {
+    margin-top: 0;
+    font-size: 0.4rem;
+    font-weight: 300;
+  }
+
+  div.tooltip .schools {
+    margin-top: 8px;
+    margin-bottom: 0px;
+  }
+
+  div.tooltip .year {
+    margin-top: 0px;
+    margin-bottom: -8px;
+    align-self: flex-end;
+    text-align: right;
+    color: var(--grey-500);
   }
 }
-
 /* section navigation */
 html {
   scroll-behavior: smooth; /* Enables smooth scrolling */

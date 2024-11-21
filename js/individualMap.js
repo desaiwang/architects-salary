@@ -14,6 +14,14 @@ class IndividualMap {
     this.filters = filters;
     this.currentTarget = -1;
 
+    //set up for drag vs. scroll
+    this.touchBuffer = []; // Buffer to store recent touch points
+    this.isDragging = false; // Flag to track dragging state
+    this.bufferTime = 50; // Time threshold (0.1 seconds)
+    this.threshold = 3; // Pixel movement threshold
+    this.angleThreshold = 0.1; // 10% deviation for scrolling angle
+    this.preventTooltip = false; // Flag to track tooltip cooldown
+
     this.initialize();
     this.positionData(); //vizHeight is also set here, after height is determined
     this.setupCanvas();
@@ -217,7 +225,6 @@ class IndividualMap {
       .style("visibility", "hidden")
       .style("position", "absolute")
       .style("background", "white")
-      .style("padding", "18px")
       .style("border", "2px solid #181D27")
       .style("border-radius", "5px")
       .style("pointer-events", "none");
@@ -235,14 +242,98 @@ class IndividualMap {
   }
 
   addInteraction() {
-    this.interactiveArea.on("mousemove", (event) =>
-      this.handleMouseMove(event)
-    );
+    this.interactiveArea.on("mousemove", (event) => {
+      console.log("mousemove event", event);
+      console.log("d3.point(event)", d3.pointer(event));
+      return this.handleMouseMove(event);
+    });
     this.interactiveArea.on("mouseout", () => this.handleMouseOut());
+
+    //mobile touch events (distinguishes between drag and scroll)
+    this.interactiveArea.on("touchstart", (event) => {
+      this.isDragging = false;
+      this.touchBuffer.push({
+        x: event.touches[0].clientX,
+        y: event.touches[0].clientY,
+      });
+    });
+
+    this.interactiveArea.on("touchmove", (event) => {
+      const touch = event.touches[0];
+      const currentTime = Date.now();
+
+      // Add the current touch point to the buffer
+      this.touchBuffer.push({
+        x: touch.clientX,
+        y: touch.clientY,
+        time: currentTime,
+      });
+
+      // Remove old points from the buffer
+      this.touchBuffer = this.touchBuffer.filter(
+        (point) => currentTime - point.time <= this.bufferTime
+      );
+      // Find oldest point in the buffer
+      const referencePoint = this.touchBuffer[0];
+      // console.log("currentTime", currentTime);
+      console.log("touchBuffer", this.touchBuffer);
+
+      //assume not dragging unless otherwise changed in the checks below
+      this.isDragging = false;
+
+      if (referencePoint) {
+        // Calculate dx and dy from the reference point
+        const dx = touch.clientX - referencePoint.x;
+        const dy = touch.clientY - referencePoint.y;
+
+        if (dx == 0 && dy == 0) {
+          return;
+        }
+
+        const ratio = Math.abs(dy / dx);
+        console.log("dx", dx);
+        console.log("dy", dy);
+        console.log("ratio", ratio);
+        console.log("Math.atan(ratio)", Math.atan(ratio));
+        console.log(
+          "Math.PI / 2 - Math.atan(ratio)",
+          Math.PI / 2 - Math.atan(ratio)
+        );
+        console.log(
+          "Math.atan(ratio) < this.angleThreshold",
+          Math.PI / 2 - Math.atan(ratio) < this.angleThreshold
+        );
+
+        if (
+          Math.PI / 2 - Math.atan(ratio) < this.angleThreshold &&
+          Math.abs(dy) > this.threshold
+        ) {
+          // Allow scrolling if within angle threshold
+          this.isDragging = true;
+        }
+      }
+
+      console.log("isDragging", this.isDragging);
+
+      if (!this.isDragging) {
+        console.log("prevent tooltip from showing");
+        // Not dragging, allow tooltip to show
+        if (!this.preventTooltip) {
+          event.preventDefault();
+          return this.handleMouseMove(event);
+        }
+      } else {
+        setTimeout(() => {
+          this.preventTooltip = false; // Reset flag after cooldown
+        }, 300); // 0.1 seconds cooldown
+        return this.handleMouseOut();
+      }
+    });
+    this.interactiveArea.on("touchend", () => this.handleMouseOut());
   }
 
   handleMouseMove(event) {
-    const loc = d3.pointer(event);
+    const loc = d3.pointers(event)[0];
     let index =
       this.currentTarget === -1
         ? this.delaunay.find(loc[0], loc[1])
@@ -290,7 +381,7 @@ class IndividualMap {
 
       const schoolDiv = (d, attribute, title) => {
         return d[attribute]
-          ? `<div style="line-height: 1.2;display: flex; align-items: baseline;"><p class="tooltip regular">${title}:</p><p class="tooltip light" style="margin-left: 5px;">${d[attribute]}</p></div>`
+          ? `<div style="line-height: 1.2;display: flex; align-items: baseline;"><p class="tooltip regular">${title}:</p><p class="tooltip light left-margin">${d[attribute]}</p></div>`
           : "";
       };
 
@@ -298,7 +389,7 @@ class IndividualMap {
         d["Undergraduate School"] ||
         d["Graduate School"] ||
         d["Post-Graduate School"]
-          ? `<div style="margin-top: 15px; margin-bottom:0px">
+          ? `<div class="schools">
             ${schoolDiv(d, "Undergraduate School", "UG")}
             ${schoolDiv(d, "Graduate School", "Grad")}
             ${schoolDiv(d, "Post-Graduate School", "PhD")}
@@ -306,24 +397,23 @@ class IndividualMap {
           : "";
 
       this.tooltipDiv.html(`
-      <div>
-          <div style="display: flex; gap: 20px; width: auto; min-width: 300px; flex-wrap: nowrap;">
+          <div class="columns">
             <!-- Column 1 -->
-            <div style="flex: 1 1 auto; min-width: 0;">
+            <div style="flex: 1 1 auto; white-space:nowrap ">
               <h4 class="tooltip bold">${d["Job Title"]}</h4>
               <h4 class="tooltip bold">${d["Location"]}</h4>
               <div style="line-height: 1.5;display: flex; align-items: baseline;">
                 <h4 class="tooltip bold">${d3.format("$,")(d["Salary"])}</h4>
-                <p class="tooltip light" style="margin-left: 5px;">per year</p>
+                <p class="tooltip light left-margin">per year</p>
               </div>
               <div style="display: flex; align-items: baseline;">
                 <h4 class="tooltip bold">${d["Job Satisfaction"]}/10</h4>
-                <p class="tooltip light" style="margin-left: 5px;">satisfaction</p>
+                <p class="tooltip light left-margin">satisfaction</p>
               </div>
             </div>
 
             <!-- Column 2 -->
-            <div style="flex: 1 1 auto; min-width: 0;margin-top: 2px;">
+            <div style="flex: 1 1 auto; margin-top: 2px; white-space:nowrap ">
               <p class="tooltip light">${
                 d["Firm Type"] === "N/A"
                   ? `Firm with ${d["Firm Size"]} ${personOrPeople}`
@@ -340,24 +430,28 @@ class IndividualMap {
             </div>   
           </div>
           ${schoolsDiv}
-          <p style="margin-bottom:-10px; align-self: flex-end; text-align: right;" class="tooltip mini">${new Date(
-            d["Date"]
-          ).toLocaleString("default", { month: "short", year: "numeric" })}</p>
-      </div>
+          <p class="tooltip mini year">${new Date(d["Date"]).toLocaleString(
+            "default",
+            { month: "short", year: "numeric" }
+          )}</p>
         `);
 
       //calculate positions (with wrapping)
       const tooltipRect = this.tooltipDiv.node().getBoundingClientRect();
+
+      const offset = window.innerWidth <= 768 ? 12 : 16;
       const bounds = calculateBounds(
         this.width,
         this.height,
         tooltipRect.width,
         tooltipRect.height,
         d.cx,
-        d.cy
+        d.cy,
+        offset
       );
+
       this.tooltipDiv
-        .style("left", `${bounds.x}px`)
+        .style("left", `${bounds.x > 0 ? bounds.x : 5}px`)
         .style("top", `${bounds.y}px`)
         .style("visibility", "visible");
     }

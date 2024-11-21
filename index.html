@@ -48,6 +48,7 @@
     href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
     rel="stylesheet" />
   <link href="./style.css" rel="stylesheet" type="text/css" />
+  <link href="./header-style.css" rel="stylesheet" type="text/css" />
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script src="https://d3js.org/topojson.v2.min.js"></script>
@@ -75,7 +76,7 @@
       <div class="menu-button" onclick="toggleMenu()">☰</div>
 
       <!-- Mobile Navigation -->
-      <nav id="mobile-menu" class="menu-mobile">
+      <nav id="mobile-menu" class="menu-mobile hidden">
         <a href="https://desaiwang.com">work</a>
         <a href="/#/everything-I-ate-in-Singapore">play</a>
         <a href="https://desaiwang.com/blog">blog</a>
@@ -105,7 +106,7 @@
   </div>
 
   <div id="visualization" style="display: flex">
-    <div class="main">
+    <div class="main min-height-view" id="mainContainer">
       <div class="summaryContainer">
         <div class="emptySummary" style="display: none; margin-left: 1.5rem">
           <h2>No data selected.</h2>
@@ -133,7 +134,8 @@
 
       <div id="canvasContainer" style="position: relative;"></div>
 
-      <div id="hexbinMap" style="position: relative; min-height:1vh; display:none"></div>
+      <div id="hexbinMap"
+        style="position: relative; display:none; justify-content: center; align-items: center; flex: 1 1 auto"></div>
 
     </div>
 
@@ -157,7 +159,7 @@
             <polygon id="toggleHexagon" points="0,4 -3.464,2 -3.464,-2 0,-4 3.464,-2 3.464,2" stroke="currentColor"
               stroke-width="1.25" fill="none" style="transform: translate(10px,5.5px) scale(110%)" />
           </svg>
-          <span style="margin-left:2px">View Map</span>
+          <span style="margin-left:3px">View Map</span>
         </button>
       </div>
 
@@ -325,12 +327,13 @@
     import { sortOrders } from "./js/sortOrders.js";
     import { Legend } from "./js/legend.js";
 
+
     const loadIndividuals = async function () {
       let data = await d3.csv(
         "data/241114_archinect_salaries_fulltime.csv",
         d3.autoType
       );
-      console.log(data);
+      // console.log(data);
       data.forEach((d) => {
         if (d["Firm Type"] == null) {
           d["Firm Type"] = "N/A";
@@ -648,7 +651,6 @@
 
       //individual map
       //setting up params and functions to handle canvas resizing
-      //TODO: need to apply to hexBin as well
       let collapsed = false;
       const collapsedSidebarWidth = 20;
       const expandedSidebarWidth = 330;
@@ -709,7 +711,7 @@
             .style("overflow", "hidden");
 
           //change toggle properties
-          d3.selectAll("div.aside button span")
+          d3.selectAll("div.aside button.collapse span")
             .style("opacity", 0)
             .style("visibility", "hidden");
 
@@ -728,7 +730,7 @@
             .style("overflow-y", "scroll");
 
           //change toggle properties
-          d3.selectAll("div.aside button span")
+          d3.selectAll("div.aside button.collapse span")
             .style("opacity", 1)
             .style("visibility", "visible");
 
@@ -779,8 +781,6 @@
         clearAllButton.style("visibility", "hidden");
       });
 
-
-
       d3.select("select.sortOrder").on("change", function () {
         console.log("updating sort order to", this.value);
         individualMap.updateSortOrder(this.value);
@@ -816,7 +816,7 @@
       updateHexBinSizeScaleNode();
       const legend = new CollapsibleLegend(
         collapsibleLegend,
-        "length",
+        "number of responses",
         hexBinSizeScaleNode,
         "Job Satisfaction",
         satisfactionSlider.getLegendNode(),
@@ -875,7 +875,7 @@
         updateColorScaleHexbin(colorScaleHexbinAttribute);
       });
 
-      let sizeScaleHexbinTitle = "length";
+      let sizeScaleHexbinTitle = "number of responses";
 
       d3.select("select.sizeScaleHexbin").on("change", function () {
         sizeScaleHexbinTitle = hexSelectValueTitleMap[this.value];
@@ -910,10 +910,10 @@
 
           //also scale hex size legend
           const svgElement = document.querySelector("#hexbinMapSVG"); // Select your SVG element
-          console.log("svgElement", svgElement);
-          console.log("svgElement.getBoundingClientRect().width", svgElement.getBoundingClientRect().width);
+          // console.log("svgElement", svgElement);
+          // console.log("svgElement.getBoundingClientRect().width", svgElement.getBoundingClientRect().width);
           const scale = svgElement.getBoundingClientRect().width / hexbinMap.widthMap;
-          console.log("scale percentage", scale);
+          // console.log("scale percentage", scale);
 
           legend.scaleSizeScaleHex(scale);
         }
@@ -924,6 +924,7 @@
       window.addEventListener("resize", resizeCanvas);
 
       let initialSwitch = true;
+      let mainContainer = document.getElementById("mainContainer");
       d3.select("button#toggleIndMap").on("click", (event) => {
 
         showIndMap = !showIndMap;
@@ -933,19 +934,49 @@
         d3.select("#toggleHexagon").style("display", showIndMap ? "block" : "none");
         d3.select("#toggleCircle").style("display", showIndMap ? "none" : "block");
 
-        //displaying the correct map
-        d3.select("div#hexbinMap").style("display", showIndMap ? "none" : "block");
-        d3.select("div#canvasContainer").style("display", showIndMap ? "block" : "none");
-        //also need to call an update to refresh
         if (showIndMap) {
+          //display right map
+          d3.select("div#hexbinMap").style("display", "none");
+          d3.select("div#canvasContainer").style("display", "block");
+          //display properties
+          d3.selectAll("div.indMapCustomize").style("display", "flex");
+          d3.selectAll("div.hexbinCustomize").style("display", "none");
+
+          //correct height property (better scrolling experience)
+          mainContainer.classList.add("min-height-view");
+          mainContainer.classList.remove("height-view");
+
+          //showColors on slider
+          //should this automatically expand it?
+          const colorScaleValue = d3.select("select.colorScale").property("value");
+          histogramSliders.forEach((slider) => {
+            if (slider.attribute == colorScaleValue) {
+              slider.updateColor(true);
+              slider.changeCollapsed(false); //open it up
+            } else {
+              slider.updateColor(false);
+            }
+          });
+
+          //update
           individualMap.update();
         } else {
+          // Actions when `showIndMap` is false
+          d3.select("div#hexbinMap").style("display", "flex");
+          d3.select("div#canvasContainer").style("display", "none");
+
+          d3.selectAll("div.indMapCustomize").style("display", "none");
+          d3.selectAll("div.hexbinCustomize").style("display", "flex");
+          mainContainer.classList.add("height-view");
+          mainContainer.classList.remove("min-height-view");
+
+          //hide colors on sliders
+          histogramSliders.forEach((slider) => {
+            slider.updateColor(false);
+          });
+
           hexbinMap.updateData(passingData);
         }
-
-        //display correct customize
-        d3.selectAll("div.indMapCustomize").style("display", showIndMap ? "flex" : "none");
-        d3.selectAll("div.hexbinCustomize").style("display", showIndMap ? "none" : "flex");
 
         //display correct legend info
         legend.toggleIndMap(showIndMap);
@@ -1048,7 +1079,8 @@
     document.addEventListener("scroll", () => {
       const aside = document.querySelector("div.aside");
       const headingBottom = document.querySelector("div.heading").getBoundingClientRect().bottom;
-      const isMobile = window.innerWidth <= 768;  // Adjust for mobile breakpoint
+      const isMobile = true;
+      //window.innerWidth <= 768;  // Adjust for mobile breakpoint
 
       if (headingBottom <= 0) {
         // If the heading is out of view, make aside sticky
@@ -1067,6 +1099,12 @@
           aside.classList.remove("visible");  // Trigger the fade-in and pop-up effect
         }
       }
+    });
+
+
+    //debugging
+    document.addEventListener("touchmove", (event) => {
+      console.log("Touchmove target:", event.target);
     });
   </script>
 </body>

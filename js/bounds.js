@@ -1,9 +1,15 @@
 //function that returns x,y placement that guarantees to be within bounds
-function calculateBounds(containerWidth, containerHeight, objectWidth, objectHeight, x, y, buffer = 15) {
-
+function calculateBounds(
+  containerWidth,
+  containerHeight,
+  objectWidth,
+  objectHeight,
+  x,
+  y,
+  buffer = 16
+) {
   const spaceBelow = containerHeight - y - objectHeight - buffer;
   const spaceRight = containerWidth - x - objectWidth - buffer;
-
 
   let yTooltip = y + buffer;
   let xTooltip = x + buffer;
@@ -18,7 +24,6 @@ function calculateBounds(containerWidth, containerHeight, objectWidth, objectHei
   }
 
   return { x: xTooltip, y: yTooltip };
-
 }
 
 export default calculateBounds;

@@ -285,7 +285,6 @@ class HexbinMap {
       });
 
     let mouseOver = (event, d) => {
-      //console.log("mouseOver d", d);
       d3.select(event.target).attr("opacity", "1");
 
       //show original hexagon: this.hexbin.radius()
@@ -316,9 +315,9 @@ class HexbinMap {
       if (d.length == 1) {
         this.tooltipDiv.html(`
           <div style="display: flex;flex-direction: column;">
-            <div style="display: flex; gap: 20px; width: auto; min-width: 300px; flex-wrap: nowrap;">
+            <div style="display: flex; gap: 20px; width: auto; min-width: 300px; white-space: nowrap;">
               <!-- Column 1 -->
-              <div style="flex: 1 1 auto; min-width: 0;">
+              <div style="flex: 1 1 auto;">
                 <div style="display: flex; align-items: baseline;">
                   <h4 class="tooltip bold">${d["locationMode"]}</h4>
                 </div>
@@ -338,9 +337,8 @@ class HexbinMap {
           d[0]["Licensed"] == "Yes" ? "Licensed" : "Not Licensed"
         }</p>
               </div>
-  
               <!-- Column 2 -->
-              <div style="flex: 1 1 auto; min-width: 0;margin-top: 2px;">
+              <div style="flex: 1 1 auto; margin-top: 2px;">
               <p class="tooltip light">Only Response:</p>
               <p class="tooltip light">${d.jobTitleMode}</p>
                 <p class="tooltip light">${
@@ -367,9 +365,9 @@ class HexbinMap {
       } else if (d.length > 3) {
         this.tooltipDiv.html(`
           <div style="display: flex;flex-direction: column;row-gap: 1rem;">
-            <div style="display: flex; gap: 20px; width: auto; min-width: 300px; flex-wrap: nowrap;">
+            <div style="display: flex; gap: 20px; width: auto; min-width: 300px; max-width:">
               <!-- Column 1 -->
-              <div style="flex: 1 1 auto; min-width: 0;">
+              <div style="flex: 1 1 auto; white-space:nowrap">
                 <div style="display: flex; align-items: baseline;">
                   <h4 class="tooltip bold">${d["locationMode"]}</h4>
                   <p class="tooltip light" style="margin-left: 5px;">area</p>
@@ -395,7 +393,7 @@ class HexbinMap {
               </div>
   
               <!-- Column 2 -->
-              <div style="flex: 1 1 auto; min-width: 0;margin-top: 2px;">
+              <div style="flex: 1 1 auto; margin-top: 2px; white-space:nowrap">
               <p class="tooltip light">Most Common Responses:</p>
               <p class="tooltip light">${d.jobTitleMode}</p>
                 <p class="tooltip light">${
@@ -409,7 +407,7 @@ class HexbinMap {
                 <p class="tooltip light" >${d.ageMode} years old</p>
               </div>   
             </div>
-            <div>
+            <div style="white-space:nowrap">
               ${schoolDiv(d, "undergradMode", "Most Common UG")}
               ${schoolDiv(d, "gradMode", "Most Common Grad")}
             </div>
@@ -421,10 +419,10 @@ class HexbinMap {
           `);
       } else {
         this.tooltipDiv.html(`
-          <div style="display: flex;flex-direction: column;row-gap: 1rem">
-            <div style="display: flex; gap: 20px; width: auto; min-width: 200px; flex-wrap: nowrap;">
+          <div style="display: flex;flex-direction: column;row-gap: 1rem;">
+            <div style="display: flex; gap: 20px; width: auto; min-width: 200px; white-space: nowrap;">
               <!-- Column 1 -->
-              <div style="flex: 1 1 auto; min-width: 0;">
+              <div style="flex: 1 1 auto; ">
                 <div style="display: flex; align-items: baseline;">
                   <h4 class="tooltip bold">${d["locationMode"]}</h4>
                   <p class="tooltip light" style="margin-left: 5px;">area</p>
@@ -448,16 +446,22 @@ class HexbinMap {
           `);
       }
 
+      let containerRect = this.container.node().getBoundingClientRect();
       let svgRect = this.svgMap.node().getBoundingClientRect();
       let viewBox = this.svgMap.node().viewBox.baseVal;
       const tooltipRect = this.tooltipDiv.node().getBoundingClientRect();
+
       const bounds = calculateBounds(
         svgRect.width,
         svgRect.height,
         tooltipRect.width,
         tooltipRect.height,
-        (d.x * svgRect.width) / viewBox.width,
-        (d.y * svgRect.height) / viewBox.height
+        svgRect.left -
+          containerRect.left +
+          (d.x * svgRect.width) / viewBox.width,
+        svgRect.top -
+          containerRect.top +
+          (d.y * svgRect.height) / viewBox.height
       );
       this.tooltipDiv
         .style("left", bounds.x)
