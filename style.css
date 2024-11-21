@@ -29,7 +29,7 @@ body {
   margin: 0;
   /* remove default margin */
   /* line-height: 1.7; */
-  color: var(--grey-700);
+  /* color: var(--grey-700); */
   background-color: var(--grey-25);
 }
 
@@ -315,6 +315,11 @@ text.tooltip {
 select {
   border: 1px solid var(--grey-300);
   border-radius: 2px;
+}
+
+select:focus,
+input:focus {
+  outline: none;
 }
 
 /*styles for dropdown in customize section*/
