@@ -317,7 +317,7 @@ class HexbinMap {
           <div style="display: flex;flex-direction: column;">
             <div style="display: flex; gap: 20px; width: auto; min-width: 300px; flex-wrap: nowrap;">
               <!-- Column 1 -->
-              <div style="flex: 1 1 auto; min-width: 0;">
+              <div style="flex: 1 1 auto;">
                 <div style="display: flex; align-items: baseline;">
                   <h4 class="tooltip bold">${d["locationMode"]}</h4>
                 </div>
@@ -337,9 +337,8 @@ class HexbinMap {
           d[0]["Licensed"] == "Yes" ? "Licensed" : "Not Licensed"
         }</p>
               </div>
-  
               <!-- Column 2 -->
-              <div style="flex: 1 1 auto; min-width: 0;margin-top: 2px;">
+              <div style="flex: 1 1 auto; margin-top: 2px;">
               <p class="tooltip light">Only Response:</p>
               <p class="tooltip light">${d.jobTitleMode}</p>
                 <p class="tooltip light">${
@@ -368,7 +367,7 @@ class HexbinMap {
           <div style="display: flex;flex-direction: column;row-gap: 1rem;">
             <div style="display: flex; gap: 20px; width: auto; min-width: 300px; flex-wrap: nowrap;">
               <!-- Column 1 -->
-              <div style="flex: 1 1 auto; min-width: 0;">
+              <div style="flex: 1 1 auto;">
                 <div style="display: flex; align-items: baseline;">
                   <h4 class="tooltip bold">${d["locationMode"]}</h4>
                   <p class="tooltip light" style="margin-left: 5px;">area</p>
@@ -394,7 +393,7 @@ class HexbinMap {
               </div>
   
               <!-- Column 2 -->
-              <div style="flex: 1 1 auto; min-width: 0;margin-top: 2px;">
+              <div style="flex: 1 1 auto; margin-top: 2px;">
               <p class="tooltip light">Most Common Responses:</p>
               <p class="tooltip light">${d.jobTitleMode}</p>
                 <p class="tooltip light">${
@@ -423,7 +422,7 @@ class HexbinMap {
           <div style="display: flex;flex-direction: column;row-gap: 1rem">
             <div style="display: flex; gap: 20px; width: auto; min-width: 200px; flex-wrap: nowrap;">
               <!-- Column 1 -->
-              <div style="flex: 1 1 auto; min-width: 0;">
+              <div style="flex: 1 1 auto; ">
                 <div style="display: flex; align-items: baseline;">
                   <h4 class="tooltip bold">${d["locationMode"]}</h4>
                   <p class="tooltip light" style="margin-left: 5px;">area</p>

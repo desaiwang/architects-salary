@@ -6,22 +6,21 @@ function calculateBounds(
   objectHeight,
   x,
   y,
-  bufferX = 15,
-  bufferY = 15
+  buffer = 16
 ) {
-  const spaceBelow = containerHeight - y - objectHeight - bufferY;
-  const spaceRight = containerWidth - x - objectWidth - bufferX;
+  const spaceBelow = containerHeight - y - objectHeight - buffer;
+  const spaceRight = containerWidth - x - objectWidth - buffer;
 
-  let yTooltip = y + bufferY;
-  let xTooltip = x + bufferX;
+  let yTooltip = y + buffer;
+  let xTooltip = x + buffer;
 
   //this assumes that containerWidth > objectWidth and containerHeight > objectHeight
   if (spaceBelow < 0) {
-    yTooltip = y - objectHeight - bufferY;
+    yTooltip = y - objectHeight - buffer;
   }
 
   if (spaceRight < 0) {
-    xTooltip = x - objectWidth - bufferX;
+    xTooltip = x - objectWidth - buffer;
   }
 
   return { x: xTooltip, y: yTooltip };

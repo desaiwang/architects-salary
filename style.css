@@ -276,9 +276,6 @@ div.suggestion:hover {
 .input {
   display: flex;
 }
-text.tooltip {
-  font-size: 0.6rem;
-}
 
 select {
   border: 1px solid var(--grey-300);
@@ -337,6 +334,23 @@ div.summaryContainer {
 }
 
 /*styles for tooltip*/
+div.tooltip {
+  padding: 16px;
+  max-width: min-content;
+}
+
+div.tooltip .columns {
+  display: flex;
+  gap: 20px;
+  width: auto;
+  min-width: 0px;
+  flex-wrap: nowrap;
+}
+
+text.tooltip {
+  font-size: 0.6rem;
+}
+
 h4.tooltip.bold {
   font-size: 0.9rem;
   font-weight: 500;
@@ -349,6 +363,11 @@ p.tooltip.light {
   margin-top: 0;
   margin-bottom: 0.1rem;
   font-weight: 300;
+}
+
+/*adds a left margin*/
+p.tooltip.left-margin {
+  margin-left: 5px;
 }
 
 p.tooltip.regular {
@@ -364,6 +383,74 @@ p.tooltip.mini {
   font-weight: 300;
 }
 
+div.tooltip .schools {
+  margin-top: 15px;
+  margin-bottom: 0px;
+}
+
+div.tooltip .year {
+  margin-top: 4px;
+  margin-bottom: -12px;
+  align-self: flex-end;
+  text-align: right;
+  color: var(--grey-500);
+}
+
+/* style tooltip for mobile devices*/
+@media (max-width: 768px) {
+  div.tooltip {
+    padding: 8px 8px 12px;
+  }
+
+  div.tooltip .columns {
+    gap: 12px;
+  }
+
+  h4.tooltip.bold {
+    font-size: 0.45rem;
+    font-weight: 500;
+    margin-top: 0;
+    margin-bottom: 0.1rem;
+  }
+
+  p.tooltip.light {
+    font-size: 0.4rem;
+    margin-top: 0;
+    margin-bottom: 0.1rem;
+    font-weight: 300;
+  }
+
+  /*adds a left margin*/
+  p.tooltip.left-margin {
+    margin-left: 3px;
+  }
+
+  p.tooltip.regular {
+    font-size: 0.4rem;
+    margin-top: 0;
+    margin-bottom: 0.1rem;
+    font-weight: 500;
+  }
+
+  p.tooltip.mini {
+    margin-top: 0;
+    font-size: 0.4rem;
+    font-weight: 300;
+  }
+
+  div.tooltip .schools {
+    margin-top: 8px;
+    margin-bottom: 0px;
+  }
+
+  div.tooltip .year {
+    margin-top: 0px;
+    margin-bottom: -8px;
+    align-self: flex-end;
+    text-align: right;
+    color: var(--grey-500);
+  }
+}
 /* section navigation */
 html {
   scroll-behavior: smooth; /* Enables smooth scrolling */
