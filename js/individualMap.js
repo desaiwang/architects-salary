@@ -243,8 +243,8 @@ class IndividualMap {
 
   addInteraction() {
     this.interactiveArea.on("mousemove", (event) => {
-      console.log("mousemove event", event);
-      console.log("d3.point(event)", d3.pointer(event));
+      // console.log("mousemove event", event);
+      // console.log("d3.point(event)", d3.pointer(event));
       return this.handleMouseMove(event);
     });
     this.interactiveArea.on("mouseout", () => this.handleMouseOut());
@@ -276,7 +276,7 @@ class IndividualMap {
       // Find oldest point in the buffer
       const referencePoint = this.touchBuffer[0];
       // console.log("currentTime", currentTime);
-      console.log("touchBuffer", this.touchBuffer);
+      // console.log("touchBuffer", this.touchBuffer);
 
       //assume not dragging unless otherwise changed in the checks below
       this.isDragging = false;
@@ -291,18 +291,18 @@ class IndividualMap {
         }
 
         const ratio = Math.abs(dy / dx);
-        console.log("dx", dx);
-        console.log("dy", dy);
-        console.log("ratio", ratio);
-        console.log("Math.atan(ratio)", Math.atan(ratio));
-        console.log(
-          "Math.PI / 2 - Math.atan(ratio)",
-          Math.PI / 2 - Math.atan(ratio)
-        );
-        console.log(
-          "Math.atan(ratio) < this.angleThreshold",
-          Math.PI / 2 - Math.atan(ratio) < this.angleThreshold
-        );
+        // console.log("dx", dx);
+        // console.log("dy", dy);
+        // console.log("ratio", ratio);
+        // console.log("Math.atan(ratio)", Math.atan(ratio));
+        // console.log(
+        //   "Math.PI / 2 - Math.atan(ratio)",
+        //   Math.PI / 2 - Math.atan(ratio)
+        // );
+        // console.log(
+        //   "Math.atan(ratio) < this.angleThreshold",
+        //   Math.PI / 2 - Math.atan(ratio) < this.angleThreshold
+        // );
 
         if (
           Math.PI / 2 - Math.atan(ratio) < this.angleThreshold &&
@@ -313,10 +313,10 @@ class IndividualMap {
         }
       }
 
-      console.log("isDragging", this.isDragging);
+      // console.log("isDragging", this.isDragging);
 
       if (!this.isDragging) {
-        console.log("prevent tooltip from showing");
+        // console.log("prevent tooltip from showing");
         // Not dragging, allow tooltip to show
         if (!this.preventTooltip) {
           event.preventDefault();
