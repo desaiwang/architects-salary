@@ -249,8 +249,6 @@ div#filters {
 }
 
 div.main {
-  padding-bottom: 16px;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -258,11 +256,13 @@ div.main {
 .min-height-view {
   min-height: 100vh;
   height: auto; /* Ensure height is not applied */
+  padding-bottom: 16px;
 }
 
 .height-view {
   height: 100vh;
   min-height: auto; /* Ensure min-height is not applied */
+  padding-bottom: 0px; /*No padding for map since there's ample white space*/
 }
 
 /* @media (min-width: 768px) {
