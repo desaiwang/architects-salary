@@ -434,45 +434,46 @@ class ClickableHistogramSlider {
       .on("click", (event, d) => {
         clearTimeout(this.timeout);
         this.timeout = setTimeout(() => {
-          d.clicked = !d.clicked;
+          // Reset all bars to deselected
+          this.groupCounts.forEach((item) => (item.clicked = false));
+          // Set only the double-clicked bar to selected
+          d.clicked = true;
+          this.histRects
+            .attr("fill", (d) => this.colorRect(d))
+            .style("stroke", (d) => this.colorBorder(d));
 
-          if (d.clicked) {
-            d3.select(event.target) //TODO: probably not going to work
-              .attr("fill", (d) =>
-                this.showColors ? d.color : ClickableHistogramSlider.greyFill
-              )
-              .style("stroke", this.colorBorder(d));
-
-            this.valueList.push(d.key);
-          } else {
-            d3.select(event.target)
-              .attr("fill", ClickableHistogramSlider.whiteFill)
-              .style("stroke", this.colorBorder(d));
-
-            this.valueList = this.valueList.filter((rating) => rating != d.key);
-          }
+          // Update valueList and filter to only include the double-clicked value
+          this.valueList = [d.key];
           this.updateButtonClearFilters();
-          this.filters[this.attribute] = (d) =>
-            this.valueList.includes(d[this.attribute]);
+
+          this.filters[this.attribute] = (item) =>
+            item[this.attribute] === d.key;
+
           this.updateData();
         }, 200);
       })
       .on("dblclick", (event, d) => {
         clearTimeout(this.timeout);
-        // Reset all bars to deselected
-        this.groupCounts.forEach((item) => (item.clicked = false));
-        // Set only the double-clicked bar to selected
-        d.clicked = true;
-        this.histRects
-          .attr("fill", (d) => this.colorRect(d))
-          .style("stroke", (d) => this.colorBorder(d));
+        d.clicked = !d.clicked;
 
-        // Update valueList and filter to only include the double-clicked value
-        this.valueList = [d.key];
+        if (d.clicked) {
+          d3.select(event.target) //TODO: probably not going to work
+            .attr("fill", (d) =>
+              this.showColors ? d.color : ClickableHistogramSlider.greyFill
+            )
+            .style("stroke", this.colorBorder(d));
+
+          this.valueList.push(d.key);
+        } else {
+          d3.select(event.target)
+            .attr("fill", ClickableHistogramSlider.whiteFill)
+            .style("stroke", this.colorBorder(d));
+
+          this.valueList = this.valueList.filter((rating) => rating != d.key);
+        }
         this.updateButtonClearFilters();
-
-        this.filters[this.attribute] = (item) => item[this.attribute] === d.key;
-
+        this.filters[this.attribute] = (d) =>
+          this.valueList.includes(d[this.attribute]);
         this.updateData();
       });
   }
