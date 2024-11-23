@@ -333,7 +333,7 @@
         "data/241123_archinect_salaries_fulltime.csv",
         d3.autoType
       );
-      // console.log(data);
+      console.log(data);
       data.forEach((d) => {
         if (d["Firm Type"] == null) {
           d["Firm Type"] = "N/A";
@@ -374,6 +374,26 @@
           scaleFormatter: (d) => (d === 0 ? "$0" : d3.format("$.2s")(d)),
         }
       );
+
+      //add toggle for inflation
+      d3.select("div.slider-rowwrapper").append("div").html(`<div id="toggleInflation" style="padding: 0.5rem 0">
+            <label class= "switch">
+                  <input type="checkbox" id="toggleSwitch">
+                  <span class="slider round"></span>
+            </label>
+                <span id="toggleLabel">Not adjusted for inflation</span>
+            </div>`);
+
+      d3.select("#toggleSwitch").on("change", function () {
+        const isChecked = this.checked;
+
+        //update attribute in salary slider
+        salarySlider.changeAttribute(isChecked ? "Inflation Adjusted Salary" : "Salary");
+
+        //update toggle label
+        d3.select("#toggleLabel").text(isChecked ? "Adjusted for inflation" : "Not adjusted for inflation");
+      });
+
 
       // let greens = ['#f7fcf5', '#e5f5e0', '#c7e9c0', '#a1d99b', '#74c476', '#41ab5d', '#238b45', '#006d2c', '#00441b']
       const GnColorInterpolator = d3.interpolateRgb("#e5f5e0", "#00441b");
@@ -1072,8 +1092,6 @@
       //TODO: bring this back when there's mobile support
       d3.select("div#toggleIndMapContainer").style("display", "none");
     };
-
-
 
     //monitoring scroll position to make aside sticky
     document.addEventListener("scroll", () => {
