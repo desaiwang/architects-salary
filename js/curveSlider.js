@@ -67,7 +67,7 @@ class CurveSlider {
       .range([10, this.sliderWidth - 20]);
     this.xAxis = d3
       .axisBottom(this.xScale)
-      .ticks(6)
+      .ticks(5)
       .tickFormat((d) =>
         this.maxLimit !== 0 && d === this.maxLimit
           ? `${this.scaleFormatter(this.maxLimit)}+`
@@ -178,12 +178,22 @@ class CurveSlider {
       });
   }
 
-  changeAttribute(attribute) {
-    this.attribute = attribute;
+  toggleInflation(attribute) {
+    if (this.attribute !== attribute) {
+      //transfer filter over to new attribute
+      this.filters[attribute] = this.filters[this.attribute];
+
+      //delete old filter
+      delete this.filters[this.attribute];
+
+      //update attribute
+      this.attribute = attribute;
+    }
     this.update();
   }
 
   update() {
+    console.log("updating slider with attribute:", this.attribute);
     const filteredData = this.dataAll.filter((d) =>
       CurveSlider.pointPassesFilters(this.filters, this.attribute, d)
     );

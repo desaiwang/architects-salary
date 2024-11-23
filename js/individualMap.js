@@ -14,6 +14,9 @@ class IndividualMap {
     this.filters = filters;
     this.currentTarget = -1;
 
+    this.adjustInflation = true;
+    this.salaryAttribute = "Inflation Adjusted Salary";
+
     //set up for drag vs. scroll
     this.touchBuffer = []; // Buffer to store recent touch points
     this.isDragging = false; // Flag to track dragging state
@@ -30,6 +33,14 @@ class IndividualMap {
     //default to job satisfaction
     this.setColors("Job Satisfaction");
     this.render();
+  }
+
+  toggleInflation(adjustInflation) {
+    this.adjustInflation = adjustInflation;
+    this.salaryAttribute = adjustInflation
+      ? "Inflation Adjusted Salary"
+      : "Salary";
+    this.update();
   }
 
   initialize() {
@@ -68,7 +79,7 @@ class IndividualMap {
         this.context.arc(
           d.cx,
           d.cy,
-          this.salaryScale(d["Salary"]),
+          this.salaryScale(d[this.salaryAttribute]),
           0,
           2 * Math.PI
         );
@@ -84,7 +95,7 @@ class IndividualMap {
         this.context.arc(
           d.cx,
           d.cy,
-          this.salaryScale(d["Salary"]),
+          this.salaryScale(d[this.salaryAttribute]),
           0,
           2 * Math.PI
         );
@@ -126,7 +137,10 @@ class IndividualMap {
   }
 
   positionData() {
-    const medianSalaryOverall = d3.median(this.data, (d) => d["Salary"]);
+    const medianSalaryOverall = d3.median(
+      this.data,
+      (d) => d[this.salaryAttribute]
+    );
     this.maxD = Math.ceil(this.salaryScale(medianSalaryOverall) * 2 + 3);
     this.numPointsPerRow = Math.floor(this.vizWidth / this.maxD);
     this.xOffset = this.maxD / 2 + this.margins.left;
@@ -163,7 +177,11 @@ class IndividualMap {
   }
 
   updateSortOrder(attribute) {
-    console.log("trying to get sort Order", sortOrders[attribute]);
+    console.log(
+      "trying to get sort Order for attribute",
+      attribute,
+      sortOrders[attribute]
+    );
     if (attribute === "Year") {
       console.log("this.originalOrder", this.originalOrder);
       this.data = this.data.sort((a, b) => a.index - b.index);
@@ -364,7 +382,7 @@ class IndividualMap {
         .attr("stroke", d.colorDarker)
         .attr("stroke-width", 1)
         .attr("pointer-events", "none")
-        .attr("r", this.salaryScale(d["Salary"]));
+        .attr("r", this.salaryScale(d[this.salaryAttribute]));
 
       this.interactiveArea
         .append("circle")
@@ -375,7 +393,7 @@ class IndividualMap {
         .attr("stroke-width", 2)
         .attr("fill", "none")
         .attr("pointer-events", "none")
-        .attr("r", this.salaryScale(d["Salary"]) + 4);
+        .attr("r", this.salaryScale(d[this.salaryAttribute]) + 4);
 
       const personOrPeople = d["Firm Size"] === 1 ? "person" : "people";
 
@@ -403,7 +421,9 @@ class IndividualMap {
               <h4 class="tooltip bold">${d["Job Title"]}</h4>
               <h4 class="tooltip bold">${d["Location"]}</h4>
               <div style="line-height: 1.5;display: flex; align-items: baseline;">
-                <h4 class="tooltip bold">${d3.format("$,")(d["Salary"])}</h4>
+                <h4 class="tooltip bold">${d3.format("$,")(
+                  d[this.salaryAttribute]
+                )}</h4>
                 <p class="tooltip light left-margin">per year</p>
               </div>
               <div style="display: flex; align-items: baseline;">

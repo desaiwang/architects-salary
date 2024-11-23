@@ -364,7 +364,7 @@
         data,
         controlSalary,
         "Salary",
-        "Salary",
+        "Inflation Adjusted Salary",
         controlWidth,
         controlHeight,
         updateData,
@@ -376,22 +376,34 @@
       );
 
       //add toggle for inflation
-      d3.select("div.slider-rowwrapper").append("div").html(`<div id="toggleInflation" style="padding: 0.5rem 0">
+      d3.select("div.slider-rowwrapper").append("div").html(`<div id="toggleInflation" style="padding: 0.25rem 0 0.5rem 0.5rem">
             <label class= "switch">
-                  <input type="checkbox" id="toggleSwitch">
+                    <input type="checkbox" id="toggleSwitch" checked>
                   <span class="slider round"></span>
             </label>
-                <span id="toggleLabel">Not adjusted for inflation</span>
+                <span id="toggleLabel">Inflation-Adjusted</span>
             </div>`);
 
+      let adjustInflation = true;
+
       d3.select("#toggleSwitch").on("change", function () {
-        const isChecked = this.checked;
+        adjustInflation = !adjustInflation;
+        //update toggle label
+        d3.select("#toggleLabel").text(adjustInflation ? "Inflation-Adjusted" : "Unadjusted");
 
         //update attribute in salary slider
-        salarySlider.changeAttribute(isChecked ? "Inflation Adjusted Salary" : "Salary");
+        salarySlider.toggleInflation(adjustInflation ? "Inflation Adjusted Salary" : "Salary");
 
-        //update toggle label
-        d3.select("#toggleLabel").text(isChecked ? "Adjusted for inflation" : "Not adjusted for inflation");
+        //update salary attribute used in indMap (this will automatically rerender the circles with correct size)
+        individualMap.toggleInflation(adjustInflation);
+
+        //also resort if sorting is by salary
+        if (d3.select("select.sortOrder").node().value == "Salary") {
+          individualMap.updateSortOrder(adjustInflation ? "Inflation Adjusted Salary" : "Salary");
+        }
+
+        //update summary texts
+        updateSummary();
       });
 
 
@@ -803,7 +815,12 @@
 
       d3.select("select.sortOrder").on("change", function () {
         console.log("updating sort order to", this.value);
-        individualMap.updateSortOrder(this.value);
+        if (this.value == "Salary") {
+          individualMap.updateSortOrder(adjustInflation ? "Inflation Adjusted Salary" : this.value);
+        } else {
+          individualMap.updateSortOrder(this.value);
+        }
+
       });
 
       //map related scales and set up
@@ -1010,13 +1027,38 @@
         }
       });
 
+      //function for updating summary (median income, mean sat, and # of responses)
+      function updateSummary() {
+        const medianSalary = d3.median(passingData, (d) => d[adjustInflation ? "Inflation Adjusted Salary" : "Salary"]);
+        const meanSatisfaction = d3.mean(
+          passingData,
+          (d) => d["Job Satisfaction"]
+        );
+
+        if (passingData.length > 0) {
+          //show summary
+          d3.select("div.emptySummary").style("display", "none");
+          d3.select("div.summaryAll").style("display", "flex");
+          d3.select("h2#medianSalary").text(d3.format("$,")(medianSalary));
+          d3.select("h2#meanSatisfaction").text(
+            d3.format(".2f")(meanSatisfaction)
+          );
+          d3.select("h2#numResponses").text(d3.format(",")(passingData.length));
+          d3.select("p#numResponsesTotal").text(
+            `/${d3.format(",")(data.length)} responses (${d3.format(".0%")(
+              passingData.length / data.length
+            )})`
+          );
+        } else {
+          d3.select("div.summaryAll").style("display", "none");
+          d3.select("div.emptySummary").style("display", "block");
+        }
+      }
 
       //update data
       function updateData() {
         //filter for passing data
         passingData = data.filter(pointPassesFilters);
-        const passingDataSize = passingData.length;
-        //console.log("passingDataSize", passingDataSize)
 
         //update sliders
         salarySlider.update();
@@ -1036,30 +1078,8 @@
           hasNonIdentityFilters ? "visible" : "hidden"
         );
 
-        const medianSalary = d3.median(passingData, (d) => d["Salary"]);
-        const meanSatisfaction = d3.mean(
-          passingData,
-          (d) => d["Job Satisfaction"]
-        );
+        updateSummary();
 
-        if (passingDataSize > 0) {
-          //show summary
-          d3.select("div.emptySummary").style("display", "none");
-          d3.select("div.summaryAll").style("display", "flex");
-          d3.select("h2#medianSalary").text(d3.format("$,")(medianSalary));
-          d3.select("h2#meanSatisfaction").text(
-            d3.format(".2f")(meanSatisfaction)
-          );
-          d3.select("h2#numResponses").text(d3.format(",")(passingDataSize));
-          d3.select("p#numResponsesTotal").text(
-            `/${d3.format(",")(data.length)} responses (${d3.format(".0%")(
-              passingDataSize / data.length
-            )})`
-          );
-        } else {
-          d3.select("div.summaryAll").style("display", "none");
-          d3.select("div.emptySummary").style("display", "block");
-        }
 
         if (showIndMap) {
           individualMap.update();
