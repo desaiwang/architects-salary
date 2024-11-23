@@ -333,7 +333,7 @@
         "data/241123_archinect_salaries_fulltime.csv",
         d3.autoType
       );
-      console.log(data);
+      //console.log(data);
       data.forEach((d) => {
         if (d["Firm Type"] == null) {
           d["Firm Type"] = "N/A";
@@ -391,11 +391,23 @@
         //update toggle label
         d3.select("#toggleLabel").text(adjustInflation ? "Inflation-Adjusted" : "Unadjusted");
 
-        //update attribute in salary slider
+        //update attribute in salary slider (this will adjust filters and rerender the histogram)
         salarySlider.toggleInflation(adjustInflation ? "Inflation Adjusted Salary" : "Salary");
+
+        //immediately update passing data since filters changed
+        passingData = data.filter(pointPassesFilters);
 
         //update salary attribute used in indMap (this will automatically rerender the circles with correct size)
         individualMap.toggleInflation(adjustInflation);
+
+        //update salary attribute used in hexbinMap
+        hexbinMap.toggleInflation(adjustInflation); //set the correct color and size scales/attributes if necessary
+        hexbinMap.updateData(passingData); //update data and rerender
+
+        //update the legends
+        updateHexBinSizeScaleNode();
+        legend.updateSizeScaleHex(sizeScaleHexbinTitle, hexBinSizeScaleNode);
+        updateColorScaleHexbin(colorScaleHexbinAttribute);
 
         //also resort if sorting is by salary
         if (d3.select("select.sortOrder").node().value == "Salary") {
@@ -675,6 +687,7 @@
       const colorScalesHexbin = {
         "Job Satisfaction": BuOrColorInterpolator,
         "Salary": d3.interpolateGnBu,
+        "Inflation Adjusted Salary": d3.interpolateGnBu, //same as Salary
         "percentageLicensed": d3.interpolateBlues,
         "percentageFemale": d3.interpolateRgb("#3ca951", "#ff8ab7"),
         "firmTypeMode": colorScales["Firm Type"],
@@ -814,7 +827,7 @@
       });
 
       d3.select("select.sortOrder").on("change", function () {
-        console.log("updating sort order to", this.value);
+        //console.log("updating sort order to", this.value);
         if (this.value == "Salary") {
           individualMap.updateSortOrder(adjustInflation ? "Inflation Adjusted Salary" : this.value);
         } else {
@@ -1139,11 +1152,6 @@
       }
     });
 
-
-    //debugging
-    document.addEventListener("touchmove", (event) => {
-      console.log("Touchmove target:", event.target);
-    });
   </script>
 </body>
 
