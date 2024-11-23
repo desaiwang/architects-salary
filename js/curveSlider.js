@@ -133,7 +133,7 @@ class CurveSlider {
 
     //add control to button
     this.collapsed = false;
-    button.on("click", async () => {
+    button.on("click", () => {
       this.collapsed = !this.collapsed;
 
       chevron.transition().style("rotate", this.collapsed ? "0deg" : "90deg");
@@ -143,17 +143,13 @@ class CurveSlider {
           .transition()
           .style("opacity", 0)
           .style("visibility", "hidden")
-          .attr("display", "none");
-
-        this.canvas.attr("display", "none");
+          .style("display", "none");
       } else {
         this.rowwrapper
-          .attr("display", "block")
+          .style("display", "block")
           .transition()
           .style("opacity", 1)
           .style("visibility", "visible");
-
-        this.canvas.attr("display", "block");
       }
     });
 
