@@ -1,4 +1,22 @@
 id,Job Satisfaction,Salary,Salary Unit,Location,Job Title,Firm Type,Firm Size,Health Insurance,Overtime,Vacation Days,Annual Bonus,Work Status,Years of Experience,Age,Gender,Licensed,Undergraduate School,Graduate School,Post-Graduate School,Date
+20210,8,"80,000",peryear,"Los Angeles, CA, US",Job Captain,Corporate,201-500 People,Yes,Unpaid Overtime,14,"6,400",Full-time,6-7,36-40,Female,No,NA,NA,NA,Nov '24
+20208,8,"68,500",peryear,"Cedar Grove, NJ, US",Junior Architect,Corporate,31-50 People,Yes,No Overtime,10,NA,Full-time,3,21-25,Male,No,UG:New Jersey Institute of Technology (NJIT),NA,NA,Nov '24
+20207,5,"66,560",peryear,"Los Angeles, CA, US",Graphic Designer,Boutique,11-15 People,Yes,Unpaid Overtime,10,NA,Full-time,2,21-25,Male,No,UG:Carnegie Mellon University,NA,NA,Nov '24
+20206,6,"82,000",peryear,"Boston, MA, US",Designer,Corporate,51-100 People,Yes,Unpaid Overtime,10,NA,Full-time,6-7,31-35,Female,No,UG:University of Pittsburgh,Grad:University at Buffalo,NA,Nov '24
+20205,7,"48,000",peryear,"Fontana, CA, US",Draftsperson,Individual,1 People,NA,NA,NA,NA,Freelance,3-5,21-25,Male,No,NA,NA,NA,Nov '24
+20204,8,"105,000",peryear,"Honolulu, HI, US",Project Architect,Corporate,201-500 People,Yes,Unpaid Overtime,9,NA,Full-time,8-10,46-50,Female,Licensed,UG:University of Hawai?i at M?noa,Grad:University of Hawai?i at M?noa,NA,Nov '24
+20203,4,"87,000",peryear,"New York, NY, US",Intermediate Designer,Other,11-15 People,Yes,Unpaid Overtime,15,"2,500",Full-time,3-5,31-35,Male,Licensed,UG:Saxion University of Applied Sciences,Grad:Columbia University,NA,Nov '24
+20201,3,"81,500",peryear,"New York, NY, US",Designer,Starchitect,201-500 People,Yes,Unpaid Overtime,15,"3,000",Full-time,3-5,26-30,Male,No,UG:The Ohio State University,Grad:Yale University,NA,Nov '24
+20200,8,"70,000",peryear,"Wisconsin, US",Owner,Individual,1 People,NA,No Overtime,7,NA,Freelance,21-25,51-55,Male,Licensed,UG:University of Wisconsin-Milwaukee,Grad:University of Wisconsin-Milwaukee,PhD:University of Wisconsin Green Bay,Nov '24
+20199,7,"60,000",peryear,"Phoenix, AZ, US",Designer,Individual,6-10 People,Yes,No Overtime,14,"3,000",Full-time,3,26-30,Male,No,UG:Arizona State University,NA,NA,Nov '24
+20198,7,"72,000",peryear,"New York, NY, US",Junior Designer,Corporate,501 + People,Yes,Paid Overtime,19,500,Full-time,2,21-25,Male,No,UG:University of Detroit Mercy,Grad:University of Detroit Mercy,NA,Nov '24
+20197,7,"71,000",peryear,"Salt Lake City, UT, US",Intern,Corporate,51-100 People,Yes,Unpaid Overtime,17,"5,000",Full-time,3-5,31-35,Male,No,NA,NA,NA,Nov '24
+20196,6,"60,320",peryear,"Chicago, IL, US",Associate,Boutique,16-30 People,Yes,Paid Overtime,13,"2,500",Full-time,1,21-25,Male,No,UG:University of Illinois at Urbana-Champaign,Grad:University of Illinois at Urbana-Champaign,NA,Nov '24
+20194,6,"59,000",peryear,"Cleveland, OH, US",Intermediate Designer,Corporate,31-50 People,Yes,Paid Overtime,15,NA,Full-time,3,26-30,Gender: Other,No,UG:Kent State University,NA,NA,Nov '24
+20193,9,"75,000",peryear,"Cleveland, OH, US",Interior Designer,Boutique,16-30 People,Yes,Unpaid Overtime,15,"3,000",Full-time,8-10,31-35,Female,No,UG:Bowling Green State University,NA,NA,Nov '24
+20192,7,"65,000",peryear,"Cleveland, OH, US",Designer,Boutique,16-30 People,Yes,Unpaid Overtime,15,NA,Full-time,3-5,26-30,Female,No,UG:Kent State University,Grad:Kent State University,NA,Nov '24
+20190,7,110,peryear,"Denver, CO, US",Senior Designer,Corporate,201-500 People,Yes,Unpaid Overtime,15,"3,000",Full-time,11-15,36-40,Male,No,NA,NA,NA,Nov '24
+20189,8,"145,000",peryear,"New York, NY, US",Principal,Corporate,51-100 People,Yes,NA,NA,"5,000",NA,16-20,41-45,Female,Licensed,NA,NA,NA,Nov '24
 20188,6,"65,000",peryear,"San Francisco, CA, US",Junior Designer,NA,16-30 People,NA,NA,NA,NA,NA,< 1,21-25,Male,No,NA,NA,NA,Nov '24
 20187,7,"67,000",peryear,"Chicago, IL, US",Junior Architect,Corporate,501 + People,Yes,Unpaid Overtime,12,"10,000",Full-time,3-5,26-30,Male,Licensed,NA,NA,NA,Nov '24
 20185,8,"97,000",peryear,"Madison, WI, US",Project Manager,Corporate,51-100 People,Yes,Unpaid Overtime,15,"13,000",Full-time,11-15,31-35,Male,Licensed,UG:University of Wisconsin-Milwaukee,Grad:University of Oregon,NA,Nov '24

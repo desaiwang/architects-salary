@@ -9,10 +9,19 @@ class HexbinMap {
     this.stateMesh = stateMesh;
     this.colorScales = colorScales;
 
+    this.adjustInflation = true;
+
     this.colorAttribute = "Job Satisfaction";
     this.sizeAttribute = "length";
     this.initialize();
+    this.setupBins();
+    this.updateSizeScale();
+    this.updateColorScale();
     this.render();
+  }
+
+  toggleInflation(adjustInflation) {
+    this.adjustInflation = adjustInflation;
   }
 
   initialize() {
@@ -67,7 +76,7 @@ class HexbinMap {
         if (d.xy) {
           return d.xy[0];
         } else {
-          console.log("error: d is", d);
+          console.log("error in getting hexbin coordinates: d is", d);
         } //TODO: remove this line in production
       })
       .y((d) => d.xy[1]);
@@ -112,6 +121,7 @@ class HexbinMap {
       );
   }
 
+  //this updates the scale for size (in the legend section)
   updateSizeScale() {
     const sizeAttributeDomain = d3.extent(
       this.bins,
@@ -143,9 +153,12 @@ class HexbinMap {
     );
 
     let xAcc = 0;
-    const tickData = ultraBig
+    let tickData = ultraBig
       ? [100, 400, 800, 1600, 2000]
       : this.radius.ticks(5);
+    if (tickData.length > 6) {
+      tickData = tickData.slice(-6);
+    }
 
     this.hexBinSizeScale.selectAll("*").remove();
 
@@ -189,9 +202,9 @@ class HexbinMap {
 
   updateSizeAttribute(sizeAttribute) {
     this.sizeAttribute = sizeAttribute;
-
     this.updateSizeScale();
 
+    //update the hexagons drawn
     this.hexBinLayer
       .selectAll("path")
       // .transition()
@@ -202,16 +215,23 @@ class HexbinMap {
 
   updateData(data) {
     this.data = data;
+
+    this.setupBins();
+    this.updateSizeScale();
+    this.updateColorScale();
+
     this.render();
   }
 
-  render() {
+  setupBins() {
     this.bins = this.hexbin(
       this.data
         .filter((d) => d.Location !== "Barrigada, GU") //Guam unfortunately is not a part of the geo albers projection, so removing it from map visualization
         .map((d) => ({
           xy: this.projection([d.Longitude, d.Latitude]),
-          Salary: d.Salary,
+          Salary: this.adjustInflation
+            ? d["Inflation Adjusted Salary"]
+            : d.Salary,
           Satisfaction: d["Job Satisfaction"],
           Licensed: d.Licensed,
           Gender: d.Gender,
@@ -254,10 +274,9 @@ class HexbinMap {
     //TODO: maybe make this an user-controllable variable
     const minBinLength = 5;
     this.bins = this.bins.filter((d) => d.length > minBinLength);
+  }
 
-    this.updateSizeScale();
-    this.updateColorScale();
-
+  render() {
     // Append the hexagons
     this.hexBinLayer.selectAll("path").remove();
     this.hexBinLayer
@@ -266,12 +285,7 @@ class HexbinMap {
       .join("path")
       .attr("class", "hexBin")
       .attr("transform", (d) => `translate(${d.x},${d.y})`)
-      .attr("d", (d, i) => {
-        // if (d.x == 857.3651497465942 & d.y == 165) {
-        //   console.log("d is", d, "d[this.sizeAttribute]: ", d[this.sizeAttribute], "radius: ", radius(d[this.sizeAttribute]))
-        // }
-        return this.hexbin.hexagon(this.radius(d[this.sizeAttribute]));
-      })
+      .attr("d", (d) => this.hexbin.hexagon(this.radius(d[this.sizeAttribute])))
       .attr("fill", (d) => this.color(d[this.colorAttribute]))
       .attr("stroke", (d) =>
         d3.lab(this.color(d[this.colorAttribute])).darker()
