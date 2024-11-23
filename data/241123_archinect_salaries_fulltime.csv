@@ -1,4 +1,21 @@
 id,Job Satisfaction,Salary,Salary Unit,Location,Job Title,Firm Type,Firm Size,Health Insurance,Overtime,Vacation Days,Annual Bonus,Work Status,Years of Experience,Age,Gender,Licensed,Undergraduate School,Graduate School,Post-Graduate School,Date,Year,Latitude,Longitude
+20210,8,80000,year,"Los Angeles, CA",Job Captain,Corporate,201-500,Yes,Unpaid Overtime,14.0,6400.0,Full-time,6-7,36-40,Female,No,,,,2024-11-01,2024,34.0536909,-118.242766
+20208,8,68500,year,"Cedar Grove, NJ",Junior Architect,Corporate,31-50,Yes,No Overtime,10.0,,Full-time,3,21-25,Male,No,New Jersey Institute of Technology (NJIT),,,2024-11-01,2024,40.8517662,-74.229035
+20207,5,66560,year,"Los Angeles, CA",Graphic Designer,Boutique,11-15,Yes,Unpaid Overtime,10.0,,Full-time,2,21-25,Male,No,Carnegie Mellon University,,,2024-11-01,2024,34.0536909,-118.242766
+20206,6,82000,year,"Boston, MA",Designer,Corporate,51-100,Yes,Unpaid Overtime,10.0,,Full-time,6-7,31-35,Female,No,University of Pittsburgh,University at Buffalo,,2024-11-01,2024,42.3554334,-71.060511
+20205,7,48000,year,"Fontana, CA",Draftsperson,Individual,1,,,,,Freelance,3-5,21-25,Male,No,,,,2024-11-01,2024,34.0922947,-117.43433
+20204,8,105000,year,"Honolulu, HI",Project Architect,Corporate,201-500,Yes,Unpaid Overtime,9.0,,Full-time,8-10,46-50,Female,Yes,University of Hawaiʻi at Mānoa,University of Hawaiʻi at Mānoa,,2024-11-01,2024,21.304547,-157.855676
+20203,4,87000,year,"New York, NY",Intermediate Designer,Other,11-15,Yes,Unpaid Overtime,15.0,2500.0,Full-time,3-5,31-35,Male,Yes,Saxion University of Applied Sciences,Columbia University,,2024-11-01,2024,40.7127281,-74.0060152
+20201,3,81500,year,"New York, NY",Designer,Starchitect,201-500,Yes,Unpaid Overtime,15.0,3000.0,Full-time,3-5,26-30,Male,No,The Ohio State University,Yale University,,2024-11-01,2024,40.7127281,-74.0060152
+20200,8,70000,year,Wisconsin,Owner,Individual,1,,No Overtime,7.0,,Freelance,21-25,51-55,Male,Yes,University of Wisconsin-Milwaukee,University of Wisconsin-Milwaukee,University of Wisconsin Green Bay,2024-11-01,2024,44.4308975,-89.6884637
+20199,7,60000,year,"Phoenix, AZ",Designer,Individual,6-10,Yes,No Overtime,14.0,3000.0,Full-time,3,26-30,Male,No,Arizona State University,,,2024-11-01,2024,33.4484367,-112.074141
+20198,7,72000,year,"New York, NY",Junior Designer,Corporate,501+,Yes,Paid Overtime,19.0,500.0,Full-time,2,21-25,Male,No,University of Detroit Mercy,University of Detroit Mercy,,2024-11-01,2024,40.7127281,-74.0060152
+20197,7,71000,year,"Salt Lake City, UT",Intern,Corporate,51-100,Yes,Unpaid Overtime,17.0,5000.0,Full-time,3-5,31-35,Male,No,,,,2024-11-01,2024,40.7596198,-111.886797
+20196,6,60320,year,"Chicago, IL",Associate,Boutique,16-30,Yes,Paid Overtime,13.0,2500.0,Full-time,1,21-25,Male,No,University of Illinois at Urbana-Champaign,University of Illinois at Urbana-Champaign,,2024-11-01,2024,41.8755616,-87.6244212
+20194,6,59000,year,"Cleveland, OH",Intermediate Designer,Corporate,31-50,Yes,Paid Overtime,15.0,,Full-time,3,26-30,Other,No,Kent State University,,,2024-11-01,2024,41.4996574,-81.6936772
+20193,9,75000,year,"Cleveland, OH",Interior Designer,Boutique,16-30,Yes,Unpaid Overtime,15.0,3000.0,Full-time,8-10,31-35,Female,No,Bowling Green State University,,,2024-11-01,2024,41.4996574,-81.6936772
+20192,7,65000,year,"Cleveland, OH",Designer,Boutique,16-30,Yes,Unpaid Overtime,15.0,,Full-time,3-5,26-30,Female,No,Kent State University,Kent State University,,2024-11-01,2024,41.4996574,-81.6936772
+20189,8,145000,year,"New York, NY",Principal,Corporate,51-100,Yes,,,5000.0,,16-20,41-45,Female,Yes,,,,2024-11-01,2024,40.7127281,-74.0060152
 20188,6,65000,year,"San Francisco, CA",Junior Designer,,16-30,,,,,,< 1,21-25,Male,No,,,,2024-11-01,2024,37.7792588,-122.4193286
 20187,7,67000,year,"Chicago, IL",Junior Architect,Corporate,501+,Yes,Unpaid Overtime,12.0,10000.0,Full-time,3-5,26-30,Male,Yes,,,,2024-11-01,2024,41.8755616,-87.6244212
 20185,8,97000,year,"Madison, WI",Project Manager,Corporate,51-100,Yes,Unpaid Overtime,15.0,13000.0,Full-time,11-15,31-35,Male,Yes,University of Wisconsin-Milwaukee,University of Oregon,,2024-11-01,2024,43.074761,-89.3837613
