@@ -35,12 +35,14 @@ class IndividualMap {
     this.render();
   }
 
-  toggleInflation(adjustInflation) {
+  toggleInflation(adjustInflation, update = true) {
     this.adjustInflation = adjustInflation;
     this.salaryAttribute = adjustInflation
       ? "Inflation Adjusted Salary"
       : "Salary";
-    this.update();
+    if (update) {
+      this.update();
+    }
   }
 
   initialize() {
@@ -177,13 +179,7 @@ class IndividualMap {
   }
 
   updateSortOrder(attribute) {
-    console.log(
-      "trying to get sort Order for attribute",
-      attribute,
-      sortOrders[attribute]
-    );
     if (attribute === "Year") {
-      console.log("this.originalOrder", this.originalOrder);
       this.data = this.data.sort((a, b) => a.index - b.index);
     } else if (sortOrders[attribute]) {
       this.data.sort((a, b) => {

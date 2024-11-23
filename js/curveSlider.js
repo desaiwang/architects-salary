@@ -193,7 +193,6 @@ class CurveSlider {
   }
 
   update() {
-    console.log("updating slider with attribute:", this.attribute);
     const filteredData = this.dataAll.filter((d) =>
       CurveSlider.pointPassesFilters(this.filters, this.attribute, d)
     );

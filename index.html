@@ -397,17 +397,21 @@
         //immediately update passing data since filters changed
         passingData = data.filter(pointPassesFilters);
 
-        //update salary attribute used in indMap (this will automatically rerender the circles with correct size)
-        individualMap.toggleInflation(adjustInflation);
+        if (showIndMap) {
+          //update salary attribute used in indMap (this will automatically rerender the circles with correct size)
+          individualMap.toggleInflation(adjustInflation);
 
-        //update salary attribute used in hexbinMap
-        hexbinMap.toggleInflation(adjustInflation); //set the correct color and size scales/attributes if necessary
-        hexbinMap.updateData(passingData); //update data and rerender
+        } else {
+          //update salary attribute used in hexbinMap
+          hexbinMap.toggleInflation(adjustInflation); //set the correct color and size scales/attributes if necessary
+          hexbinMap.updateData(passingData); //update data and rerender
 
-        //update the legends
-        updateHexBinSizeScaleNode();
-        legend.updateSizeScaleHex(sizeScaleHexbinTitle, hexBinSizeScaleNode);
-        updateColorScaleHexbin(colorScaleHexbinAttribute);
+          //update the legends
+          updateHexBinSizeScaleNode();
+          legend.updateSizeScaleHex(sizeScaleHexbinTitle, hexBinSizeScaleNode);
+          updateColorScaleHexbin(colorScaleHexbinAttribute);
+        }
+
 
         //also resort if sorting is by salary
         if (d3.select("select.sortOrder").node().value == "Salary") {
@@ -659,6 +663,7 @@
       const attributeToSlider = {
         Year: timeSlider,
         Salary: salarySlider, //this is a curveSlider
+        "Inflation Adjusted Salary": salarySlider,
         "Job Satisfaction": satisfactionSlider,
         "Firm Type": firmtypeSlider,
         "Firm Size": firmsizeSlider,
@@ -816,11 +821,13 @@
       let clearAllButton = d3.select("button.clear-all-filters");
 
       clearAllButton.on("click", (event) => {
+
         Object.keys(filters).forEach((key) => {
           if (filters[key] !== "d => true") {
             attributeToSlider[key].clearFilters();
           }
-        });
+        }
+        );
 
         //hide this clear all button
         clearAllButton.style("visibility", "hidden");
@@ -1008,6 +1015,12 @@
             }
           });
 
+          //sync attribute if it has since changed
+          if (individualMap.adjustInflation != adjustInflation) {
+            //only change attribute but don't update, since update is called below
+            individualMap.toggleInflation(adjustInflation, false);
+          }
+
           //update
           individualMap.update();
         } else {
@@ -1025,7 +1038,16 @@
             slider.updateColor(false);
           });
 
+          if (hexbinMap.adjustInflation != adjustInflation) {
+            hexbinMap.toggleInflation(adjustInflation);
+          }
+
           hexbinMap.updateData(passingData);
+
+          //update the legends
+          updateHexBinSizeScaleNode();
+          legend.updateSizeScaleHex(sizeScaleHexbinTitle, hexBinSizeScaleNode);
+          updateColorScaleHexbin(colorScaleHexbinAttribute);
         }
 
         //display correct legend info
