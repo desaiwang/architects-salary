@@ -1,4 +1,40 @@
 id,Job Satisfaction,Salary,Salary Unit,Location,Job Title,Firm Type,Firm Size,Health Insurance,Overtime,Vacation Days,Annual Bonus,Work Status,Years of Experience,Age,Gender,Licensed,Undergraduate School,Graduate School,Post-Graduate School,Date
+20254,5,"67,000",peryear,"Charlotte, NC, US",Intermediate Designer,NA,101-200 People,Yes,NA,NA,NA,NA,3-5,26-30,Female,No,NA,NA,NA,Dec '24
+20253,7,150,peryear,"New York, NY, US",Designer,NA,11-15 People,NA,NA,NA,NA,NA,8-10,41-45,Male,Licensed,NA,NA,NA,Dec '24
+20252,3,"70,000",peryear,"New York, NY, US",Project Architect,Boutique,6-10 People,Yes,Unpaid Overtime,10,"1,500",Full-time,2,21-25,Male,No,UG:Pratt Institute,NA,NA,Dec '24
+20251,6,"72,800",peryear,"Washington, DC, US",Designer,Corporate,501 + People,Yes,Unpaid Overtime,15,NA,Full-time,3-5,26-30,Female,No,UG:Wentworth Institute of Technology,Grad:University of Maryland,NA,Dec '24
+20250,8,"74,000",peryear,"Atlanta, GA, US",Job Captain,Corporate,501 + People,Yes,No Overtime,15,"7,600",Full-time,3-5,26-30,Female,No,UG:Kennesaw State University,NA,NA,Dec '24
+20249,8,"47,500",peryear,"Cedar Falls, IA, US",Intern,Other,6-10 People,Yes,Paid Overtime,14,"1,500",Full-time,3-5,26-30,Female,No,UG:Iowa State University,NA,NA,Dec '24
+20248,9,"92,000",peryear,"Chicago, IL, US",Project Manager,Corporate,11-15 People,Yes,No Overtime,15,"7,000",Full-time,11-15,36-40,Male,No,UG:University of Illinois at Urbana-Champaign,Grad:University of Illinois at Urbana-Champaign,NA,Dec '24
+20247,8,"95,000",peryear,"Denver, CO, US",Job Captain,Corporate,201-500 People,Yes,No Overtime,15,"10,000",Full-time,11-15,31-35,Male,No,UG:University of Colorado at Boulder,NA,NA,Dec '24
+20246,9,"125,000",peryear,"Boston, MA, US",Senior Architect,Boutique,16-30 People,NA,Unpaid Overtime,25,NA,Full-time,16-20,51-55,Male,Licensed,UG:University of Massachusetts Amherst,Grad:Harvard University Graduate School of Design - Career Discovery Program,NA,Dec '24
+20245,10,"70,000",peryear,"Los Angeles, CA, US",Junior Designer,Corporate,501 + People,Yes,Paid Overtime,40,NA,Full-time,1,26-30,Female,No,UG:University of Idaho,Grad:University of Oregon,NA,Dec '24
+20244,1,"77,000",peryear,"San Jose, CA, US",Designer,Corporate,501 + People,NA,NA,NA,NA,NA,3,26-30,Female,No,UG:North Carolina State University,Grad:North Carolina State University,NA,Dec '24
+20241,6,"75,000",peryear,"Birmingham, AL, US",Project Architect,Corporate,51-100 People,Yes,No Overtime,7,NA,Full-time,21-25,46-50,Female,No,NA,NA,NA,Nov '24
+20239,7,"58,600",peryear,"Iowa City, IA, US",Junior Architect,Corporate,31-50 People,Yes,Unpaid Overtime,15,NA,Full-time,3-5,26-30,Male,Licensed,NA,NA,NA,Nov '24
+20238,6,"69,000",peryear,"Iowa City, IA, US",Interior Designer,Corporate,31-50 People,Yes,Unpaid Overtime,18,NA,Full-time,6-7,26-30,Female,Licensed,NA,NA,NA,Nov '24
+20237,5,"97,000",peryear,"Dallas, TX, US",Project Architect,Corporate,51-100 People,Yes,Paid Overtime,21,NA,Full-time,8-10,36-40,Female,Licensed,UG:Addis Ababa University,Grad:Universität Stuttgart,NA,Nov '24
+20236,8,"63,000",peryear,"Missouri, US",Designer,Corporate,501 + People,Yes,Paid Overtime,20,"5,000",Full-time,3-5,26-30,Female,No,NA,NA,NA,Nov '24
+20234,4,"63,000",peryear,"Miami, FL, US",Designer,Corporate,201-500 People,NA,No Overtime,10,NA,Full-time,2,21-25,Female,No,UG:Clemson University,Grad:University of Miami,NA,Nov '24
+20233,7,"92,000",peryear,"New York, NY, US",Project Architect,Boutique,6-10 People,NA,No Overtime,15,"3,000",Full-time,3-5,31-35,Female,No,NA,Grad:The University of Texas at Austin,NA,Nov '24
+20232,6,"85,000",peryear,"Atlanta, GA, US",Job Captain,Corporate,501 + People,Yes,No Overtime,NA,"5,000",Full-time,8-10,31-35,Female,No,NA,NA,NA,Nov '24
+20230,7,"65,400",peryear,"Atlanta, GA, US",Junior Architect,Corporate,501 + People,Yes,No Overtime,12,"3,000",Full-time,2,26-30,Male,No,UG:Georgia Institute of Technology (Georgia Tech),Grad:Georgia Institute of Technology (Georgia Tech),NA,Nov '24
+20229,3,"100,000",peryear,"Columbus, OH, US",Project Architect,NA,51-100 People,Yes,Unpaid Overtime,20,"4,000",Full-time,16-20,36-40,Male,Licensed,NA,NA,NA,Nov '24
+20228,7,"118,000",peryear,"Dallas, TX, US",Associate,Corporate,501 + People,Yes,Unpaid Overtime,10,"10,000",Full-time,11-15,31-35,Male,Licensed,UG:Iowa State University,NA,NA,Nov '24
+20227,5,"52,000",peryear,"Saint Louis, MO, US",Designer,Corporate,101-200 People,Yes,Paid Overtime,15,NA,Full-time,< 1,21-25,Female,No,UG:Rensselaer Polytechnic Institute,Grad:Cornell University,NA,Nov '24
+20226,6,"65,000",peryear,"Atlanta, GA, US",Job Captain,Corporate,501 + People,Yes,Unpaid Overtime,NA,"5,000",Full-time,3-5,26-30,Male,No,UG:Georgia Institute of Technology (Georgia Tech),Grad:Georgia Institute of Technology (Georgia Tech),NA,Nov '24
+20224,7,"77,000",peryear,"New York, NY, US",Designer,Corporate,501 + People,Yes,No Overtime,NA,"3,000",Full-time,1,21-25,Female,No,UG:Cornell University,NA,NA,Nov '24
+20223,6,"80,000",peryear,"Los Angeles, CA, US",Project Architect,Boutique,2-5 People,NA,No Overtime,10,NA,Full-time,8-10,36-40,Female,Licensed,UG:New York University (NYU),Grad:University of Pennsylvania,NA,Nov '24
+20222,7,"115,000",peryear,"Cleveland, OH, US",Associate,NA,31-50 People,Yes,NA,NA,"20,000",Full-time,16-20,36-40,Male,No,NA,NA,NA,Nov '24
+20220,7,28,perhour,"New York, NY, US",Model Maker,Corporate,201-500 People,Yes,Paid Overtime,NA,NA,Freelance,< 1,26-30,Female,No,NA,NA,NA,Nov '24
+20219,6,"60,000",peryear,"Buffalo, NY, US",Designer,Corporate,201-500 People,Yes,Paid Overtime,25,NA,Full-time,< 1,26-30,Male,No,UG:University at Buffalo,Grad:University at Buffalo,NA,Nov '24
+20218,6,"115,000",peryear,"New York, NY, US",Designer,Corporate,101-200 People,Yes,No Overtime,15,500,Full-time,21-25,46-50,Female,No,NA,NA,NA,Nov '24
+20217,7,"95,000",peryear,"San Antonio, TX, US",Project Manager,Corporate,51-100 People,Yes,Unpaid Overtime,20,"10,000",Full-time,21-25,41-45,Female,Licensed,NA,NA,NA,Nov '24
+20216,10,0,peryear,"Chardon, OH, US",CEO,Individual,1 People,Yes,Unpaid Overtime,10,NA,Full-time,40,71-103,Female,Licensed,UG:Kent State University,NA,NA,Nov '24
+20215,8,"77,500",peryear,"Chicago, IL, US",Designer,Corporate,501 + People,Yes,Paid Overtime,14,NA,Full-time,2,26-30,Male,No,NA,NA,NA,Nov '24
+20214,8,"71,000",peryear,"Ann Arbor, MI, US",Project Architect,Corporate,101-200 People,Yes,NA,15,"2,000",Full-time,3-5,26-30,Female,Licensed,UG:Washington University in St. Louis,Grad:University of Michigan,NA,Nov '24
+20213,8,"71,000",peryear,"Ann Arbor, MI, US",Project Architect,Corporate,101-200 People,Yes,NA,15,"2,000",Full-time,3-5,26-30,Female,Licensed,UG:Washington University in St. Louis,Grad:University of Michigan,PhD:Columbia University,Nov '24
+20212,9,"90,000",peryear,"Boston, MA, US",Project Architect,Corporate,51-100 People,Yes,Unpaid Overtime,10,NA,Full-time,6-7,31-35,Female,Licensed,UG:University of Oregon,NA,NA,Nov '24
 20210,8,"80,000",peryear,"Los Angeles, CA, US",Job Captain,Corporate,201-500 People,Yes,Unpaid Overtime,14,"6,400",Full-time,6-7,36-40,Female,No,NA,NA,NA,Nov '24
 20208,8,"68,500",peryear,"Cedar Grove, NJ, US",Junior Architect,Corporate,31-50 People,Yes,No Overtime,10,NA,Full-time,3,21-25,Male,No,UG:New Jersey Institute of Technology (NJIT),NA,NA,Nov '24
 20207,5,"66,560",peryear,"Los Angeles, CA, US",Graphic Designer,Boutique,11-15 People,Yes,Unpaid Overtime,10,NA,Full-time,2,21-25,Male,No,UG:Carnegie Mellon University,NA,NA,Nov '24
