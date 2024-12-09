@@ -1,23 +1,21 @@
-# architects-salary
+# visualizing architects' salaries
 
-Visualizing architects' salary
-
-# data-analysis
-
-All information related to data queries, preprocessing, and initial analysis (for my personal understanding) was done inside [archinet_query.ipynb](./data-analysis-notebook.ipynb) using python.
-
-This jupyter notebook is roughly broken into three sections:
-
-1. Data Query
-2. Data Preprocessing
-3. Initial Analysis
-
-TODO: talk about dependencies (maybe need to run ipynb in a fresh environment and download as needed?)
+I visualized nearly 14,000 architects' salaries. Please see live demo [here](https://desaiwang.github.io/architects-salary/), and if you are curious about how I built it, check out my [blog](https://desaiwang.github.io/#/post/architects-salaries)!
 
 # site architecture
 
-This site is built with html, css, and javascript. All the visualizations are done using the [d3 library](https://d3js.org/). A lot of my code is derived from Prof. Jeff Rzezsotarski's course notes on data visualization (INFO3300 and INFO4310) as well as projects I did while taking those classes.
+This site is built with html, css, and javascript. All the visualizations are done using the [d3 library](https://d3js.org/).
+
+# data source and analysis
+
+Survey data is from [Archinect.com](https://salaries.archinect.com/poll/results/country/united-states), and I used python for queries and analysis. I've linked the 3 relevant jupyter notebooks, and left simple annotations to explain my process.
+
+1. [Data Query and Preprocessing](/data/archinect_query.ipynb)
+2. [Exploratory Analysis and Charts](/data/exploratory_viz.ipynb)
+3. [Inflation Analysis and Comparison with Google Salary Trends](/data/inflation_analysis.ipynb)
 
 # acknowledgements
 
-This site would not have been possible without the help of Camille Lee, my lovely beta testers (Helen, Sophie, Allen, Garnet, and many others), and Prof. Rzezsotarski.
+A lot of my code is derived from Prof. Jeff Rzezsotarski's course notes on data visualization (INFO3300 and INFO4310) as well as projects I did while taking those classes.
+
+This site would not have been possible without the help of my lovely beta testers Camille, Sophie, Helen, Allen, Garnet, Jack, and many others.
