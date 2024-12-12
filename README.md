@@ -18,4 +18,4 @@ Survey data is from [Archinect.com](https://salaries.archinect.com/poll/results/
 
 A lot of my code is derived from Prof. Jeff Rzezsotarski's course notes on data visualization (INFO3300 and INFO4310) as well as projects I did while taking those classes.
 
-This site would not have been possible without the help of my lovely beta testers Camille, Sophie, Helen, Allen, Garnet, Jack, and many others.
+This site would not have been possible without the help of my lovely beta testers Camille, Sophie, Helen, Allen, Daniel, Jack, and many others.
