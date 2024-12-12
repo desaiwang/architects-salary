@@ -1,6 +1,6 @@
 # visualizing architects' salaries
 
-I visualized nearly 14,000 architects' salaries. Please see live demo [here](https://desaiwang.github.io/architects-salary/), and if you are curious about how I built it, check out my [blog](https://desaiwang.github.io/#/post/architects-salaries)!
+I visualized nearly 14,000 architects' salaries. Please see live demo [here](https://desaiwang.github.io/architects-salary/), and if you are curious about how I built it, check out my [blog](https://desaiwang.github.io/#/post/architects-salary)!
 
 # site architecture
 
