@@ -1,6 +1,6 @@
 # visualizing architects' salaries
 
-I visualized nearly 14,000 architects' salaries. Please see live demo [here](https://desaiwang.github.io/architects-salary/), and if you are curious about how I built it, check out my [blog](https://desaiwang.github.io/#/post/architects-salaries)!
+I visualized nearly 14,000 architects' salaries. Please see live demo [here](https://desaiwang.github.io/architects-salary/), and if you are curious about how I built it, check out my [blog](https://desaiwang.github.io/#/post/architects-salary)!
 
 # site architecture
 
@@ -18,4 +18,4 @@ Survey data is from [Archinect.com](https://salaries.archinect.com/poll/results/
 
 A lot of my code is derived from Prof. Jeff Rzezsotarski's course notes on data visualization (INFO3300 and INFO4310) as well as projects I did while taking those classes.
 
-This site would not have been possible without the help of my lovely beta testers Camille, Sophie, Helen, Allen, Garnet, Jack, and many others.
+This site would not have been possible without the help of my lovely beta testers Camille, Sophie, Helen, Allen, Daniel, Jack, and many others.
